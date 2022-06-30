@@ -7,5 +7,7 @@
  * For small projects you could put all your code right in this file.
  */
 
-export * from './lib/sample-module.js';
+export * from './types/index.js';
+export * from './lib/desmoHub-module.js';
+export * from './lib/desmoContract-module.js';
 export default undefined;
