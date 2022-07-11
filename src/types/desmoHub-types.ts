@@ -32,7 +32,9 @@ export enum OperationType {
   registerTDD = 0,
   disableTDD = 1,
   enableTDD = 2,
-  retrieveTDD = 3,
+  getTDD = 3,
+  getNewRequestID = 4,
+  getTDDByRequestID = 5
 }
 
 export interface ISentTransaction {

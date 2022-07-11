@@ -172,7 +172,25 @@ export class DesmoHub {
   public async getTDD(): Promise<void> {
     const tx = await this.contract.getTDD();
     this.TRANSACTION_SENT.next({
-      invokedOperation: OperationType.retrieveTDD,
+      invokedOperation: OperationType.getTDD,
+      hash: tx.hash,
+      sent: new Date(Date.now()),
+    });
+  }
+
+  public async getNewRequestID(): Promise<void> {
+    const tx = await this.contract.getNewRequestID();
+    this.TRANSACTION_SENT.next({
+      invokedOperation: OperationType.getNewRequestID,
+      hash: tx.hash,
+      sent: new Date(Date.now()),
+    });
+  }
+
+  public async getTDDByRequestID(requestKey: string): Promise<void> {
+    const tx = await this.contract.getTDDByRequestID(requestKey);
+    this.TRANSACTION_SENT.next({
+      invokedOperation: OperationType.getTDDByRequestID,
       hash: tx.hash,
       sent: new Date(Date.now()),
     });
