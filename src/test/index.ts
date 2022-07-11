@@ -9,16 +9,17 @@
  * section of your package.json file)
  */
 
-import { expect } from "chai";
-import fs from "fs-extra";
-import { Subscription } from "rxjs";
-import { DesmoHub } from "..";
+import { expect } from 'chai';
+import fs from 'fs-extra';
+import { Subscription } from 'rxjs';
+import { DesmoHub } from '..';
+import { WalletSigner } from './../lib/walletSigner-module';
 
-const sandboxRoot = "./sandbox";
-const samplesRoot = "./samples";
-const infuraURL = ""; // Replace with your own Infura URL
-const privateKEY = ""; // Replace with your own private key
-const MYTDD = ""; // Replace with your own TDD for tests
+const sandboxRoot = './sandbox';
+const samplesRoot = './samples';
+const infuraURL = ''; // Replace with your own Infura URL
+const privateKEY = ''; // Replace with your own private key
+const MYTDD = ''; // Replace with your own TDD for tests
 
 /**
  * Clone any files in a "./samples" folder into
@@ -38,14 +39,13 @@ function resetSandbox() {
   fs.copySync(samplesRoot, sandboxRoot);
 }
 
-describe("Test Suite", function () {
-
+describe('Test Suite', function () {
   before(function () {
     resetSandbox();
   });
 
-  describe("Test Group", function () {
-    it("can do something", function () {
+  describe('Test Group', function () {
+    it('can do something', function () {
       resetSandbox();
       expect(true).to.be.true;
     });
@@ -54,91 +54,82 @@ describe("Test Suite", function () {
   /***TESTS FOR THE DESMO-HUB***/
 
   describe('DesmoHub Tests', function () {
-    const desmohub: DesmoHub = new DesmoHub(infuraURL);
-    desmohub.signInWithPrivateKey(privateKEY); //rembember to delete if you push to github
+    const walletSigner: WalletSigner = new WalletSigner(infuraURL);
+    walletSigner.signInWithPrivateKey(privateKEY); //rembember to delete if you push to github
+
+    const desmohub: DesmoHub = new DesmoHub(walletSigner);
     const myTDD = MYTDD;
-    
+
     //start all listeners
     desmohub.startListeners();
 
     describe('Retrieve', function () {
-      it('should retrieve a tdd', function (done) {
-        desmohub.getTDD();
-        const subscription: Subscription = desmohub.tddRetrieval$.subscribe((event) => {
-          expect(event.url).to.equal(myTDD);
-          done();
-          //desmohub.stopListeners();
-          subscription.unsubscribe();
-        });
-
+      it('should retrieve a tdd', async () => {
+        const subscription: Subscription = desmohub.tddRetrieval$.subscribe(
+          (event) => {
+            expect(event.url).to.equal(myTDD);
+            //desmohub.stopListeners();
+            subscription.unsubscribe();
+          },
+        );
+        await desmohub.getTDD();
       });
-
     });
 
     // disable
     describe('Disable', function () {
-      it('should disable a tdd', function (done) {
-
+      it('should disable a tdd', async () => {
         //desmohub.startListeners();
-        desmohub.disableTDD();
-        const subscription: Subscription = desmohub.tddDisabled$.subscribe((event) => {
-          expect(event.url).to.equal(myTDD);
-          done();
-          //desmohub.stopListeners();
-          subscription.unsubscribe();
-        });
+        const subscription: Subscription = desmohub.tddDisabled$.subscribe(
+          (event) => {
+            expect(event.url).to.equal(myTDD);
+            //desmohub.stopListeners();
+            subscription.unsubscribe();
+          },
+        );
+        await desmohub.disableTDD();
       });
 
       // retrieve tdd after enable
-
-      it('should have a disabled tdd', function (done) {
-
+      it('should have a disabled tdd', async () => {
         //desmohub.startListeners();
-        desmohub.getTDD();
-        const subscription: Subscription = desmohub.tddRetrieval$.subscribe((event) => {
-          expect(event.disabled).to.be.true;
-          done();
-          //desmohub.stopListeners();
-          subscription.unsubscribe();
-        });
-
+        const subscription: Subscription = desmohub.tddRetrieval$.subscribe(
+          (event) => {
+            expect(event.disabled).to.be.true;
+            //desmohub.stopListeners();
+            subscription.unsubscribe();
+          },
+        );
+        await desmohub.getTDD();
       });
     });
-
 
     //enable
-
     describe('Enable', function () {
-      it('should enable a tdd', function (done) {
-
-        desmohub.enableTDD();
-        const subscription: Subscription = desmohub.tddEnabled$.subscribe((event) => {
-          expect(event.url).to.equal(myTDD);
-          done();
-          subscription.unsubscribe();
-
-        });
+      it('should enable a tdd', async () => {
+        const subscription: Subscription = desmohub.tddEnabled$.subscribe(
+          (event) => {
+            expect(event.url).to.equal(myTDD);
+            subscription.unsubscribe();
+          },
+        );
+        await desmohub.enableTDD();
       });
+
       // retrieve tdd after enable
-      it('should have an enabled tdd', function (done) {
-
-        desmohub.getTDD();
-        const subscription: Subscription = desmohub.tddRetrieval$.subscribe((event) => {
-          expect(event.disabled).to.be.false;
-          done();
-          subscription.unsubscribe();
-
-        });
+      it('should have an enabled tdd', async () => {
+        const subscription: Subscription = desmohub.tddRetrieval$.subscribe(
+          (event) => {
+            expect(event.disabled).to.be.false;
+            subscription.unsubscribe();
+          },
+        );
+        await desmohub.getTDD();
       });
-
     });
   });
-
 
   after(function () {
     resetSandbox();
   });
-
 });
-
-

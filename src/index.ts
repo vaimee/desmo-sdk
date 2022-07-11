@@ -8,6 +8,7 @@
  */
 
 export * from './types/index.js';
+export * from './lib/walletSigner-module.js';
 export * from './lib/desmoHub-module.js';
 export * from './lib/desmoContract-module.js';
 export default undefined;
