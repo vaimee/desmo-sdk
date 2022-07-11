@@ -13,7 +13,7 @@ import {
   OperationType,
 } from '../types';
 import { ethers } from 'ethers';
-import { contractAddress, deploymentOutput } from '../resources/desmoHubConfig';
+import { contractAddress, deploymentOutput } from '../resources/desmoHub-config';
 import { Observable, Subject } from 'rxjs';
 
 const contractABI = deploymentOutput.output.abi;
