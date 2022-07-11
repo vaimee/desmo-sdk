@@ -11,7 +11,7 @@ import {
   ITDDRetrievalEvent,
   ISentTransaction,
   OperationType,
-} from '../types/index';
+} from '../types';
 import { ethers } from 'ethers';
 import { contractAddress, deploymentOutput } from '../resources/desmoHubConfig';
 import { Observable, Subject } from 'rxjs';
