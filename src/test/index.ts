@@ -15,6 +15,7 @@ import fs from "fs-extra";
 const sandboxRoot = "./sandbox";
 const samplesRoot = "./samples";
 
+
 /**
  * Clone any files in a "./samples" folder into
  * a "./sandbox" folder, overwriting any files
@@ -40,10 +41,15 @@ describe("Test Suite", function () {
   });
 
   describe("Test Group", function () {
-    it("can do something", function () {
-      resetSandbox();
-      expect(false).to.be.true;
-    });
+    // it("can do something", function () {
+    //   resetSandbox();
+    //   expect(false).to.be.true;
+    // });
+
+    it("Should buy computation on iExec", function (){
+      const buyer = new DesmoContractIexec("154", "")
+    })
+
   });
 
   after(function(){

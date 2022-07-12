@@ -1,0 +1,1 @@
+{"version":3,"file":"desmoContract-module.d.ts","sourceRoot":"","sources":["../../src/lib/desmoContract-module.ts"],"names":[],"mappings":"AAAA;;;;EAIE;AAMF,qBAAa,kBAAkB;IAIf,OAAO,CAAC,MAAM;IAAU,OAAO,CAAC,UAAU;IAHtD,OAAO,CAAC,KAAK,CAAM;gBAGC,MAAM,EAAE,MAAM,EAAU,UAAU,EAAE,MAAM;IAIjD,QAAQ,CAAC,MAAM,EAAE,MAAM;IA6CvB,cAAc;IAId,yBAAyB;CAIzC"}
