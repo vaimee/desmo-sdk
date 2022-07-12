@@ -6,38 +6,6 @@
  * of a published npm module use the '.ts' extension instead.
  */
 
-export interface ITDDCreatedEvent {
-  key: string;
-  url: string;
-  disabled: boolean;
-}
-
-export interface ITDDDisabledEvent {
-  key: string;
-  url: string;
-}
-
-export interface ITDDEnabledEvent {
-  key: string;
-  url: string;
-}
-
-export interface ITDDRetrievalEvent {
-  key: string;
-  url: string;
-  disabled: boolean;
-}
-
-export enum OperationType {
-  registerTDD = 0,
-  disableTDD = 1,
-  enableTDD = 2,
-  retrieveTDD = 3,
-}
-
-export interface ISentTransaction {
-  invokedOperation: OperationType;
-  hash: string;
-  sent: Date;
-  confirmed?: Date;
-}
+export * from "./desmoHub-types";
+export * from "./desmoContract-types";
+export default undefined;

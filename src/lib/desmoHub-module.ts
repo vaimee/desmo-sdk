@@ -2,7 +2,7 @@
  * @file ./lib is a great place to keep all your code.
  * You can then choose what to make available by default by
  * exporting your lib modules from the ./src/index.ts entrypoint.
-*/
+ */
 
 import {
   ITDDCreatedEvent,
@@ -11,20 +11,18 @@ import {
   ITDDRetrievalEvent,
   ISentTransaction,
   OperationType,
-} from '../types/index';
+} from '../types';
 import { ethers } from 'ethers';
-import { contractAddress, deploymentOutput } from '../resources/desmoHubConfig';
+import { contractAddress, deploymentOutput } from '../resources/desmoHub-config';
 import { Observable, Subject } from 'rxjs';
+import { WalletSigner } from './walletSigner-module';
 
 const contractABI = deploymentOutput.output.abi;
 
 export class DesmoHub {
-  private provider: ethers.providers.Provider;
+  private _walletSigner: WalletSigner;
   private contract: ethers.Contract;
   private abiInterface: ethers.utils.Interface;
-
-  private walletSigner?: ethers.Wallet;
-  private isConnected: boolean;
 
   private TDD_CREATED: Subject<ITDDCreatedEvent>;
   tddCreated$: Observable<ITDDCreatedEvent>;
@@ -41,15 +39,19 @@ export class DesmoHub {
   private TRANSACTION_SENT: Subject<ISentTransaction>;
   transactionSent$: Observable<ISentTransaction>;
 
-  constructor(private rpcUrl: string) {
-    this.provider = new ethers.providers.JsonRpcProvider(this.rpcUrl);
+  constructor(walletSigner: WalletSigner) {
+    if (!walletSigner.isConnected) {
+      throw new Error('DesmoHub requires an already signed-in wallet!');
+    }
+
+    this._walletSigner = walletSigner;
+
     this.abiInterface = new ethers.utils.Interface(contractABI);
     this.contract = new ethers.Contract(
       contractAddress,
       contractABI,
       this.provider,
-    );
-    this.isConnected = false;
+    ).connect(this.wallet);
 
     // Observables setup:
     this.TDD_CREATED = new Subject<ITDDCreatedEvent>();
@@ -68,31 +70,12 @@ export class DesmoHub {
     this.transactionSent$ = this.TRANSACTION_SENT.asObservable();
   }
 
-  public signInWithPrivateKey(privateKey: string) {
-    if (this.isConnected) {
-      throw new Error('Already signed in!');
-    }
-
-    this.walletSigner = new ethers.Wallet(privateKey, this.provider);
-
-    this.contract = this.contract.connect(this.walletSigner);
-
-    this.isConnected = true;
+  public get provider(): ethers.providers.Provider {
+    return this._walletSigner.provider;
   }
 
-  public async signInWithJsonWallet(encryptedJson: string, password: string) {
-    if (this.isConnected) {
-      throw new Error('Already signed in!');
-    }
-
-    this.walletSigner = await ethers.Wallet.fromEncryptedJson(
-      encryptedJson,
-      password,
-    );
-
-    this.contract = this.contract.connect(this.walletSigner);
-
-    this.isConnected = true;
+  public get wallet(): ethers.Wallet {
+    return this._walletSigner.wallet;
   }
 
   private attachListenerForNewEvents(eventFilter: any, listener: any) {
@@ -104,10 +87,7 @@ export class DesmoHub {
   }
 
   public startListeners() {
-    if (this.isConnected === false) {
-      throw new Error('This operation requires a signed in wallet!');
-    }
-    const ownerAddress: string = this.walletSigner!.address;
+    const ownerAddress: string = this.wallet.address;
 
     const filterCreated = this.contract.filters.TDDCreated(ownerAddress);
     this.attachListenerForNewEvents(filterCreated, (event: any) => {
@@ -157,10 +137,7 @@ export class DesmoHub {
   }
 
   public async registerTDD(tddUrl: string): Promise<void> {
-    if (this.isConnected === false) {
-      throw new Error('This operation requires a signed in wallet!');
-    }
-    const ownerAddress: string = this.walletSigner!.address;
+    const ownerAddress: string = this.wallet.address;
 
     const tx = await this.contract.registerTDD({
       url: tddUrl,
@@ -175,10 +152,6 @@ export class DesmoHub {
   }
 
   public async disableTDD(): Promise<void> {
-    if (this.isConnected === false) {
-      throw new Error('This operation requires a signed in wallet!');
-    }
-
     const tx = await this.contract.disableTDD();
     this.TRANSACTION_SENT.next({
       invokedOperation: OperationType.disableTDD,
@@ -188,10 +161,6 @@ export class DesmoHub {
   }
 
   public async enableTDD(): Promise<void> {
-    if (this.isConnected === false) {
-      throw new Error('This operation requires a signed in wallet!');
-    }
-
     const tx = await this.contract.enableTDD();
     this.TRANSACTION_SENT.next({
       invokedOperation: OperationType.enableTDD,
@@ -203,7 +172,25 @@ export class DesmoHub {
   public async getTDD(): Promise<void> {
     const tx = await this.contract.getTDD();
     this.TRANSACTION_SENT.next({
-      invokedOperation: OperationType.retrieveTDD,
+      invokedOperation: OperationType.getTDD,
+      hash: tx.hash,
+      sent: new Date(Date.now()),
+    });
+  }
+
+  public async getNewRequestID(): Promise<void> {
+    const tx = await this.contract.getNewRequestID();
+    this.TRANSACTION_SENT.next({
+      invokedOperation: OperationType.getNewRequestID,
+      hash: tx.hash,
+      sent: new Date(Date.now()),
+    });
+  }
+
+  public async getTDDByRequestID(requestKey: string): Promise<void> {
+    const tx = await this.contract.getTDDByRequestID(requestKey);
+    this.TRANSACTION_SENT.next({
+      invokedOperation: OperationType.getTDDByRequestID,
       hash: tx.hash,
       sent: new Date(Date.now()),
     });
