@@ -6,4 +6,25 @@
  * of a published npm module use the '.ts' extension instead.
  */
 
-export const a = 1;
+export interface AppOrder {
+    app: string,
+    appprice: number,
+    volume: number,
+    tag: string,
+    datasetrestrict: string,
+    workerpoolrestrict: string,
+    requesterrestrict: string,
+    salt: string,
+    sign: string
+}
+export interface WorkerpoolOrder {
+    workerpool: string,
+    workerpoolprice: number
+    volume: number,
+    tag: string,
+    datasetrestrict: string,
+    workerpoolrestrict: string,
+    requesterrestrict: string,
+    salt: string,
+    sign: string
+}

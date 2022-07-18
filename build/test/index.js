@@ -126,7 +126,16 @@ function resetSandbox() {
         const buyer = new __1.DesmoContract(walletSigner, rpcUrl, privateKEY);
         (0, mocha_1.describe)('Query buy process', function () {
             it('should buy query', async () => {
-                buyer.buyQuery("test");
+                await buyer.buyQuery("test");
+            });
+            it('should retrieve result from chain', async () => {
+                await buyer.buyQuery("test");
+                let resault = "";
+                await buyer.getQueryResult().then(result => {
+                    console.log(result);
+                });
+                setTimeout(async () => {
+                }, 200000);
             });
         });
     });

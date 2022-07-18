@@ -10,11 +10,19 @@ export declare class DesmoContract {
     private contract;
     private abiInterface;
     private iexec;
+    private readonly appAddress;
+    private readonly callback;
+    private readonly category;
+    private dealId;
+    private taskId;
     constructor(walletSigner: WalletSigner, rpcUrl: string, privateKey: string);
+    private fetchAppOrder;
+    private fetchWorkerpoolOrder;
+    private retrieveTaskID;
     get provider(): ethers.providers.Provider;
     get wallet(): ethers.Wallet;
     buyQuery(params: string): Promise<void>;
-    getQueryResult(): Promise<void>;
-    verifyDealContractAddress(): Promise<void>;
+    getQueryResult(): Promise<any>;
+    verifyDealContractAddress(): Promise<any>;
 }
 //# sourceMappingURL=desmoContract-module.d.ts.map

@@ -5,13 +5,19 @@
  */
 
 import { ethers } from 'ethers';
-const { IExec, utils, getSignerFromPrivateKey } = require('iexec');
+import { WalletSigner } from './walletSigner-module';
+import { IExec, utils,  } from 'iexec';
 
 import {
   contractAddress,
   deploymentOutput,
 } from '../resources/desmoContract-config';
-import { WalletSigner } from './walletSigner-module';
+
+import {
+    AppOrder,
+    WorkerpoolOrder
+} from '../types';
+
 
 const contractABI = deploymentOutput.output.abi;
 
@@ -20,6 +26,11 @@ export class DesmoContract {
   private contract: ethers.Contract;
   private abiInterface: ethers.utils.Interface;
   private iexec: any;
+  private readonly appAddress: string;
+  private readonly callback: string;
+  private readonly category: number;
+  private dealId: string;
+  private taskId : string;
 
   constructor(walletSigner: WalletSigner, rpcUrl: string, privateKey: string) {
     if (!walletSigner.isConnected) {
@@ -36,8 +47,55 @@ export class DesmoContract {
       this.provider,
     ).connect(this.wallet);
 
-    this.iexec = new IExec({ ethProvider: utils.getSignerFromPrivateKey(rpcUrl, privateKey) });
+    try {
+        this.iexec = new IExec({ ethProvider: utils.getSignerFromPrivateKey(rpcUrl, privateKey) });
+        //this.iexec = new IExec({ ethProvider: this.provider });
+    }catch (e) {
+        console.log(e);
+    }
 
+    this.appAddress = "0x306cd828d80d2344e9572f54994d2abb1d9f5f39";
+    this.callback = "0x5e79D4ddc6a6F5D80816ABA102767a15E6685b3e";
+    this.category = 0;
+
+    this.dealId = "";
+    this.taskId = "";
+
+  }
+
+  private async fetchAppOrder(): Promise<AppOrder>{
+      const { orders: appOrders } = await this.iexec.orderbook.fetchAppOrderbook(
+          this.appAddress
+      );
+
+      const appOrder = appOrders && appOrders[0] && appOrders[0].order;
+
+      if (!appOrder){
+          throw Error(`no apporder found for app ${this.appAddress}`);
+      } else {
+          return appOrder
+      }
+  }
+
+  private async fetchWorkerpoolOrder(): Promise<WorkerpoolOrder> {
+      const {
+          orders: workerpoolOrders
+      } = await this.iexec.orderbook.fetchWorkerpoolOrderbook({
+          category: this.category
+      });
+
+      const workerpoolOrder = workerpoolOrders && workerpoolOrders[0] && workerpoolOrders[0].order;
+
+      if (!workerpoolOrder){
+          throw Error(`no workerpoolorder found for category ${this.category}`);
+      }else {
+          return workerpoolOrder
+      }
+  }
+
+  private async retrieveTaskID(): Promise<any> {
+      const deal = await this.iexec.deal.show(this.dealId);
+      return this.taskId = deal.tasks["0"];
   }
 
   public get provider(): ethers.providers.Provider {
@@ -48,61 +106,76 @@ export class DesmoContract {
     return this._walletSigner.wallet;
   }
 
-  public async buyQuery(params: string){
+  // TODO make it generic for different wallets
+  public async buyQuery(params: string): Promise<void> {
     // Must trigger the iExec platform to run our app
-    const appAddress = "0x306cd828d80d2344e9572f54994d2abb1d9f5f39";
-    const category = 0;
-    const callback = "0x5e79D4ddc6a6F5D80816ABA102767a15E6685b3e";
+
     try{
-        const { orders: appOrders } = await this.iexec.orderbook.fetchAppOrderbook(
-            appAddress
-        );
+        this.fetchAppOrder().then(async resultAppOrder => {
+            this.fetchWorkerpoolOrder().then( async resultWorkerpoolOrder => {
 
-        console.log(appOrders);
+                // Check if we can use the address from the wallet.
+                const userAddress = await this.iexec.wallet.getAddress();
 
-        const appOrder = appOrders && appOrders[0] && appOrders[0].order;
-        if (!appOrder) throw Error(`no apporder found for app ${appAddress}`);
+                const requestOrderToSign = await this.iexec.order.createRequestorder({
+                    app: this.appAddress,
+                    appmaxprice: resultAppOrder.appprice,
+                    workerpoolmaxprice: resultWorkerpoolOrder.workerpoolprice,
+                    requester: userAddress,
+                    volume: 1,
+                    params: params,
+                    category: this.category,
+                    callback: this.callback
+                });
 
-        const {
-            orders: workerpoolOrders
-        } = await this.iexec.orderbook.fetchWorkerpoolOrderbook({ category });
+                const requestOrder = await this.iexec.order.signRequestorder(requestOrderToSign);
 
-        const workerpoolOrder = workerpoolOrders && workerpoolOrders[0] && workerpoolOrders[0].order;
-
-        if (!workerpoolOrder){
-            throw Error(`no workerpoolorder found for category ${category}`);
-        }
-
-        const userAddress = await this.iexec.wallet.getAddress();
-
-        const requestOrderToSign = await this.iexec.order.createRequestorder({
-            app: appAddress,
-            appmaxprice: appOrder.appprice,
-            workerpoolmaxprice: workerpoolOrder.workerpoolprice,
-            requester: userAddress,
-            volume: 1,
-            params: params,
-            category: category,
-            callback: callback
+                const res = await this.iexec.order.matchOrders({
+                    apporder: resultAppOrder,
+                    requestorder: requestOrder,
+                    workerpoolorder: resultWorkerpoolOrder
+                });
+                this.dealId = res.dealid;
+            }).catch(error => {
+                console.log(error)
+            });
+        }).catch(error => {
+            console.log(error);
         });
 
-        const requestOrder = await this.iexec.order.signRequestorder(requestOrderToSign);
 
-        const res = await this.iexec.order.matchOrders({
-            apporder: appOrder,
-            requestorder: requestOrder,
-            workerpoolorder: workerpoolOrder
-        });
     }catch (e) {
         console.log(e);
     }
   }
 
-  public async getQueryResult(){
-        // Must get the result from chain
+
+
+  public async getQueryResult(): Promise<any> {
+
+      this.retrieveTaskID().then( async (taskID) => {
+          console.log(`Result requested to task id ${taskID}...`);
+          try {
+              const res = await this.iexec.task.show(taskID);
+              console.log(res.resultsCallback);
+              return res;
+          } catch (e) {
+              console.log(e);
+              throw Error(`Error to retrieve result: ${e}`);
+          }
+      });
   }
 
-  public async verifyDealContractAddress(){
-        // Must get the Id from the task and confront with the one configured.
+  public async verifyDealContractAddress(): Promise<any> {
+      this.retrieveTaskID().then( async (taskID) => {
+          console.log(`Result requested to task id ${taskID}...`);
+          try {
+              const res = await this.iexec.task.show(taskID);
+              return res.results.storage === this.callback;
+          } catch (e) {
+              console.log(e);
+              throw Error(`Error to retrieve result: ${e}`);
+          }
+      });
   }
 }

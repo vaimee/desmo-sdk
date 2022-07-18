@@ -11,7 +11,7 @@
 
 import { expect } from 'chai';
 import fs from 'fs-extra';
-import { Subscription } from 'rxjs';
+import {delay, Subscription, timeInterval} from 'rxjs';
 import {DesmoContract, DesmoHub} from '..';
 import { WalletSigner } from './../lib/walletSigner-module';
 import {describe} from "mocha";
@@ -134,8 +134,22 @@ describe('Test Suite', function () {
       it('should buy query', async () => {
         await buyer.buyQuery("test");
       });
-    });
 
+      it('should retrieve result from chain', async () => {
+        await buyer.buyQuery("test");
+        let resault = "";
+
+
+        await buyer.getQueryResult().then(result => {
+          console.log(result);
+        })
+
+        setTimeout(async () => {
+        }, 200000);
+
+
+      });
+    });
   });
 
   after(function () {
