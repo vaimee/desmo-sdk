@@ -2,16 +2,15 @@
  * @file ./lib is a great place to keep all your code.
  * You can then choose what to make available by default by
  * exporting your lib modules from the ./src/index.ts entrypoint.
-*/
-import { ITDDCreatedEvent, ITDDDisabledEvent, ITDDEnabledEvent, ITDDRetrievalEvent, ISentTransaction } from '../types/index';
+ */
+import { ITDDCreatedEvent, ITDDDisabledEvent, ITDDEnabledEvent, ITDDRetrievalEvent, ISentTransaction } from '../types';
+import { ethers } from 'ethers';
 import { Observable } from 'rxjs';
+import { WalletSigner } from './walletSigner-module';
 export declare class DesmoHub {
-    private rpcUrl;
-    private provider;
+    private _walletSigner;
     private contract;
     private abiInterface;
-    private walletSigner?;
-    private isConnected;
     private TDD_CREATED;
     tddCreated$: Observable<ITDDCreatedEvent>;
     private TDD_DISABLED;
@@ -22,9 +21,9 @@ export declare class DesmoHub {
     tddRetrieval$: Observable<ITDDRetrievalEvent>;
     private TRANSACTION_SENT;
     transactionSent$: Observable<ISentTransaction>;
-    constructor(rpcUrl: string);
-    signInWithPrivateKey(privateKey: string): void;
-    signInWithJsonWallet(encryptedJson: string, password: string): Promise<void>;
+    constructor(walletSigner: WalletSigner);
+    get provider(): ethers.providers.Provider;
+    get wallet(): ethers.Wallet;
     private attachListenerForNewEvents;
     startListeners(): void;
     stopListeners(): void;
@@ -32,5 +31,7 @@ export declare class DesmoHub {
     disableTDD(): Promise<void>;
     enableTDD(): Promise<void>;
     getTDD(): Promise<void>;
+    getNewRequestID(): Promise<void>;
+    getTDDByRequestID(requestKey: string): Promise<void>;
 }
 //# sourceMappingURL=desmoHub-module.d.ts.map
