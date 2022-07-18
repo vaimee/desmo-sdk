@@ -98,6 +98,11 @@ export class DesmoContract {
       return this.taskId = deal.tasks["0"];
   }
 
+  private async retrieveCallbackAddress(): Promise<any> {
+      const deal = await this.iexec.deal.show(this.dealId);
+      return deal.callback;
+  }
+
   public get provider(): ethers.providers.Provider {
     return this._walletSigner.provider;
   }
@@ -108,8 +113,6 @@ export class DesmoContract {
 
   // TODO make it generic for different wallets
   public async buyQuery(params: string): Promise<void> {
-    // Must trigger the iExec platform to run our app
-
     try{
         this.fetchAppOrder().then(async resultAppOrder => {
             this.fetchWorkerpoolOrder().then( async resultWorkerpoolOrder => {
@@ -142,22 +145,16 @@ export class DesmoContract {
         }).catch(error => {
             console.log(error);
         });
-
-
     }catch (e) {
         console.log(e);
     }
   }
 
-
-
   public async getQueryResult(): Promise<any> {
-
       this.retrieveTaskID().then( async (taskID) => {
           console.log(`Result requested to task id ${taskID}...`);
           try {
               const res = await this.iexec.task.show(taskID);
-              console.log(res.resultsCallback);
               return res;
           } catch (e) {
               console.log(e);
@@ -166,12 +163,13 @@ export class DesmoContract {
       });
   }
 
-  public async verifyDealContractAddress(): Promise<any> {
+  public async verifyDealContractAddress(callbackAddress: string): Promise<any> {
       this.retrieveTaskID().then( async (taskID) => {
           console.log(`Result requested to task id ${taskID}...`);
           try {
-              const res = await this.iexec.task.show(taskID);
-              return res.results.storage === this.callback;
+              this.retrieveCallbackAddress().then(registeredAddress => {
+                  return registeredAddress === callbackAddress;
+              });
           } catch (e) {
               console.log(e);
               throw Error(`Error to retrieve result: ${e}`);

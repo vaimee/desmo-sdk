@@ -137,17 +137,10 @@ describe('Test Suite', function () {
 
       it('should retrieve result from chain', async () => {
         await buyer.buyQuery("test");
-        let resault = "";
-
 
         await buyer.getQueryResult().then(result => {
           console.log(result);
-        })
-
-        setTimeout(async () => {
-        }, 200000);
-
-
+        });
       });
     });
   });
