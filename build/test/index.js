@@ -124,18 +124,23 @@ function resetSandbox() {
         const walletSigner = new walletSigner_module_1.WalletSigner(infuraURL);
         walletSigner.signInWithPrivateKey(privateKEY); //rembember to delete if you push to github
         const buyer = new __1.DesmoContract(walletSigner, rpcUrl, privateKEY);
-        (0, mocha_1.describe)('Query buy process', function () {
-            it('should buy query', async () => {
-                await buyer.buyQuery("test");
-            });
-            it('should retrieve result from chain', async () => {
-                await buyer.buyQuery("test");
-                let resault = "";
-                await buyer.getQueryResult().then(result => {
-                    console.log(result);
-                });
-                setTimeout(async () => {
-                }, 200000);
+        // describe('Query buy process', function (){
+        //   it('should buy query', async () => {
+        //     await buyer.buyQuery("test");
+        //   });
+        //
+        //   it('should retrieve result from chain', async () => {
+        //     await buyer.buyQuery("test");
+        //
+        //     await buyer.getQueryResult().then(result => {
+        //       console.log(result);
+        //     });
+        //   });
+        // });
+        (0, mocha_1.describe)("Callback address verification process", function () {
+            (0, mocha_1.it)('should verify callback address', () => {
+                buyer.buyQuery("test");
+                buyer.verifyCallbackAddress("");
             });
         });
     });

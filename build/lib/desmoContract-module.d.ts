@@ -19,10 +19,11 @@ export declare class DesmoContract {
     private fetchAppOrder;
     private fetchWorkerpoolOrder;
     private retrieveTaskID;
+    private retrieveCallbackAddress;
     get provider(): ethers.providers.Provider;
     get wallet(): ethers.Wallet;
     buyQuery(params: string): Promise<void>;
     getQueryResult(): Promise<any>;
-    verifyDealContractAddress(): Promise<any>;
+    verifyCallbackAddress(callbackAddress: string): Promise<any>;
 }
 //# sourceMappingURL=desmoContract-module.d.ts.map

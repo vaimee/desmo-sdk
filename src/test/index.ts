@@ -14,7 +14,7 @@ import fs from 'fs-extra';
 import {delay, Subscription, timeInterval} from 'rxjs';
 import {DesmoContract, DesmoHub} from '..';
 import { WalletSigner } from './../lib/walletSigner-module';
-import {describe} from "mocha";
+import {describe, it} from "mocha";
 
 const sandboxRoot = './sandbox';
 const samplesRoot = './samples';
@@ -130,19 +130,28 @@ describe('Test Suite', function () {
 
     const buyer: DesmoContract = new DesmoContract(walletSigner, rpcUrl, privateKEY);
 
-    describe('Query buy process', function (){
-      it('should buy query', async () => {
-        await buyer.buyQuery("test");
-      });
+    // describe('Query buy process', function (){
+    //   it('should buy query', async () => {
+    //     await buyer.buyQuery("test");
+    //   });
+    //
+    //   it('should retrieve result from chain', async () => {
+    //     await buyer.buyQuery("test");
+    //
+    //     await buyer.getQueryResult().then(result => {
+    //       console.log(result);
+    //     });
+    //   });
+    // });
 
-      it('should retrieve result from chain', async () => {
-        await buyer.buyQuery("test");
-
-        await buyer.getQueryResult().then(result => {
-          console.log(result);
-        });
+    describe("Callback address verification process", function (){
+      it('should verify callback address', () => {
+        buyer.buyQuery("test");
+        buyer.verifyCallbackAddress("");
       });
     });
+
+
   });
 
   after(function () {

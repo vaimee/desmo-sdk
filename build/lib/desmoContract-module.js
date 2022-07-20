@@ -11,19 +11,19 @@ const iexec_1 = require("iexec");
 const desmoContract_config_1 = require("../resources/desmoContract-config");
 const contractABI = desmoContract_config_1.deploymentOutput.output.abi;
 class DesmoContract {
+    // TODO make it generic for different wallets
     constructor(walletSigner, rpcUrl, privateKey) {
         if (!walletSigner.isConnected) {
-            throw new Error('DesmoContract requires an already signed-in wallet!');
+            throw new Error('Desmo Contract requires an already signed-in wallet!');
         }
         this._walletSigner = walletSigner;
         this.abiInterface = new ethers_1.ethers.utils.Interface(contractABI);
         this.contract = new ethers_1.ethers.Contract(desmoContract_config_1.contractAddress, contractABI, this.provider).connect(this.wallet);
         try {
             this.iexec = new iexec_1.IExec({ ethProvider: iexec_1.utils.getSignerFromPrivateKey(rpcUrl, privateKey) });
-            //this.iexec = new IExec({ ethProvider: this.provider });
         }
         catch (e) {
-            console.log(e);
+            throw new Error('Desmo Contract could not connect with iExec');
         }
         this.appAddress = "0x306cd828d80d2344e9572f54994d2abb1d9f5f39";
         this.callback = "0x5e79D4ddc6a6F5D80816ABA102767a15E6685b3e";
@@ -57,15 +57,19 @@ class DesmoContract {
         const deal = await this.iexec.deal.show(this.dealId);
         return this.taskId = deal.tasks["0"];
     }
+    async retrieveCallbackAddress() {
+        const deal = await this.iexec.deal.show(this.dealId);
+        console.log(deal);
+        return deal.callback;
+    }
     get provider() {
         return this._walletSigner.provider;
     }
     get wallet() {
         return this._walletSigner.wallet;
     }
-    // TODO make it generic for different wallets
+    // TODO retrieve TDD subset before trigger iExec
     async buyQuery(params) {
-        // Must trigger the iExec platform to run our app
         try {
             this.fetchAppOrder().then(async (resultAppOrder) => {
                 this.fetchWorkerpoolOrder().then(async (resultWorkerpoolOrder) => {
@@ -99,13 +103,11 @@ class DesmoContract {
             console.log(e);
         }
     }
+    // TODO decode the result
     async getQueryResult() {
         this.retrieveTaskID().then(async (taskID) => {
-            console.log(`Result requested to task id ${taskID}...`);
             try {
-                const res = await this.iexec.task.show(taskID);
-                console.log(res.resultsCallback);
-                return res;
+                return await this.iexec.task.show(taskID);
             }
             catch (e) {
                 console.log(e);
@@ -113,12 +115,19 @@ class DesmoContract {
             }
         });
     }
-    async verifyDealContractAddress() {
+    async verifyCallbackAddress(callbackAddress) {
         this.retrieveTaskID().then(async (taskID) => {
-            console.log(`Result requested to task id ${taskID}...`);
             try {
-                const res = await this.iexec.task.show(taskID);
-                return res.results.storage === this.callback;
+                await this.retrieveCallbackAddress().then(registeredAddress => {
+                    console.log("Address: ");
+                    console.log(registeredAddress);
+                    if (registeredAddress === callbackAddress) {
+                        return registeredAddress;
+                    }
+                    else {
+                        throw new Error("Callback address not match");
+                    }
+                });
             }
             catch (e) {
                 console.log(e);
