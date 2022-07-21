@@ -125,7 +125,7 @@ describe('Test Suite', function () {
   // });
 
   describe('DESMO COntract Tests', function (){
-    const walletSigner: WalletSigner = new WalletSigner(infuraURL);
+    const walletSigner: WalletSigner = new WalletSigner(rpcUrl);
     walletSigner.signInWithPrivateKey(privateKEY); //rembember to delete if you push to github
 
     const buyer: DesmoContract = new DesmoContract(walletSigner, rpcUrl, privateKEY);

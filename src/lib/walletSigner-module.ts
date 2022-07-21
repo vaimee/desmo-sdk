@@ -5,6 +5,7 @@
  */
 
 import { ethers } from 'ethers';
+import {utils} from "iexec";
 
 export class WalletSigner {
   private _provider: ethers.providers.Provider;

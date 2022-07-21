@@ -50,9 +50,13 @@ export class DesmoContract {
 
     try {
         this.iexec = new IExec({ ethProvider: utils.getSignerFromPrivateKey(rpcUrl, privateKey) });
+        //this.iexec = new IExec({ ethProvider: walletSigner.wallet._signTypedData() });
     }catch (e) {
         throw new Error('Desmo Contract could not connect with iExec');
     }
+
+    console.log(utils.getSignerFromPrivateKey(rpcUrl, privateKey))
+      console.log( walletSigner.wallet)
 
     this.appAddress = "0x306cd828d80d2344e9572f54994d2abb1d9f5f39";
     this.callback = "0x5e79D4ddc6a6F5D80816ABA102767a15E6685b3e";
@@ -114,6 +118,7 @@ export class DesmoContract {
   // TODO retrieve TDD subset before trigger iExec
   public async buyQuery(params: string): Promise<void> {
     try{
+
         this.fetchAppOrder().then(async resultAppOrder => {
             this.fetchWorkerpoolOrder().then( async resultWorkerpoolOrder => {
 

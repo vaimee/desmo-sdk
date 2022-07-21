@@ -121,7 +121,7 @@ function resetSandbox() {
     //   });
     // });
     (0, mocha_1.describe)('DESMO COntract Tests', function () {
-        const walletSigner = new walletSigner_module_1.WalletSigner(infuraURL);
+        const walletSigner = new walletSigner_module_1.WalletSigner(rpcUrl);
         walletSigner.signInWithPrivateKey(privateKEY); //rembember to delete if you push to github
         const buyer = new __1.DesmoContract(walletSigner, rpcUrl, privateKEY);
         // describe('Query buy process', function (){
