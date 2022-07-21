@@ -13,16 +13,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const chai_1 = require("chai");
 const fs_extra_1 = __importDefault(require("fs-extra"));
 const __1 = require("..");
 const walletSignerInfura_module_1 = require("../lib/walletSignerInfura-module");
 const mocha_1 = require("mocha");
 const sandboxRoot = './sandbox';
 const samplesRoot = './samples';
-const infuraURL = ''; // Replace with your own Infura URL
+const infuraURL = "https://viviani.iex.ec"; // Replace with your own Infura URL
 const privateKEY = "0xd01bb8eb696603a88d7c8fdc54e49ea4c66ac1ebcc6f41a7a910d72f9d8b3840"; // Replace with your own private key
 const MYTDD = ''; // Replace with your own TDD for tests
-const rpcUrl = "https://viviani.iex.ec";
 /**
  * Clone any files in a "./samples" folder into
  * a "./sandbox" folder, overwriting any files
@@ -45,83 +45,66 @@ function resetSandbox() {
         resetSandbox();
     });
     /***TESTS FOR THE DESMO-HUB***/
-    // describe('DesmoHub Tests', function () {
-    //   const walletSigner: WalletSigner = new WalletSigner(infuraURL);
-    //   walletSigner.signInWithPrivateKey(privateKEY); //rembember to delete if you push to github
-    //
-    //   const desmohub: DesmoHub = new DesmoHub(walletSigner);
-    //   const myTDD = MYTDD;
-    //
-    //   //start all listeners
-    //   desmohub.startListeners();
-    //
-    //   describe('Retrieve', function () {
-    //     it('should retrieve a tdd', async () => {
-    //       const subscription: Subscription = desmohub.tddRetrieval$.subscribe(
-    //         (event) => {
-    //           expect(event.url).to.equal(myTDD);
-    //           //desmohub.stopListeners();
-    //           subscription.unsubscribe();
-    //         },
-    //       );
-    //       await desmohub.getTDD();
-    //     });
-    //   });
-    //
-    //   // disable
-    //   describe('Disable', function () {
-    //     it('should disable a tdd', async () => {
-    //       //desmohub.startListeners();
-    //       const subscription: Subscription = desmohub.tddDisabled$.subscribe(
-    //         (event) => {
-    //           expect(event.url).to.equal(myTDD);
-    //           //desmohub.stopListeners();
-    //           subscription.unsubscribe();
-    //         },
-    //       );
-    //       await desmohub.disableTDD();
-    //     });
-    //
-    //     // retrieve tdd after enable
-    //     it('should have a disabled tdd', async () => {
-    //       //desmohub.startListeners();
-    //       const subscription: Subscription = desmohub.tddRetrieval$.subscribe(
-    //         (event) => {
-    //           expect(event.disabled).to.be.true;
-    //           //desmohub.stopListeners();
-    //           subscription.unsubscribe();
-    //         },
-    //       );
-    //       await desmohub.getTDD();
-    //     });
-    //   });
-    //
-    //   //enable
-    //   describe('Enable', function () {
-    //     it('should enable a tdd', async () => {
-    //       const subscription: Subscription = desmohub.tddEnabled$.subscribe(
-    //         (event) => {
-    //           expect(event.url).to.equal(myTDD);
-    //           subscription.unsubscribe();
-    //         },
-    //       );
-    //       await desmohub.enableTDD();
-    //     });
-    //
-    //     // retrieve tdd after enable
-    //     it('should have an enabled tdd', async () => {
-    //       const subscription: Subscription = desmohub.tddRetrieval$.subscribe(
-    //         (event) => {
-    //           expect(event.disabled).to.be.false;
-    //           subscription.unsubscribe();
-    //         },
-    //       );
-    //       await desmohub.getTDD();
-    //     });
-    //   });
-    // });
+    (0, mocha_1.describe)('DesmoHub Tests', function () {
+        const walletSigner = new walletSignerInfura_module_1.WalletSignerInfura(infuraURL);
+        walletSigner.signInWithPrivateKey(privateKEY); //rembember to delete if you push to github
+        const desmohub = new __1.DesmoHub(walletSigner);
+        const myTDD = MYTDD;
+        //start all listeners
+        desmohub.startListeners();
+        (0, mocha_1.describe)('Retrieve', function () {
+            (0, mocha_1.it)('should retrieve a tdd', async () => {
+                const subscription = desmohub.tddRetrieval$.subscribe((event) => {
+                    (0, chai_1.expect)(event.url).to.equal(myTDD);
+                    //desmohub.stopListeners();
+                    subscription.unsubscribe();
+                });
+                await desmohub.getTDD();
+            });
+        });
+        // disable
+        (0, mocha_1.describe)('Disable', function () {
+            (0, mocha_1.it)('should disable a tdd', async () => {
+                //desmohub.startListeners();
+                const subscription = desmohub.tddDisabled$.subscribe((event) => {
+                    (0, chai_1.expect)(event.url).to.equal(myTDD);
+                    //desmohub.stopListeners();
+                    subscription.unsubscribe();
+                });
+                await desmohub.disableTDD();
+            });
+            // retrieve tdd after enable
+            (0, mocha_1.it)('should have a disabled tdd', async () => {
+                //desmohub.startListeners();
+                const subscription = desmohub.tddRetrieval$.subscribe((event) => {
+                    (0, chai_1.expect)(event.disabled).to.be.true;
+                    //desmohub.stopListeners();
+                    subscription.unsubscribe();
+                });
+                await desmohub.getTDD();
+            });
+        });
+        //enable
+        (0, mocha_1.describe)('Enable', function () {
+            (0, mocha_1.it)('should enable a tdd', async () => {
+                const subscription = desmohub.tddEnabled$.subscribe((event) => {
+                    (0, chai_1.expect)(event.url).to.equal(myTDD);
+                    subscription.unsubscribe();
+                });
+                await desmohub.enableTDD();
+            });
+            // retrieve tdd after enable
+            (0, mocha_1.it)('should have an enabled tdd', async () => {
+                const subscription = desmohub.tddRetrieval$.subscribe((event) => {
+                    (0, chai_1.expect)(event.disabled).to.be.false;
+                    subscription.unsubscribe();
+                });
+                await desmohub.getTDD();
+            });
+        });
+    });
     (0, mocha_1.describe)('DESMO COntract Tests', function () {
-        const walletSigner = new walletSignerInfura_module_1.WalletSignerInfura(rpcUrl);
+        const walletSigner = new walletSignerInfura_module_1.WalletSignerInfura(infuraURL);
         walletSigner.signInWithPrivateKey(privateKEY); //rembember to delete if you push to github
         const buyer = new __1.DesmoContract(walletSigner);
         (0, mocha_1.describe)('Query buy process', function () {

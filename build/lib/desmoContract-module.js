@@ -70,11 +70,9 @@ class DesmoContract extends desmoHub_module_1.DesmoHub {
     get wallet() {
         return this._walletSigner.wallet;
     }
-    // TODO retrieve TDD subset before trigger iExec
     async buyQuery(params) {
         try {
             this.getNewRequestID().then(async (resultRequestID) => {
-                console.log(resultRequestID);
                 this.fetchAppOrder().then(async (resultAppOrder) => {
                     this.fetchWorkerpoolOrder().then(async (resultWorkerpoolOrder) => {
                         // Check if we can use the address from the wallet.
