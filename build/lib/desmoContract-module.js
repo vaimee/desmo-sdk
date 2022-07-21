@@ -8,21 +8,19 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.DesmoContract = void 0;
 const ethers_1 = require("ethers");
 const iexec_1 = require("iexec");
+const desmoHub_module_1 = require("./desmoHub-module");
 const desmoContract_config_1 = require("../resources/desmoContract-config");
 const contractABI = desmoContract_config_1.deploymentOutput.output.abi;
-class DesmoContract {
-    // TODO make it generic for different wallets
+class DesmoContract extends desmoHub_module_1.DesmoHub {
     constructor(walletSigner) {
+        super(walletSigner);
         if (!walletSigner.isConnected) {
             throw new Error('Desmo Contract requires an already signed-in wallet!');
         }
         this._walletSigner = walletSigner;
         this.abiInterface = new ethers_1.ethers.utils.Interface(contractABI);
         this.contract = new ethers_1.ethers.Contract(desmoContract_config_1.contractAddress, contractABI, this.provider).connect(this.wallet);
-        //console.log(utils.getSignerFromPrivateKey(rpcUrl, privateKey));
-        console.log(walletSigner.wallet);
         try {
-            //this.iexec = new IExec({ ethProvider: utils.getSignerFromPrivateKey(rpcUrl, privateKey) });
             // @ts-ignore
             this.iexec = new iexec_1.IExec({ ethProvider: walletSigner.wallet });
         }
@@ -75,32 +73,37 @@ class DesmoContract {
     // TODO retrieve TDD subset before trigger iExec
     async buyQuery(params) {
         try {
-            this.fetchAppOrder().then(async (resultAppOrder) => {
-                this.fetchWorkerpoolOrder().then(async (resultWorkerpoolOrder) => {
-                    // Check if we can use the address from the wallet.
-                    const userAddress = await this.iexec.wallet.getAddress();
-                    const requestOrderToSign = await this.iexec.order.createRequestorder({
-                        app: this.appAddress,
-                        appmaxprice: resultAppOrder.appprice,
-                        workerpoolmaxprice: resultWorkerpoolOrder.workerpoolprice,
-                        requester: userAddress,
-                        volume: 1,
-                        params: params,
-                        category: this.category,
-                        callback: this.callback
+            this.getNewRequestID().then(async (resultRequestID) => {
+                console.log(resultRequestID);
+                this.fetchAppOrder().then(async (resultAppOrder) => {
+                    this.fetchWorkerpoolOrder().then(async (resultWorkerpoolOrder) => {
+                        // Check if we can use the address from the wallet.
+                        const userAddress = await this.iexec.wallet.getAddress();
+                        const requestOrderToSign = await this.iexec.order.createRequestorder({
+                            app: this.appAddress,
+                            appmaxprice: resultAppOrder.appprice,
+                            workerpoolmaxprice: resultWorkerpoolOrder.workerpoolprice,
+                            requester: userAddress,
+                            volume: 1,
+                            params: params + " | " + resultRequestID,
+                            category: this.category,
+                            callback: this.callback
+                        });
+                        const requestOrder = await this.iexec.order.signRequestorder(requestOrderToSign);
+                        const res = await this.iexec.order.matchOrders({
+                            apporder: resultAppOrder,
+                            requestorder: requestOrder,
+                            workerpoolorder: resultWorkerpoolOrder
+                        });
+                        this.dealId = res.dealid;
+                    }).catch(error => {
+                        console.log(error);
                     });
-                    const requestOrder = await this.iexec.order.signRequestorder(requestOrderToSign);
-                    const res = await this.iexec.order.matchOrders({
-                        apporder: resultAppOrder,
-                        requestorder: requestOrder,
-                        workerpoolorder: resultWorkerpoolOrder
-                    });
-                    this.dealId = res.dealid;
                 }).catch(error => {
                     console.log(error);
                 });
-            }).catch(error => {
-                console.log(error);
+            }).catch(e => {
+                console.log(e);
             });
         }
         catch (e) {

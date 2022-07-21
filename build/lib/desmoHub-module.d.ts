@@ -8,9 +8,9 @@ import { ethers } from 'ethers';
 import { Observable } from 'rxjs';
 import { WalletSigner } from './walletSigner-module';
 export declare class DesmoHub {
-    private _walletSigner;
-    private contract;
-    private abiInterface;
+    protected _walletSigner: WalletSigner;
+    protected contract: ethers.Contract;
+    protected abiInterface: ethers.utils.Interface;
     private TDD_CREATED;
     tddCreated$: Observable<ITDDCreatedEvent>;
     private TDD_DISABLED;

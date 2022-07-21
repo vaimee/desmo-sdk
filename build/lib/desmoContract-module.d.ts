@@ -5,10 +5,8 @@
  */
 import { ethers } from 'ethers';
 import { WalletSigner } from './walletSigner-module';
-export declare class DesmoContract {
-    private _walletSigner;
-    private contract;
-    private abiInterface;
+import { DesmoHub } from "./desmoHub-module";
+export declare class DesmoContract extends DesmoHub {
     private iexec;
     private readonly appAddress;
     private readonly callback;
