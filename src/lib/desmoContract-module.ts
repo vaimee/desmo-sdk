@@ -49,7 +49,7 @@ export class DesmoContract {
     ).connect(this.wallet);
 
     try {
-        this.iexec = new IExec({ ethProvider: utils.getSignerFromPrivateKey(rpcUrl, privateKey) });
+        this.iexec = new IExec({ ethProvider: walletSigner.ethProvider });
     }catch (e) {
         throw new Error('Desmo Contract could not connect with iExec');
     }
@@ -107,7 +107,7 @@ export class DesmoContract {
     return this._walletSigner.provider;
   }
 
-  public get wallet(): ethers.Wallet {
+  public get wallet(): ethers.Signer {
     return this._walletSigner.wallet;
   }
 

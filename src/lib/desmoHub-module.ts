@@ -74,7 +74,7 @@ export class DesmoHub {
     return this._walletSigner.provider;
   }
 
-  public get wallet(): ethers.Wallet {
+  public get wallet(): ethers.Signer {
     return this._walletSigner.wallet;
   }
 
@@ -86,8 +86,8 @@ export class DesmoHub {
     });
   }
 
-  public startListeners() {
-    const ownerAddress: string = this.wallet.address;
+  public async startListeners() {
+    const ownerAddress: string = await this.wallet.getAddress();
 
     const filterCreated = this.contract.filters.TDDCreated(ownerAddress);
     this.attachListenerForNewEvents(filterCreated, (event: any) => {
@@ -137,7 +137,7 @@ export class DesmoHub {
   }
 
   public async registerTDD(tddUrl: string): Promise<void> {
-    const ownerAddress: string = this.wallet.address;
+    const ownerAddress: string = await this.wallet.getAddress();
 
     const tx = await this.contract.registerTDD({
       url: tddUrl,
