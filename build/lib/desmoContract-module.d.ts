@@ -15,13 +15,13 @@ export declare class DesmoContract {
     private readonly category;
     private dealId;
     private taskId;
-    constructor(walletSigner: WalletSigner, rpcUrl: string, privateKey: string);
+    constructor(walletSigner: WalletSigner);
     private fetchAppOrder;
     private fetchWorkerpoolOrder;
     private retrieveTaskID;
     private retrieveCallbackAddress;
     get provider(): ethers.providers.Provider;
-    get wallet(): ethers.Wallet;
+    get wallet(): ethers.Signer;
     buyQuery(params: string): Promise<void>;
     getQueryResult(): Promise<any>;
     verifyCallbackAddress(callbackAddress: string): Promise<any>;

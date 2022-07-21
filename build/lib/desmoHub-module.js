@@ -44,8 +44,8 @@ class DesmoHub {
             this.provider.on(eventFilter, listener);
         });
     }
-    startListeners() {
-        const ownerAddress = this.wallet.address;
+    async startListeners() {
+        const ownerAddress = await this.wallet.getAddress();
         const filterCreated = this.contract.filters.TDDCreated(ownerAddress);
         this.attachListenerForNewEvents(filterCreated, (event) => {
             const parsedEvent = this.abiInterface.parseLog(event);
@@ -85,7 +85,7 @@ class DesmoHub {
         this.provider.removeAllListeners();
     }
     async registerTDD(tddUrl) {
-        const ownerAddress = this.wallet.address;
+        const ownerAddress = await this.wallet.getAddress();
         const tx = await this.contract.registerTDD({
             url: tddUrl,
             owner: ownerAddress,

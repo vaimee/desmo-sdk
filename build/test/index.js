@@ -15,7 +15,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const fs_extra_1 = __importDefault(require("fs-extra"));
 const __1 = require("..");
-const walletSigner_module_1 = require("./../lib/walletSigner-module");
+const walletSignerInfura_module_1 = require("../lib/walletSignerInfura-module");
 const mocha_1 = require("mocha");
 const sandboxRoot = './sandbox';
 const samplesRoot = './samples';
@@ -121,22 +121,20 @@ function resetSandbox() {
     //   });
     // });
     (0, mocha_1.describe)('DESMO COntract Tests', function () {
-        const walletSigner = new walletSigner_module_1.WalletSigner(rpcUrl);
+        const walletSigner = new walletSignerInfura_module_1.WalletSignerInfura(rpcUrl);
         walletSigner.signInWithPrivateKey(privateKEY); //rembember to delete if you push to github
-        const buyer = new __1.DesmoContract(walletSigner, rpcUrl, privateKEY);
-        // describe('Query buy process', function (){
-        //   it('should buy query', async () => {
-        //     await buyer.buyQuery("test");
-        //   });
-        //
-        //   it('should retrieve result from chain', async () => {
-        //     await buyer.buyQuery("test");
-        //
-        //     await buyer.getQueryResult().then(result => {
-        //       console.log(result);
-        //     });
-        //   });
-        // });
+        const buyer = new __1.DesmoContract(walletSigner);
+        (0, mocha_1.describe)('Query buy process', function () {
+            (0, mocha_1.it)('should buy query', async () => {
+                await buyer.buyQuery("test");
+            });
+            (0, mocha_1.it)('should retrieve result from chain', async () => {
+                await buyer.buyQuery("test");
+                await buyer.getQueryResult().then(result => {
+                    console.log(result);
+                });
+            });
+        });
         (0, mocha_1.describe)("Callback address verification process", function () {
             (0, mocha_1.it)('should verify callback address', () => {
                 buyer.buyQuery("test");

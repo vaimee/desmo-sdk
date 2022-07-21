@@ -14,6 +14,7 @@ import fs from 'fs-extra';
 import {delay, Subscription, timeInterval} from 'rxjs';
 import {DesmoContract, DesmoHub} from '..';
 import { WalletSigner } from './../lib/walletSigner-module';
+import {WalletSignerInfura} from "@/walletSignerInfura-module";
 import {describe, it} from "mocha";
 
 const sandboxRoot = './sandbox';
@@ -125,24 +126,24 @@ describe('Test Suite', function () {
   // });
 
   describe('DESMO COntract Tests', function (){
-    const walletSigner: WalletSigner = new WalletSigner(rpcUrl);
+    const walletSigner: WalletSignerInfura = new WalletSignerInfura(rpcUrl);
     walletSigner.signInWithPrivateKey(privateKEY); //rembember to delete if you push to github
 
-    const buyer: DesmoContract = new DesmoContract(walletSigner, rpcUrl, privateKEY);
+    const buyer: DesmoContract = new DesmoContract(walletSigner);
 
-    // describe('Query buy process', function (){
-    //   it('should buy query', async () => {
-    //     await buyer.buyQuery("test");
-    //   });
-    //
-    //   it('should retrieve result from chain', async () => {
-    //     await buyer.buyQuery("test");
-    //
-    //     await buyer.getQueryResult().then(result => {
-    //       console.log(result);
-    //     });
-    //   });
-    // });
+    describe('Query buy process', function (){
+      it('should buy query', async () => {
+        await buyer.buyQuery("test");
+      });
+
+      it('should retrieve result from chain', async () => {
+        await buyer.buyQuery("test");
+
+        await buyer.getQueryResult().then(result => {
+          console.log(result);
+        });
+      });
+    });
 
     describe("Callback address verification process", function (){
       it('should verify callback address', () => {
@@ -150,8 +151,6 @@ describe('Test Suite', function () {
         buyer.verifyCallbackAddress("");
       });
     });
-
-
   });
 
   after(function () {

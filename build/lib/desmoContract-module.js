@@ -12,22 +12,23 @@ const desmoContract_config_1 = require("../resources/desmoContract-config");
 const contractABI = desmoContract_config_1.deploymentOutput.output.abi;
 class DesmoContract {
     // TODO make it generic for different wallets
-    constructor(walletSigner, rpcUrl, privateKey) {
+    constructor(walletSigner) {
         if (!walletSigner.isConnected) {
             throw new Error('Desmo Contract requires an already signed-in wallet!');
         }
         this._walletSigner = walletSigner;
         this.abiInterface = new ethers_1.ethers.utils.Interface(contractABI);
         this.contract = new ethers_1.ethers.Contract(desmoContract_config_1.contractAddress, contractABI, this.provider).connect(this.wallet);
+        //console.log(utils.getSignerFromPrivateKey(rpcUrl, privateKey));
+        console.log(walletSigner.wallet);
         try {
-            this.iexec = new iexec_1.IExec({ ethProvider: iexec_1.utils.getSignerFromPrivateKey(rpcUrl, privateKey) });
-            //this.iexec = new IExec({ ethProvider: walletSigner.wallet._signTypedData() });
+            //this.iexec = new IExec({ ethProvider: utils.getSignerFromPrivateKey(rpcUrl, privateKey) });
+            // @ts-ignore
+            this.iexec = new iexec_1.IExec({ ethProvider: walletSigner.wallet });
         }
         catch (e) {
             throw new Error('Desmo Contract could not connect with iExec');
         }
-        console.log(iexec_1.utils.getSignerFromPrivateKey(rpcUrl, privateKey));
-        console.log(walletSigner.wallet);
         this.appAddress = "0x306cd828d80d2344e9572f54994d2abb1d9f5f39";
         this.callback = "0x5e79D4ddc6a6F5D80816ABA102767a15E6685b3e";
         this.category = 0;

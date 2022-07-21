@@ -23,9 +23,9 @@ export declare class DesmoHub {
     transactionSent$: Observable<ISentTransaction>;
     constructor(walletSigner: WalletSigner);
     get provider(): ethers.providers.Provider;
-    get wallet(): ethers.Wallet;
+    get wallet(): ethers.Signer;
     private attachListenerForNewEvents;
-    startListeners(): void;
+    startListeners(): Promise<void>;
     stopListeners(): void;
     registerTDD(tddUrl: string): Promise<void>;
     disableTDD(): Promise<void>;
