@@ -13,7 +13,6 @@ import { expect } from 'chai';
 import fs from 'fs-extra';
 import {delay, Subscription, timeInterval} from 'rxjs';
 import {DesmoContract, DesmoHub} from '..';
-import { WalletSigner } from './../lib/walletSigner-module';
 import {WalletSignerInfura} from "@/walletSignerInfura-module";
 import {describe, it} from "mocha";
 
@@ -50,7 +49,7 @@ describe('Test Suite', function () {
 
   describe('DesmoHub Tests', function () {
     const walletSigner: WalletSignerInfura = new WalletSignerInfura(infuraURL);
-    walletSigner.signInWithPrivateKey(privateKEY); //rembember to delete if you push to github
+    walletSigner.signInWithPrivateKey(privateKEY); //remember to delete if you push to github
 
     const desmohub: DesmoHub = new DesmoHub(walletSigner);
     const myTDD = MYTDD;
@@ -126,7 +125,7 @@ describe('Test Suite', function () {
 
   describe('DESMO COntract Tests', function (){
     const walletSigner: WalletSignerInfura = new WalletSignerInfura(infuraURL);
-    walletSigner.signInWithPrivateKey(privateKEY); //rembember to delete if you push to github
+    walletSigner.signInWithPrivateKey(privateKEY); //remember to delete if you push to github
 
     const buyer: DesmoContract = new DesmoContract(walletSigner);
 

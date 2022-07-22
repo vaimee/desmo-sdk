@@ -167,6 +167,7 @@ export class DesmoContract extends DesmoHub {
       });
   }
 
+  // TODO access a different source with the address
   public async verifyCallbackAddress(callbackAddress: string): Promise<any> {
       this.retrieveTaskID().then(async (taskID) => {
           try {
