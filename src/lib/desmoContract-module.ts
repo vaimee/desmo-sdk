@@ -4,11 +4,6 @@
  * exporting your lib modules from the ./src/index.ts entrypoint.
  */
 
-import { ethers } from 'ethers';
-import { WalletSigner } from './walletSigner-module';
-import { IExec, utils,  } from 'iexec';
-import {DesmoHub} from "./desmoHub-module";
-
 import {
   contractAddress,
   deploymentOutput,
@@ -18,6 +13,13 @@ import {
     AppOrder,
     WorkerpoolOrder
 } from '../types';
+
+import { ethers } from 'ethers';
+import { WalletSigner } from './walletSigner-module';
+import { IExec, utils,  } from 'iexec';
+import {DesmoHub} from "./desmoHub-module";
+import {Subscription} from "rxjs";
+import {expect} from "chai";
 
 
 
@@ -55,8 +57,9 @@ export class DesmoContract extends DesmoHub {
         throw new Error('Desmo Contract could not connect with iExec');
     }
 
-    this.appAddress = "0x306cd828d80d2344e9572f54994d2abb1d9f5f39";
-    this.callback = "0x5e79D4ddc6a6F5D80816ABA102767a15E6685b3e";
+    this.appAddress = "0xCA568A116c8003f5A8993759080F6f3fAD53E6Cf";
+    this.callback = "0x0f04bC57374f9F8c705636142CEFf953e33a7249";
+
     this.category = 0;
     this.dealId = "";
     this.taskId = "";
@@ -77,7 +80,7 @@ export class DesmoContract extends DesmoHub {
       }
   }
 
-  private async fetchWorkerpoolOrder(): Promise<WorkerpoolOrder> {
+  private async fetchWorkerPoolOrder(): Promise<WorkerpoolOrder> {
       const {
           orders: workerpoolOrders
       } = await this.iexec.orderbook.fetchWorkerpoolOrderbook({
@@ -100,7 +103,7 @@ export class DesmoContract extends DesmoHub {
 
   private async retrieveCallbackAddress(): Promise<string> {
       const deal = await this.iexec.deal.show(this.dealId);
-      console.log(deal);
+      //console.log(deal);
       return deal.callback;
   }
 
@@ -112,54 +115,58 @@ export class DesmoContract extends DesmoHub {
     return this._walletSigner.wallet;
   }
 
-  public async buyQuery(params: string): Promise<void> {
-    try{
-        this.getNewRequestID().then(async resultRequestID => {
-            this.fetchAppOrder().then(async resultAppOrder => {
-                this.fetchWorkerpoolOrder().then( async resultWorkerpoolOrder => {
+  public async buyQuery(query: string): Promise<void> {
+      const subscription: Subscription = this.requestID$.subscribe(
+          (event) => {
+              try {
+                  this.fetchAppOrder().then(async resultAppOrder => {
+                      this.fetchWorkerPoolOrder().then( async resultWorkerPoolOrder => {
 
-                    // Check if we can use the address from the wallet.
-                    const userAddress = await this.iexec.wallet.getAddress();
+                          // Check if we can use the address from the wallet.
+                          const userAddress = await this.iexec.wallet.getAddress();
 
-                    const requestOrderToSign = await this.iexec.order.createRequestorder({
-                        app: this.appAddress,
-                        appmaxprice: resultAppOrder.appprice,
-                        workerpoolmaxprice: resultWorkerpoolOrder.workerpoolprice,
-                        requester: userAddress,
-                        volume: 1,
-                        params: params + " | " + resultRequestID,
-                        category: this.category,
-                        callback: this.callback
-                    });
+                          const requestOrderToSign = await this.iexec.order.createRequestorder({
+                              app: this.appAddress,
+                              appmaxprice: resultAppOrder.appprice,
+                              workerpoolmaxprice: resultWorkerPoolOrder.workerpoolprice,
+                              requester: userAddress,
+                              volume: 1,
+                              params:  event.requestID  + " | " + query,
+                              category: this.category,
+                              callback: this.callback
+                          });
 
-                    const requestOrder = await this.iexec.order.signRequestorder(requestOrderToSign);
+                          const requestOrder = await this.iexec.order.signRequestorder(requestOrderToSign);
 
-                    const res = await this.iexec.order.matchOrders({
-                        apporder: resultAppOrder,
-                        requestorder: requestOrder,
-                        workerpoolorder: resultWorkerpoolOrder
-                    });
-                    this.dealId = res.dealid;
-                }).catch(error => {
-                    console.log(error)
-                });
-            }).catch(error => {
-                console.log(error);
-            });
-        }).catch(e => {
-            console.log(e);
-        });
-    }
-    catch (e) {
-        console.log(e);
-    }
+                          const res = await this.iexec.order.matchOrders({
+                              apporder: resultAppOrder,
+                              requestorder: requestOrder,
+                              workerpoolorder: resultWorkerPoolOrder
+                          });
+                          this.dealId = res.dealid;
+                      }).catch(error => {
+                          console.log(error)
+                      });
+                  }).catch(error => {
+                      console.log(error);
+                  });
+              }
+              catch (e) {
+                  console.log(e);
+              }
+              subscription.unsubscribe();
+          },
+      );
+
   }
 
   // TODO decode the result
   public async getQueryResult(): Promise<any> {
       this.retrieveTaskID().then( async (taskID) => {
           try {
-              return await this.iexec.task.show(taskID);
+              const result: string = await this.iexec.task.show(taskID);
+              console.log(`Query result: ${result}`);
+              return result
           } catch (e) {
               console.log(e);
               throw Error(`Error to retrieve result: ${e}`);

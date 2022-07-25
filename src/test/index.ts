@@ -18,9 +18,9 @@ import {describe, it} from "mocha";
 
 const sandboxRoot = './sandbox';
 const samplesRoot = './samples';
-const infuraURL = ""; // Replace with your own Infura URL
+const infuraURL = "https://viviani.iex.ec"; // Replace with your own Infura URL
 const privateKEY = ""; // Replace with your own private key
-const MYTDD = ''; // Replace with your own TDD for tests
+const MYTDD = "https://www.desmo.vaimee.it/2019/wot/tdd/v1/TDD:001" // Replace with your own TDD for tests
 
 /**
  * Clone any files in a "./samples" folder into
@@ -45,6 +45,8 @@ describe('Test Suite', function () {
     resetSandbox();
   });
 
+  beforeEach(done => setTimeout(done, 20000));
+
   /***TESTS FOR THE DESMO-HUB***/
 
   describe('DesmoHub Tests', function () {
@@ -56,6 +58,8 @@ describe('Test Suite', function () {
 
     //start all listeners
     desmohub.startListeners();
+
+    desmohub.registerTDD("https://www.desmo.vaimee.it/2019/wot/tdd/v1/TDD:001");
 
     describe('Retrieve', function () {
       it('should retrieve a tdd', async () => {
@@ -128,6 +132,7 @@ describe('Test Suite', function () {
     walletSigner.signInWithPrivateKey(privateKEY); //remember to delete if you push to github
 
     const buyer: DesmoContract = new DesmoContract(walletSigner);
+    buyer.startListeners();
 
     describe('Query buy process', function (){
       it('should buy query', async () => {
@@ -135,18 +140,18 @@ describe('Test Suite', function () {
       });
 
       it('should retrieve result from chain', async () => {
-        await buyer.buyQuery("test");
-
         await buyer.getQueryResult().then(result => {
           console.log(result);
         });
       });
+
+
     });
 
     describe("Callback address verification process", function (){
-      it('should verify callback address', () => {
-        buyer.buyQuery("test");
-        buyer.verifyCallbackAddress("");
+      it('should verify callback address', async () => {
+        await buyer.buyQuery("test");
+        await buyer.verifyCallbackAddress("0x0f04bC57374f9F8c705636142CEFf953e33a7249");
       });
     });
   });
