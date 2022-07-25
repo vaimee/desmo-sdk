@@ -12,7 +12,7 @@
 import { expect } from 'chai';
 import fs from 'fs-extra';
 import {delay, Subscription, timeInterval} from 'rxjs';
-import {DesmoContract, DesmoHub} from '..';
+import {DesmoContract, DesmoHub, ITDDDisabledEvent, ITDDEnabledEvent, ITDDRetrievalEvent} from '..';
 import {WalletSignerInfura} from "@/walletSignerInfura-module";
 import {describe, it} from "mocha";
 
@@ -49,7 +49,7 @@ describe('Test Suite', function () {
 
   /***TESTS FOR THE DESMO-HUB***/
 
-  describe('DesmoHub Tests', function () {
+  describe('DesmoHub Tests', async function () {
     const walletSigner: WalletSignerInfura = new WalletSignerInfura(infuraURL);
     walletSigner.signInWithPrivateKey(privateKEY); //remember to delete if you push to github
 
@@ -57,14 +57,14 @@ describe('Test Suite', function () {
     const myTDD = MYTDD;
 
     //start all listeners
-    desmohub.startListeners();
+    await desmohub.startListeners();
 
-    desmohub.registerTDD("https://www.desmo.vaimee.it/2019/wot/tdd/v1/TDD:001");
+    await desmohub.registerTDD("https://www.desmo.vaimee.it/2019/wot/tdd/v1/TDD:001");
 
     describe('Retrieve', function () {
       it('should retrieve a tdd', async () => {
         const subscription: Subscription = desmohub.tddRetrieval$.subscribe(
-          (event) => {
+          (event: ITDDRetrievalEvent) => {
             expect(event.url).to.equal(myTDD);
             //desmohub.stopListeners();
             subscription.unsubscribe();
@@ -79,7 +79,7 @@ describe('Test Suite', function () {
       it('should disable a tdd', async () => {
         //desmohub.startListeners();
         const subscription: Subscription = desmohub.tddDisabled$.subscribe(
-          (event) => {
+          (event: ITDDDisabledEvent) => {
             expect(event.url).to.equal(myTDD);
             //desmohub.stopListeners();
             subscription.unsubscribe();
@@ -92,7 +92,7 @@ describe('Test Suite', function () {
       it('should have a disabled tdd', async () => {
         //desmohub.startListeners();
         const subscription: Subscription = desmohub.tddRetrieval$.subscribe(
-          (event) => {
+          (event: ITDDRetrievalEvent) => {
             expect(event.disabled).to.be.true;
             //desmohub.stopListeners();
             subscription.unsubscribe();
@@ -106,7 +106,7 @@ describe('Test Suite', function () {
     describe('Enable', function () {
       it('should enable a tdd', async () => {
         const subscription: Subscription = desmohub.tddEnabled$.subscribe(
-          (event) => {
+          (event: ITDDEnabledEvent) => {
             expect(event.url).to.equal(myTDD);
             subscription.unsubscribe();
           },
@@ -117,7 +117,7 @@ describe('Test Suite', function () {
       // retrieve tdd after enable
       it('should have an enabled tdd', async () => {
         const subscription: Subscription = desmohub.tddRetrieval$.subscribe(
-          (event) => {
+          (event: ITDDRetrievalEvent) => {
             expect(event.disabled).to.be.false;
             subscription.unsubscribe();
           },
@@ -127,12 +127,12 @@ describe('Test Suite', function () {
     });
   });
 
-  describe('DESMO COntract Tests', function (){
+  describe('DESMO Contract Tests', async function (){
     const walletSigner: WalletSignerInfura = new WalletSignerInfura(infuraURL);
     walletSigner.signInWithPrivateKey(privateKEY); //remember to delete if you push to github
 
     const buyer: DesmoContract = new DesmoContract(walletSigner);
-    buyer.startListeners();
+    await buyer.startListeners();
 
     describe('Query buy process', function (){
       it('should buy query', async () => {

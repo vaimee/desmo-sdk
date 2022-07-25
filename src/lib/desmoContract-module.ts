@@ -11,6 +11,7 @@ import {
 
 import {
     AppOrder,
+    IRequestIDEvent,
     WorkerpoolOrder
 } from '../types';
 
@@ -117,7 +118,7 @@ export class DesmoContract extends DesmoHub {
 
   public async buyQuery(query: string): Promise<void> {
       const subscription: Subscription = this.requestID$.subscribe(
-          (event) => {
+          (event: IRequestIDEvent) => {
               try {
                   this.fetchAppOrder().then(async resultAppOrder => {
                       this.fetchWorkerPoolOrder().then( async resultWorkerPoolOrder => {
@@ -157,6 +158,7 @@ export class DesmoContract extends DesmoHub {
               subscription.unsubscribe();
           },
       );
+      await this.getNewRequestID();
 
   }
 
