@@ -11,16 +11,22 @@
 
 import { expect } from 'chai';
 import fs from 'fs-extra';
-import {delay, Subscription, timeInterval} from 'rxjs';
-import {DesmoContract, DesmoHub, ITDDDisabledEvent, ITDDEnabledEvent, ITDDRetrievalEvent} from '..';
-import {WalletSignerInfura} from "@/walletSignerInfura-module";
-import {describe, it} from "mocha";
-
+import { take } from 'rxjs';
+import {
+  DesmoContract,
+  DesmoHub,
+  IRequestIDEvent,
+  ITDDDisabledEvent,
+  ITDDEnabledEvent,
+  ITDDRetrievalEvent,
+} from '..';
+import { WalletSignerInfura } from '@/walletSignerInfura-module';
+import 'mocha';
 const sandboxRoot = './sandbox';
 const samplesRoot = './samples';
-const infuraURL = "https://viviani.iex.ec"; // Replace with your own Infura URL
-const privateKEY = ""; // Replace with your own private key
-const MYTDD = "https://www.desmo.vaimee.it/2019/wot/tdd/v1/TDD:001" // Replace with your own TDD for tests
+const infuraURL = 'https://viviani.iex.ec'; // Replace with your own Infura URL
+const privateKEY = ''; // Replace with your own private key
+const MYTDD = 'https://www.desmo.vaimee.it/2019/wot/tdd/v1/TDD:001'; // Replace with your own TDD for tests
 
 /**
  * Clone any files in a "./samples" folder into
@@ -45,31 +51,40 @@ describe('Test Suite', function () {
     resetSandbox();
   });
 
-  beforeEach(done => setTimeout(done, 20000));
+  beforeEach((done) => setTimeout(done, 20000));
 
   /***TESTS FOR THE DESMO-HUB***/
 
-  describe('DesmoHub Tests', async function () {
+  describe('DesmoHub Tests', function () {
     const walletSigner: WalletSignerInfura = new WalletSignerInfura(infuraURL);
     walletSigner.signInWithPrivateKey(privateKEY); //remember to delete if you push to github
 
     const desmohub: DesmoHub = new DesmoHub(walletSigner);
-    const myTDD = MYTDD;
+    const myTDD: string = MYTDD;
 
-    //start all listeners
-    await desmohub.startListeners();
+    /* We have to put all async initialisation code
+     * inside a 'before' block because 'mocha' doesn't
+     * support an async function when it is the argument
+     * of a 'describe' block:
+     */
+    before(async function () {
+      //start all listeners
+      await desmohub.startListeners();
 
-    await desmohub.registerTDD("https://www.desmo.vaimee.it/2019/wot/tdd/v1/TDD:001");
+      // await desmohub.registerTDD(myTDD);
+    });
+
+    after(function () {
+      desmohub.stopListeners();
+    });
 
     describe('Retrieve', function () {
       it('should retrieve a tdd', async () => {
-        const subscription: Subscription = desmohub.tddRetrieval$.subscribe(
-          (event: ITDDRetrievalEvent) => {
+        desmohub.tddRetrieval$
+          .pipe(take(1))
+          .subscribe((event: ITDDRetrievalEvent) => {
             expect(event.url).to.equal(myTDD);
-            //desmohub.stopListeners();
-            subscription.unsubscribe();
-          },
-        );
+          });
         await desmohub.getTDD();
       });
     });
@@ -77,27 +92,21 @@ describe('Test Suite', function () {
     // disable
     describe('Disable', function () {
       it('should disable a tdd', async () => {
-        //desmohub.startListeners();
-        const subscription: Subscription = desmohub.tddDisabled$.subscribe(
-          (event: ITDDDisabledEvent) => {
+        desmohub.tddDisabled$
+          .pipe(take(1))
+          .subscribe((event: ITDDDisabledEvent) => {
             expect(event.url).to.equal(myTDD);
-            //desmohub.stopListeners();
-            subscription.unsubscribe();
-          },
-        );
+          });
         await desmohub.disableTDD();
       });
 
       // retrieve tdd after enable
       it('should have a disabled tdd', async () => {
-        //desmohub.startListeners();
-        const subscription: Subscription = desmohub.tddRetrieval$.subscribe(
-          (event: ITDDRetrievalEvent) => {
+        desmohub.tddRetrieval$
+          .pipe(take(1))
+          .subscribe((event: ITDDRetrievalEvent) => {
             expect(event.disabled).to.be.true;
-            //desmohub.stopListeners();
-            subscription.unsubscribe();
-          },
-        );
+          });
         await desmohub.getTDD();
       });
     });
@@ -105,53 +114,73 @@ describe('Test Suite', function () {
     //enable
     describe('Enable', function () {
       it('should enable a tdd', async () => {
-        const subscription: Subscription = desmohub.tddEnabled$.subscribe(
-          (event: ITDDEnabledEvent) => {
+        desmohub.tddEnabled$
+          .pipe(take(1))
+          .subscribe((event: ITDDEnabledEvent) => {
             expect(event.url).to.equal(myTDD);
-            subscription.unsubscribe();
-          },
-        );
+          });
         await desmohub.enableTDD();
       });
 
       // retrieve tdd after enable
       it('should have an enabled tdd', async () => {
-        const subscription: Subscription = desmohub.tddRetrieval$.subscribe(
-          (event: ITDDRetrievalEvent) => {
+        desmohub.tddRetrieval$
+          .pipe(take(1))
+          .subscribe((event: ITDDRetrievalEvent) => {
             expect(event.disabled).to.be.false;
-            subscription.unsubscribe();
-          },
-        );
+          });
         await desmohub.getTDD();
       });
     });
   });
 
-  describe('DESMO Contract Tests', async function (){
+  describe('DESMO Contract Tests', function () {
     const walletSigner: WalletSignerInfura = new WalletSignerInfura(infuraURL);
     walletSigner.signInWithPrivateKey(privateKEY); //remember to delete if you push to github
 
+    const desmohub: DesmoHub = new DesmoHub(walletSigner);
     const buyer: DesmoContract = new DesmoContract(walletSigner);
-    await buyer.startListeners();
 
-    describe('Query buy process', function (){
+    /* We have to put all async initialisation code
+     * inside a 'before' block because 'mocha' doesn't
+     * support an async function when it is the argument
+     * of a 'describe' block:
+     */
+    before(async function () {
+      await desmohub.startListeners();
+    });
+
+    after(function () {
+      desmohub.stopListeners();
+    });
+
+    describe('Query buy process', function () {
       it('should buy query', async () => {
-        await buyer.buyQuery("test");
+        desmohub.requestID$
+          .pipe(take(1))
+          .subscribe(async (event: IRequestIDEvent) => {
+            await buyer.buyQuery(event.requestID.toString(), 'test');
+          });
+        await desmohub.getNewRequestID();
       });
 
       it('should retrieve result from chain', async () => {
-        await buyer.getQueryResult().then(result => {
-          console.log(result);
-        });
+        const result = await buyer.getQueryResult();
+        console.log(result);
       });
-
-
     });
 
-    describe("Callback address verification process", function (){
+    describe('Callback address verification process', function () {
       it('should verify callback address', async () => {
-        await buyer.buyQuery("test");
-        await buyer.verifyCallbackAddress("0x0f04bC57374f9F8c705636142CEFf953e33a7249");
+        desmohub.requestID$
+          .pipe(take(1))
+          .subscribe(async (event: IRequestIDEvent) => {
+            await buyer.buyQuery(event.requestID.toString(), 'test');
+            await buyer.verifyCallbackAddress(
+              '0x0f04bC57374f9F8c705636142CEFf953e33a7249',
+            );
+          });
+        await desmohub.getNewRequestID();
       });
     });
   });

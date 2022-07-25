@@ -22,9 +22,9 @@ import { WalletSigner } from './walletSigner-module';
 const contractABI = deploymentOutput.output.abi;
 
 export class DesmoHub {
-  protected _walletSigner: WalletSigner;
-  protected contract: ethers.Contract;
-  protected abiInterface: ethers.utils.Interface;
+  private _walletSigner: WalletSigner;
+  private contract: ethers.Contract;
+  private abiInterface: ethers.utils.Interface;
 
   private TDD_CREATED: Subject<ITDDCreatedEvent>;
   tddCreated$: Observable<ITDDCreatedEvent>;
@@ -55,6 +55,7 @@ export class DesmoHub {
     this._walletSigner = walletSigner;
 
     this.abiInterface = new ethers.utils.Interface(contractABI);
+
     this.contract = new ethers.Contract(
       contractAddress,
       contractABI,
