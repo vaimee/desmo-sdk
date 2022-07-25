@@ -1,4 +1,4 @@
-export const contractAddress = '0xdbb488DC105dC71DfA631ef554EC98d833c59350';
+export const contractAddress = '0xa60fF431d48672Da4f1aeD8620aD0132f61C9fAD';
 
 export const deploymentOutput = {
   compiler: {
@@ -45,6 +45,12 @@ export const deploymentOutput = {
             internalType: 'bool',
             name: 'disabled',
             type: 'bool',
+          },
+          {
+            indexed: false,
+            internalType: 'uint256',
+            name: 'score',
+            type: 'uint256',
           },
         ],
         name: 'TDDCreated',
@@ -108,6 +114,12 @@ export const deploymentOutput = {
             internalType: 'bool',
             name: 'disabled',
             type: 'bool',
+          },
+          {
+            indexed: false,
+            internalType: 'uint256',
+            name: 'score',
+            type: 'uint256',
           },
         ],
         name: 'TDDRetrieval',
@@ -285,10 +297,10 @@ export const deploymentOutput = {
   sources: {
     'contracts/DesmoLdHub.sol': {
       keccak256:
-        '0x01d2d2b18e1f311a34e502f6cdfe629aec2fb5555bff6de99f3ec9350d776dc0',
+        '0x90bbbb807716c5f53e0479547f79855e5aac421830aa6b0c6adc7cb7c8dc717d',
       urls: [
-        'bzz-raw://659e437153cd825aecd330f680987410b51366844412c7eca241835ad481e182',
-        'dweb:/ipfs/QmbNMTEGAKoBhWK2b4cXAuVV3dmCXHPPvdAnKcJ4hxhsgq',
+        'bzz-raw://41c5dd96f4a481b30dac1670008bac2b9771c86394e46e62cc5ad1df7ce0b256',
+        'dweb:/ipfs/QmWs6FtvJVJoRUPSTLuGW5PUrDY3ayggs7RJTKUpgPdV4F',
       ],
     },
     'hardhat/console.sol': {
