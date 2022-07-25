@@ -1,4 +1,4 @@
-export const contractAddress = "0x7F1402C8b7220d4439335aCe702472cc65e7dDf1";
+export const contractAddress = '0xdbb488DC105dC71DfA631ef554EC98d833c59350';
 
 export const deploymentOutput = {
   compiler: {
@@ -17,6 +17,19 @@ export const deploymentOutput = {
         inputs: [
           {
             indexed: true,
+            internalType: 'uint256',
+            name: 'requestID',
+            type: 'uint256',
+          },
+        ],
+        name: 'RequestID',
+        type: 'event',
+      },
+      {
+        anonymous: false,
+        inputs: [
+          {
+            indexed: true,
             internalType: 'address',
             name: 'key',
             type: 'address',
@@ -26,6 +39,12 @@ export const deploymentOutput = {
             internalType: 'string',
             name: 'url',
             type: 'string',
+          },
+          {
+            indexed: false,
+            internalType: 'bool',
+            name: 'disabled',
+            type: 'bool',
           },
         ],
         name: 'TDDCreated',
@@ -95,6 +114,19 @@ export const deploymentOutput = {
         type: 'event',
       },
       {
+        anonymous: false,
+        inputs: [
+          {
+            indexed: true,
+            internalType: 'string[]',
+            name: 'TDDSubset',
+            type: 'string[]',
+          },
+        ],
+        name: 'TDDSubset',
+        type: 'event',
+      },
+      {
         inputs: [],
         name: 'disableTDD',
         outputs: [],
@@ -142,6 +174,11 @@ export const deploymentOutput = {
                 name: 'disabled',
                 type: 'bool',
               },
+              {
+                internalType: 'uint256',
+                name: 'score',
+                type: 'uint256',
+              },
             ],
             internalType: 'struct DesmoLDHub.TDD',
             name: '',
@@ -167,7 +204,7 @@ export const deploymentOutput = {
             type: 'string[]',
           },
         ],
-        stateMutability: 'view',
+        stateMutability: 'nonpayable',
         type: 'function',
       },
       {
@@ -188,6 +225,11 @@ export const deploymentOutput = {
                 internalType: 'bool',
                 name: 'disabled',
                 type: 'bool',
+              },
+              {
+                internalType: 'uint256',
+                name: 'score',
+                type: 'uint256',
               },
             ],
             internalType: 'struct DesmoLDHub.TDD',
@@ -210,7 +252,7 @@ export const deploymentOutput = {
         ],
         name: 'viewSelected',
         outputs: [],
-        stateMutability: 'view',
+        stateMutability: 'nonpayable',
         type: 'function',
       },
     ],
@@ -227,7 +269,7 @@ export const deploymentOutput = {
   },
   settings: {
     compilationTarget: {
-      'github/vaimee/desmo-contracts/contracts/DesmoLdHub.sol': 'DesmoLDHub',
+      'contracts/DesmoLdHub.sol': 'DesmoLDHub',
     },
     evmVersion: 'london',
     libraries: {},
@@ -241,12 +283,12 @@ export const deploymentOutput = {
     remappings: [],
   },
   sources: {
-    'github/vaimee/desmo-contracts/contracts/DesmoLdHub.sol': {
+    'contracts/DesmoLdHub.sol': {
       keccak256:
-        '0xcfcf6d06f33d3c5d849515c6bc77ae3d8d22981a6b7df5adefa3daa9fec5bcaa',
+        '0x01d2d2b18e1f311a34e502f6cdfe629aec2fb5555bff6de99f3ec9350d776dc0',
       urls: [
-        'bzz-raw://3314124ac1b87fd8c28333aac1c1834b12cd4d600a5394643e3c3ddccda101db',
-        'dweb:/ipfs/QmZCzotBtuSjGvgTULQdwS3wSmxPJLDmvZckxms79Sthet',
+        'bzz-raw://659e437153cd825aecd330f680987410b51366844412c7eca241835ad481e182',
+        'dweb:/ipfs/QmbNMTEGAKoBhWK2b4cXAuVV3dmCXHPPvdAnKcJ4hxhsgq',
       ],
     },
     'hardhat/console.sol': {
