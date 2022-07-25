@@ -10,6 +10,7 @@ export interface ITDDCreatedEvent {
   key: string;
   url: string;
   disabled: boolean;
+  score: number;
 }
 
 export interface ITDDDisabledEvent {
@@ -26,6 +27,7 @@ export interface ITDDRetrievalEvent {
   key: string;
   url: string;
   disabled: boolean;
+  score: number;
 }
 
 export interface IRequestIDEvent {

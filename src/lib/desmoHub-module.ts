@@ -111,6 +111,7 @@ export class DesmoHub {
         key: parsedEvent.args.key,
         url: parsedEvent.args.url,
         disabled: parsedEvent.args.disabled,
+        score: parsedEvent.args.score,
       });
     });
 
@@ -142,6 +143,7 @@ export class DesmoHub {
         key: parsedEvent.args.key,
         url: parsedEvent.args.url,
         disabled: parsedEvent.args.disabled,
+        score: parsedEvent.args.score,
       });
     });
 
