@@ -11,6 +11,8 @@ import {
   ITDDRetrievalEvent,
   ISentTransaction,
   OperationType,
+  IRequestIDEvent,
+  ITDDSubsetEvent,
 } from '../types';
 import { ethers } from 'ethers';
 import { contractAddress, deploymentOutput } from '../resources/desmoHub-config';
@@ -35,6 +37,12 @@ export class DesmoHub {
 
   private TDD_RETRIEVAL: Subject<ITDDRetrievalEvent>;
   tddRetrieval$: Observable<ITDDRetrievalEvent>;
+
+  private REQUEST_ID: Subject<IRequestIDEvent>;
+  requestID$: Observable<IRequestIDEvent>;
+
+  private TDD_SUBSET: Subject<ITDDSubsetEvent>;
+  tddSubset$: Observable<ITDDSubsetEvent>;
 
   private TRANSACTION_SENT: Subject<ISentTransaction>;
   transactionSent$: Observable<ISentTransaction>;
@@ -65,6 +73,12 @@ export class DesmoHub {
 
     this.TDD_RETRIEVAL = new Subject<ITDDRetrievalEvent>();
     this.tddRetrieval$ = this.TDD_RETRIEVAL.asObservable();
+
+    this.REQUEST_ID = new Subject<IRequestIDEvent>();
+    this.requestID$ = this.REQUEST_ID.asObservable();
+
+    this.TDD_SUBSET = new Subject<ITDDSubsetEvent>();
+    this.tddSubset$ = this.TDD_SUBSET.asObservable();
 
     this.TRANSACTION_SENT = new Subject<ISentTransaction>();
     this.transactionSent$ = this.TRANSACTION_SENT.asObservable();
@@ -128,6 +142,25 @@ export class DesmoHub {
         key: parsedEvent.args.key,
         url: parsedEvent.args.url,
         disabled: parsedEvent.args.disabled,
+      });
+    });
+
+    const filterRequestID = this.contract.filters.RequestID();
+    this.attachListenerForNewEvents(filterRequestID, (event: any) => {
+      const parsedEvent = this.abiInterface.parseLog(event);
+
+      this.REQUEST_ID.next({
+        requestID: parsedEvent.args.requestID,
+      });
+    });
+
+    
+    const filterTDDSubset = this.contract.filters.TDDSubset();
+    this.attachListenerForNewEvents(filterTDDSubset, (event: any) => {
+      const parsedEvent = this.abiInterface.parseLog(event);
+
+      this.TDD_SUBSET.next({
+        subset: parsedEvent.args.TDDSubset,
       });
     });
   }

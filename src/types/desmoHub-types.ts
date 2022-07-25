@@ -28,6 +28,14 @@ export interface ITDDRetrievalEvent {
   disabled: boolean;
 }
 
+export interface IRequestIDEvent {
+  requestID: number;
+}
+
+export interface ITDDSubsetEvent {
+  subset: string[];
+}
+
 export enum OperationType {
   registerTDD = 0,
   disableTDD = 1,
