@@ -143,6 +143,7 @@ export class DesmoHub {
       url: tddUrl,
       owner: ownerAddress,
       disabled: false,
+      score: 0
     });
     this.TRANSACTION_SENT.next({
       invokedOperation: OperationType.registerTDD,
