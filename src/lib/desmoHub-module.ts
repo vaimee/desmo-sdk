@@ -22,6 +22,7 @@ import { WalletSigner } from './walletSigner-module';
 const contractABI = deploymentOutput.output.abi;
 
 export class DesmoHub {
+  private isListening: boolean;
   private _walletSigner: WalletSigner;
   private contract: ethers.Contract;
   private abiInterface: ethers.utils.Interface;
@@ -51,6 +52,8 @@ export class DesmoHub {
     if (!walletSigner.isConnected) {
       throw new Error('DesmoHub requires an already signed-in wallet!');
     }
+
+    this.isListening = false;
 
     this._walletSigner = walletSigner;
 
@@ -102,6 +105,11 @@ export class DesmoHub {
   }
 
   public async startListeners() {
+    if (this.isListening) {
+      return;
+    }
+    this.isListening = true;
+
     const ownerAddress: string = await this.wallet.getAddress();
 
     const filterCreated = this.contract.filters.TDDCreated(ownerAddress);
@@ -169,6 +177,11 @@ export class DesmoHub {
   }
 
   public stopListeners() {
+    if (!this.isListening) {
+      return;
+    }
+    this.isListening = false;
+
     this.provider.removeAllListeners();
   }
 
