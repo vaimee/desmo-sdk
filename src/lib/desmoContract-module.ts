@@ -53,7 +53,7 @@ export class DesmoContract {
       throw new Error('Desmo Contract could not connect with iExec');
     }
 
-    this.appAddress = '0xCA568A116c8003f5A8993759080F6f3fAD53E6Cf';
+    this.appAddress = '0x8cdb54410560841560a151ab27ffa1689c5ad117';
     this.callback = '0x0f04bC57374f9F8c705636142CEFf953e33a7249';
 
     this.category = 0;
@@ -114,8 +114,7 @@ export class DesmoContract {
     try {
       const resultAppOrder: AppOrder = await this.fetchAppOrder();
 
-      const resultWorkerPoolOrder: WorkerpoolOrder =
-        await this.fetchWorkerPoolOrder();
+      const resultWorkerPoolOrder: WorkerpoolOrder = await this.fetchWorkerPoolOrder();
 
       // Check if we can use the address from the wallet.
       const userAddress = await this.iexec.wallet.getAddress();
@@ -140,6 +139,7 @@ export class DesmoContract {
         requestorder: requestOrder,
         workerpoolorder: resultWorkerPoolOrder,
       });
+
       this.dealId = res.dealid;
     } catch (err) {
       console.log(err);
@@ -161,7 +161,6 @@ export class DesmoContract {
 
   // TODO access a different source with the address
   public async verifyCallbackAddress(callbackAddress: string): Promise<any> {
-    const taskID: string = await this.retrieveTaskID();
     try {
       const registeredAddress: string = await this.retrieveCallbackAddress();
       console.log('Address: ');
