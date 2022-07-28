@@ -13,6 +13,7 @@ import {
   OperationType,
   IRequestIDEvent,
   ITDDSubsetEvent,
+  ITDD,
 } from '../types';
 import { ethers } from 'ethers';
 import { contractAddress, deploymentOutput } from '../resources/desmoHub-config';
@@ -192,7 +193,7 @@ export class DesmoHub {
       owner: ownerAddress,
       disabled: disabled,
       score: score
-    });
+    } as ITDD);
     this.TRANSACTION_SENT.next({
       invokedOperation: OperationType.registerTDD,
       hash: tx.hash,

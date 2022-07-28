@@ -6,6 +6,13 @@
  * of a published npm module use the '.ts' extension instead.
  */
 
+export interface ITDD {
+  url: string;
+  owner: string;
+  disabled : boolean;
+  score: number;
+}
+
 export interface ITDDCreatedEvent {
   key: string;
   url: string;
