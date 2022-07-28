@@ -165,7 +165,6 @@ export class DesmoHub {
       });
     });
 
-    
     const filterTDDSubset = this.contract.filters.TDDSubset();
     this.attachListenerForNewEvents(filterTDDSubset, (event: any) => {
       const parsedEvent = this.abiInterface.parseLog(event);
@@ -185,14 +184,14 @@ export class DesmoHub {
     this.provider.removeAllListeners();
   }
 
-  public async registerTDD(tddUrl: string): Promise<void> {
+  public async registerTDD(tddUrl: string, disabled = false, score = 0): Promise<void> {
     const ownerAddress: string = await this.wallet.getAddress();
 
     const tx = await this.contract.registerTDD({
       url: tddUrl,
       owner: ownerAddress,
-      disabled: false,
-      score: 0
+      disabled: disabled,
+      score: score
     });
     this.TRANSACTION_SENT.next({
       invokedOperation: OperationType.registerTDD,
