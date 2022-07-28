@@ -1,4 +1,4 @@
-export const contractAddress = '0xa60fF431d48672Da4f1aeD8620aD0132f61C9fAD';
+export const contractAddress = '0x71713c91cbf4CfE03aD6EfE2118b7f0689061e34';
 
 export const deploymentOutput = {
   compiler: {
@@ -297,10 +297,10 @@ export const deploymentOutput = {
   sources: {
     'contracts/DesmoLdHub.sol': {
       keccak256:
-        '0x90bbbb807716c5f53e0479547f79855e5aac421830aa6b0c6adc7cb7c8dc717d',
+        '0x13ba05fa0069cda32c3332e1f9aba7bda539fb0581a4b5190dab5aa6fb84a021',
       urls: [
-        'bzz-raw://41c5dd96f4a481b30dac1670008bac2b9771c86394e46e62cc5ad1df7ce0b256',
-        'dweb:/ipfs/QmWs6FtvJVJoRUPSTLuGW5PUrDY3ayggs7RJTKUpgPdV4F',
+        'bzz-raw://328dada009a4fd443a0f48dd245c3693baaa281fe96c278c4c51086486aa034d',
+        'dweb:/ipfs/QmUnfHKBqVVK7nfsfpAqXqNi1bpL4rG99F2aN85MAVmd3z',
       ],
     },
     'hardhat/console.sol': {
