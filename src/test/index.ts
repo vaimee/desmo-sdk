@@ -18,7 +18,8 @@ import {
   IRequestIDEvent,
   ITDDDisabledEvent,
   ITDDEnabledEvent,
-  ITDDRetrievalEvent, ITDDSubsetEvent,
+  ITDDRetrievalEvent,
+  ITDDSubsetEvent,
 } from '..';
 import { WalletSignerInfura } from '@/walletSignerInfura-module';
 import 'mocha';
@@ -51,7 +52,7 @@ describe('Test Suite', function () {
     resetSandbox();
   });
 
-  //beforeEach((done) => setTimeout(done, 20000));
+  beforeEach((done) => setTimeout(done, 20000));
 
   /***TESTS FOR THE DESMO-HUB***/
 
@@ -70,7 +71,7 @@ describe('Test Suite', function () {
     before(async function () {
       //start all listeners
       await desmohub.startListeners();
-      //await desmohub.registerTDD(myTDD);
+      // await desmohub.registerTDD(myTDD);
     });
 
     after(function () {
@@ -132,36 +133,32 @@ describe('Test Suite', function () {
       });
     });
 
-    describe('TDDs Request ID', function (){
-      // let ID: number;
-      // it("Should retrieve ID ", async () => {
-      //   desmohub.requestID$
-      //       .pipe(take(1))
-      //       .subscribe((event: IRequestIDEvent) => {
-      //         //expect(event.requestID).to.be.false;
-      //         ID = event.requestID;
-      //       });
-      //   await desmohub.getTDD();
-      // });
-
-      it("Should retrieve TDD list", async () => {
-        console.log("Ciao");
-
+    describe('TDDs Request ID', function () {
+      it('Should retrieve TDD list', async () => {
         desmohub.requestID$
-            .pipe(take(1))
-            .subscribe(async (event: IRequestIDEvent) => {
-              //expect(event.requestID).to.be.false;
-              console.log(event.requestID);
-              await desmohub.getTDDByRequestID(event.requestID.toString());
-
-            });
+          .pipe(take(1))
+          .subscribe(async (event: IRequestIDEvent) => {
+            //expect(event.requestID).to.be.false;
+            console.log(event.requestID);
+            await desmohub.getTDDByRequestID(event.requestID.toString());
+          });
 
         desmohub.tddSubset$
-            .pipe(take(1))
-            .subscribe((event: ITDDSubsetEvent) => {
-              //Dexpect(event.requestID).to.be.false;
-              console.log(event.subset);
-            });
+          .pipe(take(1))
+          .subscribe((event: ITDDSubsetEvent) => {
+            //Dexpect(event.requestID).to.be.false;
+            console.log(event.subset);
+          });
+        await desmohub.getNewRequestID();
+      });
+
+      it('Should retrieve ID ', async () => {
+        desmohub.requestID$
+          .pipe(take(1))
+          .subscribe((event: IRequestIDEvent) => {
+            //expect(event.requestID).to.be.false;
+            console.log(event.requestID);
+          });
         await desmohub.getNewRequestID();
       });
     });
