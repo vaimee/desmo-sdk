@@ -5,3 +5,4 @@ samples
 .parcel-cache
 .DS_Store
 configs
+dist
