@@ -53,7 +53,7 @@ export class DesmoContract {
       throw new Error('Desmo Contract could not connect with iExec');
     }
 
-    this.appAddress = '0x8cdb54410560841560a151ab27ffa1689c5ad117';
+    this.appAddress = '0x6b04bAa0e557d1c570Fb2f5e66fF698D39A5a220';
     this.callback = '0x0f04bC57374f9F8c705636142CEFf953e33a7249';
 
     this.category = 0;
