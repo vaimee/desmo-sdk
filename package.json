@@ -12,6 +12,7 @@
   "main": "./build/index.js",
   "files": [
     "build/lib/**/*",
+    "build/resources/**/*",
     "build/index.*",
     "build/types/**/*"
   ],
