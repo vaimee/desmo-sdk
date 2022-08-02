@@ -1,5 +1,5 @@
 {
-  "name": "desmold-sdk",
+  "name": "@vaimee/desmold-sdk",
   "description": "Software development kit for the DESMO-LD platform.",
   "repository": "https://github.com/vaimee/desmo-sdk",
   "homepage": "https://github.com/vaimee/desmo",
