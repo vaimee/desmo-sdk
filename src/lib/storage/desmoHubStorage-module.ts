@@ -56,7 +56,7 @@ export class DesmoHubStorage {
     const tddAddresses: Map<string, string> = await getMappingAddresses(slotAddress, keys);
 
     const result: Map<string, ITDD> = new Map<string, ITDD>();
-    
+
     await Promise.all(
         keys.map(async (key: string) => {
             const tddStructBaseAddress = ethers.BigNumber.from(tddAddresses.get(key)!);
@@ -102,20 +102,23 @@ export class DesmoHubStorage {
     const subsetAddresses: Map<string, string> = await getMappingAddresses(slotAddress, keys);
 
     const result: Map<string, string[]> = new Map<string, string[]>();
-    
+
     await Promise.all(
         keys.map(async (key: string) => {
             const tddListBaseAddress = ethers.BigNumber.from(subsetAddresses.get(key)!);
-
+            console.log(tddListBaseAddress)
             const subsetAddress: string = verify32BytesAddress(tddListBaseAddress.toHexString());
+            console.log(subsetAddress);
+
             const elementAddresses: string[] = await getArrayAddresses(
               this.desmoHubProvider,
               contractAddress,
-              subsetAddress,
+              key,
             );
-        
+            console.log("Here")
+            console.log(elementAddresses.length);
             const tddList: string[] = new Array<string>(elementAddresses.length);
-        
+
             await Promise.all(
               elementAddresses.map(async (address: string, index: number) => {
                 tddList[index] = await getStringVariable(

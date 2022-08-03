@@ -35,10 +35,13 @@ export async function getNumberVariable(
   slotAddress: string,
 ): Promise<number> {
   const paddedSlotAddress: string = verify32BytesAddress(slotAddress);
+  console.log(paddedSlotAddress);
+
   const value: string = await provider.getStorageAt(
     contractAddress,
     paddedSlotAddress,
   );
+  console.log(value)
   // Warning: this could throw an exception in case of very large numbers!
   return ethers.BigNumber.from(value).toNumber();
 }
@@ -84,13 +87,19 @@ export async function getArrayAddresses(
   contractAddress: string,
   slotAddress: string,
 ): Promise<string[]> {
+  console.log(slotAddress);
   const arrayAddress: string = verify32BytesAddress(slotAddress);
+  console.log("On function getArrayAddress");
+  console.log(arrayAddress);
 
   const arrayLength: number = await getNumberVariable(
     provider,
     contractAddress,
     arrayAddress,
   );
+
+  console.log(arrayLength);
+
   const rootIndex: string = ethers.utils.keccak256(arrayAddress);
   const elementAddresses: string[] = _getContiguousSlots(
     rootIndex,

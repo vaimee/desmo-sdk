@@ -20,6 +20,7 @@ import {
   ITDDEnabledEvent,
   ITDDRetrievalEvent,
   ITDDSubsetEvent,
+  DesmoHubStorage
 } from '..';
 import { WalletSignerInfura } from '@/walletSignerInfura-module';
 import 'mocha';
@@ -52,116 +53,116 @@ describe('Test Suite', function () {
     resetSandbox();
   });
 
-  beforeEach((done) => setTimeout(done, 200));
+  beforeEach((done) => setTimeout(done, 20000));
 
   /***TESTS FOR THE DESMO-HUB***/
-  describe('DesmoHub Tests', function () {
-    const walletSigner: WalletSignerInfura = new WalletSignerInfura(infuraURL);
-    walletSigner.signInWithPrivateKey(privateKEY); //remember to delete if you push to github
-
-    const desmohub: DesmoHub = new DesmoHub(walletSigner);
-    const myTDD: string = MYTDD;
-
-    /* We have to put all async initialisation code
-     * inside a 'before' block because 'mocha' doesn't
-     * support an async function when it is the argument
-     * of a 'describe' block:
-     */
-    before(async function () {
-      //start all listeners
-      await desmohub.startListeners();
-      // await desmohub.registerTDD(myTDD);
-    });
-
-    after(function () {
-      desmohub.stopListeners();
-    });
-
-    describe('Retrieve', function () {
-      it('should retrieve a tdd', async () => {
-        desmohub.tddRetrieval$
-          .pipe(take(1))
-          .subscribe((event: ITDDRetrievalEvent) => {
-            expect(event.url).to.equal(myTDD);
-          });
-        await desmohub.getTDD();
-      });
-    });
-
-    // disable
-    // describe('Disable', function () {
-    //   it('should disable a tdd', async () => {
-    //     desmohub.tddDisabled$
-    //       .pipe(take(1))
-    //       .subscribe((event: ITDDDisabledEvent) => {
-    //         expect(event.url).to.equal(myTDD);
-    //       });
-    //     await desmohub.disableTDD();
-    //   });
-    //
-    //   // retrieve tdd after enable
-    //   it('should have a disabled tdd', async () => {
-    //     desmohub.tddRetrieval$
-    //       .pipe(take(1))
-    //       .subscribe((event: ITDDRetrievalEvent) => {
-    //         expect(event.disabled).to.be.true;
-    //       });
-    //     await desmohub.getTDD();
-    //   });
-    // });
-
-    //enable
-    // describe('Enable', function () {
-    //   it('should enable a tdd', async () => {
-    //     desmohub.tddEnabled$
-    //       .pipe(take(1))
-    //       .subscribe((event: ITDDEnabledEvent) => {
-    //         expect(event.url).to.equal(myTDD);
-    //       });
-    //     await desmohub.enableTDD();
-    //   });
-    //
-    //   // retrieve tdd after enable
-    //   it('should have an enabled tdd', async () => {
-    //     desmohub.tddRetrieval$
-    //       .pipe(take(1))
-    //       .subscribe((event: ITDDRetrievalEvent) => {
-    //         expect(event.disabled).to.be.false;
-    //       });
-    //     await desmohub.getTDD();
-    //   });
-    // });
-
-    describe('TDDs Request ID', function () {
-      it('Should retrieve ID ', async () => {
-        desmohub.requestID$
-            .pipe(take(1))
-            .subscribe((event: IRequestIDEvent) => {
-              //expect(event.requestID).to.be.false;
-              console.log(event.requestID.toString());
-            });
-        await desmohub.getNewRequestID();
-      });
-
-      it('Should retrieve TDD list', async () => {
-        desmohub.requestID$
-          .pipe(take(1))
-          .subscribe(async (event: IRequestIDEvent) => {
-            //expect(event.requestID).to.be.false;
-            console.log(event.requestID.toString());
-            await desmohub.getTDDByRequestID(event.requestID.toString());
-          });
-
-        desmohub.tddSubset$
-          .pipe(take(1))
-          .subscribe((event: ITDDSubsetEvent) => {
-            //Dexpect(event.requestID).to.be.false;
-            console.log(event.subset.toString());
-          });
-        await desmohub.getNewRequestID();
-      });
-    });
-  });
+  // describe('DesmoHub Tests', function () {
+  //   const walletSigner: WalletSignerInfura = new WalletSignerInfura(infuraURL);
+  //   walletSigner.signInWithPrivateKey(privateKEY); //remember to delete if you push to github
+  //
+  //   const desmohub: DesmoHub = new DesmoHub(walletSigner);
+  //   const myTDD: string = MYTDD;
+  //
+  //   /* We have to put all async initialisation code
+  //    * inside a 'before' block because 'mocha' doesn't
+  //    * support an async function when it is the argument
+  //    * of a 'describe' block:
+  //    */
+  //   before(async function () {
+  //     //start all listeners
+  //     await desmohub.startListeners();
+  //     // await desmohub.registerTDD(myTDD);
+  //   });
+  //
+  //   after(function () {
+  //     desmohub.stopListeners();
+  //   });
+  //
+  //   describe('Retrieve', function () {
+  //     it('should retrieve a tdd', async () => {
+  //       desmohub.tddRetrieval$
+  //         .pipe(take(1))
+  //         .subscribe((event: ITDDRetrievalEvent) => {
+  //           expect(event.url).to.equal(myTDD);
+  //         });
+  //       await desmohub.getTDD();
+  //     });
+  //   });
+  //
+  //   // disable
+  //   // describe('Disable', function () {
+  //   //   it('should disable a tdd', async () => {
+  //   //     desmohub.tddDisabled$
+  //   //       .pipe(take(1))
+  //   //       .subscribe((event: ITDDDisabledEvent) => {
+  //   //         expect(event.url).to.equal(myTDD);
+  //   //       });
+  //   //     await desmohub.disableTDD();
+  //   //   });
+  //   //
+  //   //   // retrieve tdd after enable
+  //   //   it('should have a disabled tdd', async () => {
+  //   //     desmohub.tddRetrieval$
+  //   //       .pipe(take(1))
+  //   //       .subscribe((event: ITDDRetrievalEvent) => {
+  //   //         expect(event.disabled).to.be.true;
+  //   //       });
+  //   //     await desmohub.getTDD();
+  //   //   });
+  //   // });
+  //
+  //   //enable
+  //   // describe('Enable', function () {
+  //   //   it('should enable a tdd', async () => {
+  //   //     desmohub.tddEnabled$
+  //   //       .pipe(take(1))
+  //   //       .subscribe((event: ITDDEnabledEvent) => {
+  //   //         expect(event.url).to.equal(myTDD);
+  //   //       });
+  //   //     await desmohub.enableTDD();
+  //   //   });
+  //   //
+  //   //   // retrieve tdd after enable
+  //   //   it('should have an enabled tdd', async () => {
+  //   //     desmohub.tddRetrieval$
+  //   //       .pipe(take(1))
+  //   //       .subscribe((event: ITDDRetrievalEvent) => {
+  //   //         expect(event.disabled).to.be.false;
+  //   //       });
+  //   //     await desmohub.getTDD();
+  //   //   });
+  //   // });
+  //
+  //   describe('TDDs Request ID', function () {
+  //     it('Should retrieve ID ', async () => {
+  //       desmohub.requestID$
+  //           .pipe(take(1))
+  //           .subscribe((event: IRequestIDEvent) => {
+  //             //expect(event.requestID).to.be.false;
+  //             console.log(event.requestID.toString());
+  //           });
+  //       await desmohub.getNewRequestID();
+  //     });
+  //
+  //     it('Should retrieve TDD list', async () => {
+  //       desmohub.requestID$
+  //         .pipe(take(1))
+  //         .subscribe(async (event: IRequestIDEvent) => {
+  //           //expect(event.requestID).to.be.false;
+  //           console.log(event.requestID.toString());
+  //           await desmohub.getTDDByRequestID(event.requestID.toString());
+  //         });
+  //
+  //       desmohub.tddSubset$
+  //         .pipe(take(1))
+  //         .subscribe((event: ITDDSubsetEvent) => {
+  //           //Dexpect(event.requestID).to.be.false;
+  //           console.log(event.subset.toString());
+  //         });
+  //       await desmohub.getNewRequestID();
+  //     });
+  //   });
+  // });
 
   /***TESTS FOR THE DESMO-CONTRACT***/
   describe('DESMO Contract Tests', function () {
@@ -185,19 +186,29 @@ describe('Test Suite', function () {
     });
 
     describe('Query buy process', function () {
-      it('should buy query', async () => {
-        desmohub.requestID$
-          .pipe(take(1))
-          .subscribe(async (event: IRequestIDEvent) => {
-            await buyer.buyQuery(event.requestID.toString(), 'test');
-          });
-        await desmohub.getNewRequestID();
+      // it('should buy query', async () => {
+      //   desmohub.requestID$
+      //     .pipe(take(1))
+      //     .subscribe(async (event: IRequestIDEvent) => {
+      //       await buyer.buyQuery(event.requestID.toString(), 'test');
+      //     });
+      //   await desmohub.getNewRequestID();
+      // });
+
+      // it('should retrieve result from chain', async () => {
+      //   const result = await buyer.getQueryResult();
+      //   console.log(result);
+      // });
+    });
+
+    describe("Get TDDs By Request ID", function () {
+      it("Should retrieve TDDs", async () => {
+        const storage = new DesmoHubStorage(desmohub.provider);
+        const map = await storage.getSelectedTDDs(["0x4b1cbb4df14c4eb699e404c02d1690b284d1ab72a1e29d9914e50391daff6f41"]);
+        console.log(map);
       });
 
-      it('should retrieve result from chain', async () => {
-        const result = await buyer.getQueryResult();
-        console.log(result);
-      });
+
     });
 
     // describe('Callback address verification process', function () {
