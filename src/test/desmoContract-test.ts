@@ -1,9 +1,16 @@
+/**
+ * @file Test suite, using Mocha and Chai.
+ * Compiled files inside the 'test' folder are excluded from
+ * published npm projects.
+ */
+
 import { expect } from 'chai';
 
-import { DesmoContract, DesmoHub } from '..';
+import { DesmoContract, DesmoHub, IRequestIDEvent } from '..';
 import { WalletSignerInfura } from '@/walletSigner/walletSignerInfura-module';
 import 'mocha';
-import { chainURL, privateKEY } from './common';
+import { chainURL, privateKEY } from './config';
+import { firstValueFrom } from 'rxjs';
 
 describe('DesmoContract Tests', function () {
   const walletSigner: WalletSignerInfura = new WalletSignerInfura(chainURL);
@@ -25,38 +32,33 @@ describe('DesmoContract Tests', function () {
     desmohub.stopListeners();
   });
 
-  describe('Query buy process', function () {
-    // it('should buy query', async () => {
-    //   desmohub.requestID$
-    //     .pipe(take(1))
-    //     .subscribe(async (event: IRequestIDEvent) => {
-    //       await buyer.buyQuery(event.requestID.toString(), 'test');
-    //     });
-    //   await desmohub.getNewRequestID();
-    // });
-    // it('should retrieve result from chain', async () => {
-    //   const result = await buyer.getQueryResult();
-    //   console.log(result);
-    // });
-  });
+  beforeEach((done) => setTimeout(done, 20000));
 
-  describe('Get TDDs By Request ID', function () {
-    it('Should retrieve TDDs', async () => {
-      /** */
+  describe('Buy query process', function () {
+    it('should buy a query', async () => {
+      await desmohub.getNewRequestID();
+
+      const event: IRequestIDEvent = await firstValueFrom(desmohub.requestID$);
+      await buyer.buyQuery(event.requestID, 'test query');
+
+      // TODO
+    });
+
+    it('should retrieve the query result from chain', async () => {
+      const result = await buyer.getQueryResult();
+      console.log(result);
     });
   });
 
-  // describe('Callback address verification process', function () {
-  //   it('should verify callback address', async () => {
-  //     desmohub.requestID$
-  //       .pipe(take(1))
-  //       .subscribe(async (event: IRequestIDEvent) => {
-  //         await buyer.buyQuery(event.requestID.toString(), 'test');
-  //         await buyer.verifyCallbackAddress(
-  //           '0x0f04bC57374f9F8c705636142CEFf953e33a7249',
-  //         );
-  //       });
-  //     await desmohub.getNewRequestID();
-  //   });
-  // });
+  describe('Callback address verification process', function () {
+    it('should verify callback address', async () => {
+      // await desmohub.getNewRequestID();
+
+      // const event: IRequestIDEvent = await firstValueFrom(desmohub.requestID$);
+      // await buyer.buyQuery(event.requestID, 'test query');
+      // await buyer.verifyCallbackAddress(
+      //   '0x0f04bC57374f9F8c705636142CEFf953e33a7249',
+      // );
+    });
+  });
 });

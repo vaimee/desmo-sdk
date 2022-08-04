@@ -199,6 +199,7 @@ export class DesmoHub {
   }
 
   public async getTDD(): Promise<ITDD> {
-    return await this.contract.getTDD();
+    const {url, owner, disabled, score}: ITDD = await this.contract.getTDD();
+    return {url, owner, disabled, score} as ITDD;
   }
 }

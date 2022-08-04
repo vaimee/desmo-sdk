@@ -1,5 +1,10 @@
-import { expect } from 'chai';
-import { take } from 'rxjs';
+/**
+ * @file Test suite, using Mocha and Chai.
+ * Compiled files inside the 'test' folder are excluded from
+ * published npm projects.
+ */
+
+import { firstValueFrom } from 'rxjs';
 import {
   DesmoHub,
   IRequestIDEvent,
@@ -8,7 +13,8 @@ import {
 } from '..';
 import { WalletSignerInfura } from '@/walletSigner/walletSignerInfura-module';
 import 'mocha';
-import { chainURL, myTDDUrl, privateKEY } from './common';
+import { chainURL, myTDDUrl, privateKEY } from './config';
+import { expect } from 'chai';
 
 describe('DesmoHub Tests', function () {
   const walletSigner: WalletSignerInfura = new WalletSignerInfura(chainURL);
@@ -35,20 +41,22 @@ describe('DesmoHub Tests', function () {
       const myTDDObject = await desmohub.getTDD();
       expect(myTDDObject.url).to.equal(myTDDUrl);
     });
+
+    it('should retrieve the TDD storage length', async () => {
+      const lengthBigNumber = await desmohub.getTDDStorageLength();
+      expect(lengthBigNumber.gte(0));
+    });
   });
 
   describe('Disable', function () {
     it('should disable my TDD', async () => {
-      desmohub.tddDisabled$
-        .pipe(take(1))
-        .subscribe((event: ITDDDisabledEvent) => {
-          expect(event.url).to.equal(myTDDUrl);
-        });
       await desmohub.disableTDD();
-    });
 
-    // retrieve TDD after having disabled it
-    it('should have disabled my TDD', async () => {
+      const event: ITDDDisabledEvent = await firstValueFrom(
+        desmohub.tddDisabled$,
+      );
+      expect(event.url).to.equal(myTDDUrl);
+
       const myTDDObject = await desmohub.getTDD();
       expect(myTDDObject.disabled).to.be.true;
     });
@@ -56,16 +64,13 @@ describe('DesmoHub Tests', function () {
 
   describe('Enable', function () {
     it('should enable a tdd', async () => {
-      desmohub.tddEnabled$
-        .pipe(take(1))
-        .subscribe((event: ITDDEnabledEvent) => {
-          expect(event.url).to.equal(myTDDUrl);
-        });
       await desmohub.enableTDD();
-    });
 
-    // retrieve TDD after having enabled it
-    it('should have enabled my TDD', async () => {
+      const event: ITDDEnabledEvent = await firstValueFrom(
+        desmohub.tddEnabled$,
+      );
+      expect(event.url).to.equal(myTDDUrl);
+
       const myTDDObject = await desmohub.getTDD();
       expect(myTDDObject.disabled).to.be.false;
     });
@@ -73,25 +78,26 @@ describe('DesmoHub Tests', function () {
 
   describe('TDDs Request ID', function () {
     it('should retrieve a newly-generated request ID', async () => {
-      desmohub.requestID$
-        .pipe(take(1))
-        .subscribe((event: IRequestIDEvent) => {
-          expect(event.requestID.length > 0);
-        });
       await desmohub.getNewRequestID();
+
+      const event: IRequestIDEvent = await firstValueFrom(desmohub.requestID$);
+      expect(event.requestID.length == 64 + 2); // 64 c
     });
 
     it('should retrieve the newly-generated list of selected TDDs', async () => {
-      desmohub.requestID$
-        .pipe(take(1))
-        .subscribe(async (event: IRequestIDEvent) => {
-          const selectedTDDs = await desmohub.getTDDByRequestID(
-            event.requestID,
-          );
-          expect(selectedTDDs.length > 0);
-        });
-
       await desmohub.getNewRequestID();
+
+      const event: IRequestIDEvent = await firstValueFrom(desmohub.requestID$);
+      const selectedTDDs = await desmohub.getTDDByRequestID(event.requestID);
+      expect(selectedTDDs.length > 0);
+    });
+
+    it('should retrieve the scores of the newly-generated list of selected TDDs', async () => {
+      await desmohub.getNewRequestID();
+
+      const event: IRequestIDEvent = await firstValueFrom(desmohub.requestID$);
+      const tddScores = await desmohub.getScoresByRequestID(event.requestID);
+      expect(tddScores.length > 0);
     });
   });
 });
