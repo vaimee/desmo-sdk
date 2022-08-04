@@ -8,17 +8,15 @@ import {
   ITDDCreatedEvent,
   ITDDDisabledEvent,
   ITDDEnabledEvent,
-  ITDDRetrievalEvent,
   ISentTransaction,
   OperationType,
   IRequestIDEvent,
-  ITDDSubsetEvent,
   ITDD,
 } from '../types';
 import { ethers } from 'ethers';
 import { contractAddress, abi } from '../resources/desmoHub-config';
 import { Observable, Subject } from 'rxjs';
-import { WalletSigner } from './walletSigner-module';
+import { WalletSigner } from './walletSigner/walletSigner-module';
 
 const contractABI = abi;
 
@@ -37,14 +35,8 @@ export class DesmoHub {
   private TDD_ENABLED: Subject<ITDDEnabledEvent>;
   tddEnabled$: Observable<ITDDEnabledEvent>;
 
-  private TDD_RETRIEVAL: Subject<ITDDRetrievalEvent>;
-  tddRetrieval$: Observable<ITDDRetrievalEvent>;
-
   private REQUEST_ID: Subject<IRequestIDEvent>;
   requestID$: Observable<IRequestIDEvent>;
-
-  private TDD_SUBSET: Subject<ITDDSubsetEvent>;
-  tddSubset$: Observable<ITDDSubsetEvent>;
 
   private TRANSACTION_SENT: Subject<ISentTransaction>;
   transactionSent$: Observable<ISentTransaction>;
@@ -76,14 +68,8 @@ export class DesmoHub {
     this.TDD_ENABLED = new Subject<ITDDEnabledEvent>();
     this.tddEnabled$ = this.TDD_ENABLED.asObservable();
 
-    this.TDD_RETRIEVAL = new Subject<ITDDRetrievalEvent>();
-    this.tddRetrieval$ = this.TDD_RETRIEVAL.asObservable();
-
     this.REQUEST_ID = new Subject<IRequestIDEvent>();
     this.requestID$ = this.REQUEST_ID.asObservable();
-
-    this.TDD_SUBSET = new Subject<ITDDSubsetEvent>();
-    this.tddSubset$ = this.TDD_SUBSET.asObservable();
 
     this.TRANSACTION_SENT = new Subject<ISentTransaction>();
     this.transactionSent$ = this.TRANSACTION_SENT.asObservable();
@@ -145,33 +131,12 @@ export class DesmoHub {
       });
     });
 
-    const filterRetrieval = this.contract.filters.TDDRetrieval(ownerAddress);
-    this.attachListenerForNewEvents(filterRetrieval, (event: any) => {
-      const parsedEvent = this.abiInterface.parseLog(event);
-
-      this.TDD_RETRIEVAL.next({
-        key: parsedEvent.args.key,
-        url: parsedEvent.args.url,
-        disabled: parsedEvent.args.disabled,
-        score: parsedEvent.args.score,
-      });
-    });
-
     const filterRequestID = this.contract.filters.RequestID();
     this.attachListenerForNewEvents(filterRequestID, (event: any) => {
       const parsedEvent = this.abiInterface.parseLog(event);
 
       this.REQUEST_ID.next({
         requestID: parsedEvent.args.requestID,
-      });
-    });
-
-    const filterTDDSubset = this.contract.filters.TDDSubset();
-    this.attachListenerForNewEvents(filterTDDSubset, (event: any) => {
-      const parsedEvent = this.abiInterface.parseLog(event);
-
-      this.TDD_SUBSET.next({
-        subset: parsedEvent.args.TDDSubset,
       });
     });
   }
@@ -185,15 +150,8 @@ export class DesmoHub {
     this.provider.removeAllListeners();
   }
 
-  public async registerTDD(tddUrl: string, disabled = false, score = 0): Promise<void> {
-    const ownerAddress: string = await this.wallet.getAddress();
-
-    const tx = await this.contract.registerTDD({
-      url: tddUrl,
-      owner: ownerAddress,
-      disabled: disabled,
-      score: score
-    } as ITDD);
+  public async registerTDD(tddUrl: string): Promise<void> {
+    const tx = await this.contract.registerTDD(tddUrl);
     this.TRANSACTION_SENT.next({
       invokedOperation: OperationType.registerTDD,
       hash: tx.hash,
@@ -219,15 +177,6 @@ export class DesmoHub {
     });
   }
 
-  public async getTDD(): Promise<void> {
-    const tx = await this.contract.getTDD();
-    this.TRANSACTION_SENT.next({
-      invokedOperation: OperationType.getTDD,
-      hash: tx.hash,
-      sent: new Date(Date.now()),
-    });
-  }
-
   public async getNewRequestID(): Promise<void> {
     const tx = await this.contract.getNewRequestID();
     this.TRANSACTION_SENT.next({
@@ -237,8 +186,19 @@ export class DesmoHub {
     });
   }
 
-  public async getTDDByRequestID(requestKey: string): Promise<void> {
-    const list = await this.contract.getTDDByRequestIDWithView(requestKey);
- 
+  public async getTDDStorageLength(): Promise<ethers.BigNumber> {
+    return await this.contract.getTDDStorageLength();
+  }
+
+  public async getScoresByRequestID(requestID: ethers.Bytes): Promise<ethers.Bytes> {
+    return await this.contract.getScoresByRequestID(requestID);
+  }
+
+  public async getTDDByRequestID(requestID: ethers.Bytes): Promise<string[]> {
+    return await this.contract.getTDDByRequestID(requestID);
+  }
+
+  public async getTDD(): Promise<ITDD> {
+    return await this.contract.getTDD();
   }
 }

@@ -12,8 +12,8 @@ import {
 import { AppOrder, WorkerpoolOrder } from '../types';
 
 import { ethers } from 'ethers';
-import { WalletSigner } from './walletSigner-module';
-import { IExec, utils } from 'iexec';
+import { WalletSigner } from './walletSigner/walletSigner-module';
+import { IExec } from 'iexec';
 
 const contractABI = abi;
 
@@ -110,7 +110,7 @@ export class DesmoContract {
     return this._walletSigner.wallet;
   }
 
-  public async buyQuery(requestID: string, query: string): Promise<void> {
+  public async buyQuery(requestID: ethers.Bytes, query: string): Promise<void> {
     try {
       const resultAppOrder: AppOrder = await this.fetchAppOrder();
 
@@ -125,7 +125,7 @@ export class DesmoContract {
         workerpoolmaxprice: resultWorkerPoolOrder.workerpoolprice,
         requester: userAddress,
         volume: 1,
-        params: requestID + ' | ' + query,
+        params: requestID.toString() + ' | ' + query,
         category: this.category,
         callback: this.callback,
       });

@@ -6,18 +6,20 @@
  * of a published npm module use the '.ts' extension instead.
  */
 
+import { ethers } from "ethers";
+
 export interface ITDD {
   url: string;
   owner: string;
   disabled : boolean;
-  score: number;
+  score: ethers.BigNumber;
 }
 
 export interface ITDDCreatedEvent {
   key: string;
   url: string;
   disabled: boolean;
-  score: number;
+  score: ethers.BigNumber;
 }
 
 export interface ITDDDisabledEvent {
@@ -30,28 +32,15 @@ export interface ITDDEnabledEvent {
   url: string;
 }
 
-export interface ITDDRetrievalEvent {
-  key: string;
-  url: string;
-  disabled: boolean;
-  score: number;
-}
-
 export interface IRequestIDEvent {
-  requestID: number;
-}
-
-export interface ITDDSubsetEvent {
-  subset: string[];
+  requestID: ethers.Bytes;
 }
 
 export enum OperationType {
   registerTDD = 0,
   disableTDD = 1,
   enableTDD = 2,
-  getTDD = 3,
-  getNewRequestID = 4,
-  getTDDByRequestID = 5
+  getNewRequestID = 3,
 }
 
 export interface ISentTransaction {

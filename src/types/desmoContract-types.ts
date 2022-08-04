@@ -17,6 +17,7 @@ export interface AppOrder {
     salt: string,
     sign: string
 }
+
 export interface WorkerpoolOrder {
     workerpool: string,
     workerpoolprice: number
