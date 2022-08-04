@@ -137,7 +137,7 @@ export class DesmoContract {
   }
 
   public async buyQuery(requestID: ethers.Bytes, query: string): Promise<void> {
-    if (!this._walletSigner.isConnected) {
+    if (!this.isConnected) {
       throw new Error(
         'This method requires the wallet signer to be already signed-in!',
       );
@@ -181,6 +181,12 @@ export class DesmoContract {
 
   // TODO decode the result
   public async getQueryResult(): Promise<any> {
+    if (!this.isConnected) {
+      throw new Error(
+        'This method requires the wallet signer to be already signed-in!',
+      );
+    }
+
     const taskID: string = await this.retrieveTaskID();
     try {
       const result: string = await this.iexec.task.show(taskID);
@@ -194,6 +200,12 @@ export class DesmoContract {
 
   // TODO access a different source with the address
   public async verifyCallbackAddress(callbackAddress: string): Promise<any> {
+    if (!this.isConnected) {
+      throw new Error(
+        'This method requires the wallet signer to be already signed-in!',
+      );
+    }
+
     try {
       const registeredAddress: string = await this.retrieveCallbackAddress();
       console.log('Address: ');
