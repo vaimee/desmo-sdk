@@ -9,10 +9,8 @@
  import { ExternalProvider } from '@ethersproject/providers';
 
  export abstract class WalletSigner {
-   protected _provider?: ethers.providers.Provider;
    protected _wallet?: ethers.Signer;
    protected _isConnected: boolean;
-   protected _ethProvider?: EnhancedWallet | ExternalProvider;
 
    constructor() {
      this._isConnected = false;
@@ -20,6 +18,7 @@
 
    // Public getters:
    public abstract get provider(): ethers.providers.Provider;
+   public abstract get ethProvider(): EnhancedWallet | ExternalProvider;
 
    public get wallet(): ethers.Signer {
      if (!this.isConnected) {
@@ -34,7 +33,4 @@
      return this._isConnected;
    }
 
-   public get ethProvider(): EnhancedWallet | ExternalProvider {
-        return this.ethProvider!;
-    }
  }

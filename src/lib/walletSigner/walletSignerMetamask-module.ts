@@ -4,56 +4,37 @@
  * exporting your lib modules from the ./src/index.ts entrypoint.
  */
 
-import { decryptJsonWallet } from '@ethersproject/json-wallets';
 import { ethers } from 'ethers';
-import { EnhancedWallet } from 'iexec/dist/common/utils/signers';
-import { ExternalProvider } from '@ethersproject/providers';
 import { WalletSigner } from './walletSigner-module';
 
 export class WalletSignerMetamask extends WalletSigner {
+  protected _provider: ethers.providers.Web3Provider;
 
-    constructor(private _window_ethereum: ExternalProvider) {
-        super();
-        this._provider = new ethers.providers.Web3Provider(_window_ethereum, 'any');
+  constructor(private _window_ethereum: any) {
+    super();
+    this._provider = new ethers.providers.Web3Provider(_window_ethereum, 'any');
+    this._isConnected = this._window_ethereum.selectedAddress !== null;
+    if (this._isConnected) {
+      this._wallet = this.provider.getSigner();
     }
+  }
 
-    // Public getters:
+  // Public getters:
+  public get provider(): ethers.providers.Web3Provider {
+    return this._provider;
+  }
 
-    public get provider(): ethers.providers.Web3Provider {
-        return this._provider as ethers.providers.Web3Provider;
+  public get ethProvider(): ethers.providers.ExternalProvider {
+    return this._window_ethereum as ethers.providers.ExternalProvider;
+  }
+
+  // Public methods to sign in:
+  public async connect(): Promise<void> {
+    if (this.isConnected) {
+      throw new Error('Already connected!');
     }
-
-    public get window_ethereum(): ExternalProvider {
-        if (!this.isConnected) {
-            throw new Error(
-                'window_ethereum unavailable. Please sign in before trying again.',
-            );
-        }
-        return this._window_ethereum;
-    }
-
-    public get signer(): ethers.Signer {
-        if (!this.isConnected) {
-            throw new Error(
-                'Wallet unavailable. Please sign in before trying again.',
-            );
-        }
-        return this._wallet!;
-    }
-
-
-    public get isConnected(): boolean {
-        return this._isConnected;
-    }
-
-    // Public methods to sign in:
-    public async connect(): Promise<void> {
-        if (this.isConnected) {
-            throw new Error('Already connected!');
-        }
-        await this.provider.send('eth_requestAccounts', []);
-        this._wallet = this.provider.getSigner();
-        this._ethProvider = this._window_ethereum
-        this._isConnected = true;
-    }
+    await this.provider.send('eth_requestAccounts', []);
+    this._wallet = this.provider.getSigner();
+    this._isConnected = true;
+  }
 }

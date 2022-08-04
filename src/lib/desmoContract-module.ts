@@ -44,9 +44,7 @@ export class DesmoContract {
       this.contract = this.contract.connect(this.wallet);
 
       try {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        this.iexec = new IExec({ ethProvider: this.wallet });
+        this.iexec = new IExec({ ethProvider: this._walletSigner.ethProvider });
       } catch (e) {
         throw new Error('Desmo Contract could not connect with iExec');
       }
@@ -73,9 +71,7 @@ export class DesmoContract {
     this.contract = this.contract.connect(this.wallet);
 
     try {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      this.iexec = new IExec({ ethProvider: this.wallet });
+      this.iexec = new IExec({ ethProvider: this._walletSigner.ethProvider });
     } catch (e) {
       throw new Error('Desmo Contract could not connect with iExec');
     }
