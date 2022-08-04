@@ -6,7 +6,7 @@
 
 import {
   contractAddress,
-  deploymentOutput,
+  abi,
 } from '../resources/desmoContract-config';
 
 import { AppOrder, WorkerpoolOrder } from '../types';
@@ -15,7 +15,7 @@ import { ethers } from 'ethers';
 import { WalletSigner } from './walletSigner-module';
 import { IExec, utils } from 'iexec';
 
-const contractABI = deploymentOutput.output.abi;
+const contractABI = abi;
 
 export class DesmoContract {
   private _walletSigner: WalletSigner;

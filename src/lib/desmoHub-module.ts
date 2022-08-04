@@ -16,11 +16,11 @@ import {
   ITDD,
 } from '../types';
 import { ethers } from 'ethers';
-import { contractAddress, deploymentOutput } from '../resources/desmoHub-config';
+import { contractAddress, abi } from '../resources/desmoHub-config';
 import { Observable, Subject } from 'rxjs';
 import { WalletSigner } from './walletSigner-module';
 
-const contractABI = deploymentOutput.output.abi;
+const contractABI = abi;
 
 export class DesmoHub {
   private isListening: boolean;
@@ -238,11 +238,7 @@ export class DesmoHub {
   }
 
   public async getTDDByRequestID(requestKey: string): Promise<void> {
-    const tx = await this.contract.getTDDByRequestID(requestKey);
-    this.TRANSACTION_SENT.next({
-      invokedOperation: OperationType.getTDDByRequestID,
-      hash: tx.hash,
-      sent: new Date(Date.now()),
-    });
+    const list = await this.contract.getTDDByRequestIDWithView(requestKey);
+ 
   }
 }

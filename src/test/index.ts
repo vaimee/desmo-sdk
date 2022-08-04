@@ -20,10 +20,10 @@ import {
   ITDDEnabledEvent,
   ITDDRetrievalEvent,
   ITDDSubsetEvent,
-  DesmoHubStorage
 } from '..';
 import { WalletSignerInfura } from '@/walletSignerInfura-module';
 import 'mocha';
+import { ethers } from 'ethers';
 const sandboxRoot = './sandbox';
 const samplesRoot = './samples';
 const infuraURL = 'https://viviani.iex.ec'; // Replace with your own Infura URL
@@ -178,7 +178,7 @@ describe('Test Suite', function () {
      * of a 'describe' block:
      */
     before(async function () {
-      await desmohub.startListeners();
+      //await desmohub.startListeners();
     });
 
     after(function () {
@@ -202,11 +202,7 @@ describe('Test Suite', function () {
     });
 
     describe("Get TDDs By Request ID", function () {
-      it("Should retrieve TDDs", async () => {
-        const storage = new DesmoHubStorage(desmohub.provider);
-        const map = await storage.getSelectedTDDs(["0x4b1cbb4df14c4eb699e404c02d1690b284d1ab72a1e29d9914e50391daff6f41"]);
-        console.log(map);
-      });
+      it("Should retrieve TDDs", async () => {/** */});
 
 
     });
