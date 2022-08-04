@@ -4,10 +4,7 @@
  * exporting your lib modules from the ./src/index.ts entrypoint.
  */
 
-import {
-  contractAddress,
-  abi,
-} from '../resources/desmoContract-config';
+import { contractAddress, abi } from '../resources/desmoContract-config';
 
 import { AppOrder, WorkerpoolOrder } from '../types';
 
@@ -19,6 +16,7 @@ const contractABI = abi;
 
 export class DesmoContract {
   private _walletSigner: WalletSigner;
+  private _isConnected: boolean;
   private contract: ethers.Contract;
   private abiInterface: ethers.utils.Interface;
 
@@ -30,20 +28,21 @@ export class DesmoContract {
   private taskId: string;
 
   constructor(walletSigner: WalletSigner) {
-
-    if (!walletSigner.isConnected) {
-      throw new Error('Desmo Contract requires an already signed-in wallet!');
-    }
+    this.abiInterface = new ethers.utils.Interface(contractABI);
 
     this._walletSigner = walletSigner;
-
-    this.abiInterface = new ethers.utils.Interface(contractABI);
 
     this.contract = new ethers.Contract(
       contractAddress,
       contractABI,
       this.provider,
-    ).connect(this.wallet);
+    );
+
+    this._isConnected = walletSigner.isConnected;
+
+    if (this.isConnected) {
+      this.contract = this.contract.connect(this.wallet);
+    }
 
     try {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -59,6 +58,32 @@ export class DesmoContract {
     this.category = 0;
     this.dealId = '';
     this.taskId = '';
+  }
+
+  public connect() {
+    if (this.isConnected) {
+      throw new Error('The provided wallet signer is already connected!');
+    }
+    if (!this._walletSigner.isConnected) {
+      throw new Error(
+        'The provided wallet signer must be connected before calling this method!',
+      );
+    }
+
+    this.contract = this.contract.connect(this.wallet);
+    this._isConnected = true;
+  }
+
+  public get provider(): ethers.providers.Provider {
+    return this._walletSigner.provider;
+  }
+
+  public get wallet(): ethers.Signer {
+    return this._walletSigner.wallet;
+  }
+
+  public get isConnected(): boolean {
+    return this._isConnected;
   }
 
   private async fetchAppOrder(): Promise<AppOrder> {
@@ -102,19 +127,18 @@ export class DesmoContract {
     return deal.callback;
   }
 
-  public get provider(): ethers.providers.Provider {
-    return this._walletSigner.provider;
-  }
-
-  public get wallet(): ethers.Signer {
-    return this._walletSigner.wallet;
-  }
-
   public async buyQuery(requestID: ethers.Bytes, query: string): Promise<void> {
+    if (!this._walletSigner.isConnected) {
+      throw new Error(
+        'This method requires the wallet signer to be already signed-in!',
+      );
+    }
+
     try {
       const resultAppOrder: AppOrder = await this.fetchAppOrder();
 
-      const resultWorkerPoolOrder: WorkerpoolOrder = await this.fetchWorkerPoolOrder();
+      const resultWorkerPoolOrder: WorkerpoolOrder =
+        await this.fetchWorkerPoolOrder();
 
       // Check if we can use the address from the wallet.
       const userAddress = await this.iexec.wallet.getAddress();
