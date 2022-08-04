@@ -7,13 +7,13 @@
 import { expect } from 'chai';
 
 import { DesmoContract, DesmoHub, IRequestIDEvent } from '..';
-import { WalletSignerInfura } from '@/walletSigner/walletSignerInfura-module';
+import { WalletSignerJsonRpc } from '@/walletSigner/walletSignerJsonRpc-module';
 import 'mocha';
 import { chainURL, privateKEY } from './config';
 import { firstValueFrom } from 'rxjs';
 
 describe('DesmoContract Tests', function () {
-  const walletSigner: WalletSignerInfura = new WalletSignerInfura(chainURL);
+  const walletSigner: WalletSignerJsonRpc = new WalletSignerJsonRpc(chainURL);
   walletSigner.signInWithPrivateKey(privateKEY); //remember to delete if you push to github
 
   const desmohub: DesmoHub = new DesmoHub(walletSigner);

@@ -11,13 +11,13 @@ import {
   ITDDDisabledEvent,
   ITDDEnabledEvent,
 } from '..';
-import { WalletSignerInfura } from '@/walletSigner/walletSignerInfura-module';
+import { WalletSignerJsonRpc } from '@/walletSigner/walletSignerJsonRpc-module';
 import 'mocha';
 import { chainURL, myTDDUrl, privateKEY } from './config';
 import { expect } from 'chai';
 
 describe('DesmoHub Tests', function () {
-  const walletSigner: WalletSignerInfura = new WalletSignerInfura(chainURL);
+  const walletSigner: WalletSignerJsonRpc = new WalletSignerJsonRpc(chainURL);
   walletSigner.signInWithPrivateKey(privateKEY);
 
   const desmohub: DesmoHub = new DesmoHub(walletSigner);

@@ -9,7 +9,7 @@ import { ethers } from 'ethers';
 import { EnhancedWallet } from 'iexec/dist/common/utils/signers';
 import { WalletSigner } from './walletSigner-module';
 
-export class WalletSignerInfura extends WalletSigner {
+export class WalletSignerJsonRpc extends WalletSigner {
 
   constructor(private rpcUrl: string) {
     super();
