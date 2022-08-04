@@ -12,7 +12,7 @@ export * from './types/index.js';
 
 // Wallet signers:
 export * from './lib/walletSigner/walletSigner-module.js';
-export * from './lib/walletSigner/walletSignerInfura-module.js';
+export * from './lib/walletSigner/walletSignerJsonRpc-module.js';
 export * from './lib/walletSigner/walletSignerMetamask-module.js';
 
 // Smart contract modules:
