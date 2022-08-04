@@ -1,317 +1,403 @@
-export const contractAddress = '0x71713c91cbf4CfE03aD6EfE2118b7f0689061e34';
+export const contractAddress = '0xA739B8bb068B058d2eab49D1475d513Cf981db3B';
 
 export const deploymentOutput = {
   compiler: {
-    version: '0.8.7+commit.e28d00a7',
+    version: "0.8.7+commit.e28d00a7"
   },
-  language: 'Solidity',
+  language: "Solidity",
   output: {
     abi: [
       {
         inputs: [],
-        stateMutability: 'nonpayable',
-        type: 'constructor',
+        stateMutability: "nonpayable",
+        type: "constructor"
+      },
+      {
+        anonymous: false,
+        inputs: [
+          {
+            indexed: false,
+            internalType: "bytes",
+            name: "requestID",
+            type: "bytes"
+          }
+        ],
+        name: "RequestID",
+        type: "event"
       },
       {
         anonymous: false,
         inputs: [
           {
             indexed: true,
-            internalType: 'uint256',
-            name: 'requestID',
-            type: 'uint256',
+            internalType: "address",
+            name: "key",
+            type: "address"
           },
+          {
+            indexed: false,
+            internalType: "string",
+            name: "url",
+            type: "string"
+          },
+          {
+            indexed: false,
+            internalType: "bool",
+            name: "disabled",
+            type: "bool"
+          },
+          {
+            indexed: false,
+            internalType: "uint256",
+            name: "score",
+            type: "uint256"
+          }
         ],
-        name: 'RequestID',
-        type: 'event',
+        name: "TDDCreated",
+        type: "event"
       },
       {
         anonymous: false,
         inputs: [
           {
             indexed: true,
-            internalType: 'address',
-            name: 'key',
-            type: 'address',
+            internalType: "address",
+            name: "key",
+            type: "address"
           },
           {
             indexed: false,
-            internalType: 'string',
-            name: 'url',
-            type: 'string',
-          },
-          {
-            indexed: false,
-            internalType: 'bool',
-            name: 'disabled',
-            type: 'bool',
-          },
-          {
-            indexed: false,
-            internalType: 'uint256',
-            name: 'score',
-            type: 'uint256',
-          },
+            internalType: "string",
+            name: "url",
+            type: "string"
+          }
         ],
-        name: 'TDDCreated',
-        type: 'event',
+        name: "TDDDisabled",
+        type: "event"
       },
       {
         anonymous: false,
         inputs: [
           {
             indexed: true,
-            internalType: 'address',
-            name: 'key',
-            type: 'address',
+            internalType: "address",
+            name: "key",
+            type: "address"
           },
           {
             indexed: false,
-            internalType: 'string',
-            name: 'url',
-            type: 'string',
-          },
+            internalType: "string",
+            name: "url",
+            type: "string"
+          }
         ],
-        name: 'TDDDisabled',
-        type: 'event',
+        name: "TDDEnabled",
+        type: "event"
       },
       {
         anonymous: false,
         inputs: [
           {
             indexed: true,
-            internalType: 'address',
-            name: 'key',
-            type: 'address',
+            internalType: "address",
+            name: "key",
+            type: "address"
           },
           {
             indexed: false,
-            internalType: 'string',
-            name: 'url',
-            type: 'string',
+            internalType: "string",
+            name: "url",
+            type: "string"
           },
+          {
+            indexed: false,
+            internalType: "bool",
+            name: "disabled",
+            type: "bool"
+          },
+          {
+            indexed: false,
+            internalType: "uint256",
+            name: "score",
+            type: "uint256"
+          }
         ],
-        name: 'TDDEnabled',
-        type: 'event',
+        name: "TDDRetrieval",
+        type: "event"
       },
       {
         anonymous: false,
         inputs: [
           {
             indexed: true,
-            internalType: 'address',
-            name: 'key',
-            type: 'address',
+            internalType: "bytes",
+            name: "key",
+            type: "bytes"
           },
           {
             indexed: false,
-            internalType: 'string',
-            name: 'url',
-            type: 'string',
-          },
-          {
-            indexed: false,
-            internalType: 'bool',
-            name: 'disabled',
-            type: 'bool',
-          },
-          {
-            indexed: false,
-            internalType: 'uint256',
-            name: 'score',
-            type: 'uint256',
-          },
+            internalType: "string[]",
+            name: "TDDSubset",
+            type: "string[]"
+          }
         ],
-        name: 'TDDRetrieval',
-        type: 'event',
-      },
-      {
-        anonymous: false,
-        inputs: [
-          {
-            indexed: true,
-            internalType: 'string[]',
-            name: 'TDDSubset',
-            type: 'string[]',
-          },
-        ],
-        name: 'TDDSubset',
-        type: 'event',
+        name: "TDDSubset",
+        type: "event"
       },
       {
         inputs: [],
-        name: 'disableTDD',
+        name: "disableTDD",
         outputs: [],
-        stateMutability: 'nonpayable',
-        type: 'function',
+        stateMutability: "nonpayable",
+        type: "function"
       },
       {
         inputs: [],
-        name: 'enableTDD',
+        name: "enableTDD",
         outputs: [],
-        stateMutability: 'nonpayable',
-        type: 'function',
+        stateMutability: "nonpayable",
+        type: "function"
       },
       {
         inputs: [],
-        name: 'getNewRequestID',
+        name: "getNewRequestID",
         outputs: [
           {
-            internalType: 'uint256',
-            name: '',
-            type: 'uint256',
-          },
+            internalType: "bytes",
+            name: "",
+            type: "bytes"
+          }
         ],
-        stateMutability: 'nonpayable',
-        type: 'function',
+        stateMutability: "nonpayable",
+        type: "function"
+      },
+      {
+        inputs: [
+          {
+            internalType: "bytes",
+            name: "requestID",
+            type: "bytes"
+          }
+        ],
+        name: "getScoresByRequestID",
+        outputs: [
+          {
+            internalType: "bytes",
+            name: "",
+            type: "bytes"
+          }
+        ],
+        stateMutability: "view",
+        type: "function"
       },
       {
         inputs: [],
-        name: 'getTDD',
+        name: "getTDD",
         outputs: [
           {
             components: [
               {
-                internalType: 'string',
-                name: 'url',
-                type: 'string',
+                internalType: "string",
+                name: "url",
+                type: "string"
               },
               {
-                internalType: 'address',
-                name: 'owner',
-                type: 'address',
+                internalType: "address",
+                name: "owner",
+                type: "address"
               },
               {
-                internalType: 'bool',
-                name: 'disabled',
-                type: 'bool',
+                internalType: "bool",
+                name: "disabled",
+                type: "bool"
               },
               {
-                internalType: 'uint256',
-                name: 'score',
-                type: 'uint256',
-              },
+                internalType: "uint256",
+                name: "score",
+                type: "uint256"
+              }
             ],
-            internalType: 'struct DesmoLDHub.TDD',
-            name: '',
-            type: 'tuple',
-          },
+            internalType: "struct DesmoLDHub.TDD",
+            name: "",
+            type: "tuple"
+          }
         ],
-        stateMutability: 'nonpayable',
-        type: 'function',
+        stateMutability: "nonpayable",
+        type: "function"
       },
       {
         inputs: [
           {
-            internalType: 'uint256',
-            name: 'key',
-            type: 'uint256',
-          },
+            internalType: "bytes",
+            name: "requestID",
+            type: "bytes"
+          }
         ],
-        name: 'getTDDByRequestID',
+        name: "getTDDByRequestID",
         outputs: [
           {
-            internalType: 'string[]',
-            name: '',
-            type: 'string[]',
-          },
+            internalType: "string[]",
+            name: "",
+            type: "string[]"
+          }
         ],
-        stateMutability: 'nonpayable',
-        type: 'function',
+        stateMutability: "nonpayable",
+        type: "function"
+      },
+      {
+        inputs: [
+          {
+            internalType: "bytes",
+            name: "requestID",
+            type: "bytes"
+          }
+        ],
+        name: "getTDDByRequestIDWithView",
+        outputs: [
+          {
+            internalType: "string[]",
+            name: "",
+            type: "string[]"
+          }
+        ],
+        stateMutability: "view",
+        type: "function"
+      },
+      {
+        inputs: [],
+        name: "getTDDStoragerLenght",
+        outputs: [
+          {
+            internalType: "uint256",
+            name: "",
+            type: "uint256"
+          }
+        ],
+        stateMutability: "view",
+        type: "function"
       },
       {
         inputs: [
           {
             components: [
               {
-                internalType: 'string',
-                name: 'url',
-                type: 'string',
+                internalType: "string",
+                name: "url",
+                type: "string"
               },
               {
-                internalType: 'address',
-                name: 'owner',
-                type: 'address',
+                internalType: "address",
+                name: "owner",
+                type: "address"
               },
               {
-                internalType: 'bool',
-                name: 'disabled',
-                type: 'bool',
+                internalType: "bool",
+                name: "disabled",
+                type: "bool"
               },
               {
-                internalType: 'uint256',
-                name: 'score',
-                type: 'uint256',
-              },
+                internalType: "uint256",
+                name: "score",
+                type: "uint256"
+              }
             ],
-            internalType: 'struct DesmoLDHub.TDD',
-            name: 'tdd',
-            type: 'tuple',
-          },
+            internalType: "struct DesmoLDHub.TDD",
+            name: "tdd",
+            type: "tuple"
+          }
         ],
-        name: 'registerTDD',
+        name: "registerTDD",
         outputs: [],
-        stateMutability: 'nonpayable',
-        type: 'function',
+        stateMutability: "nonpayable",
+        type: "function"
       },
       {
         inputs: [
           {
-            internalType: 'uint256',
-            name: 'id',
-            type: 'uint256',
-          },
+            internalType: "string",
+            name: "url",
+            type: "string"
+          }
         ],
-        name: 'viewSelected',
+        name: "registerTDDExplicitParam",
         outputs: [],
-        stateMutability: 'nonpayable',
-        type: 'function',
+        stateMutability: "nonpayable",
+        type: "function"
       },
+      {
+        inputs: [
+          {
+            internalType: "bytes",
+            name: "requestID",
+            type: "bytes"
+          },
+          {
+            internalType: "bytes",
+            name: "scores",
+            type: "bytes"
+          }
+        ],
+        name: "updateScores",
+        outputs: [],
+        stateMutability: "nonpayable",
+        type: "function"
+      },
+      {
+        inputs: [
+          {
+            internalType: "bytes",
+            name: "id",
+            type: "bytes"
+          }
+        ],
+        name: "viewSelected",
+        outputs: [],
+        stateMutability: "nonpayable",
+        type: "function"
+      }
     ],
     devdoc: {
-      kind: 'dev',
+      kind: "dev",
       methods: {},
-      version: 1,
+      version: 1
     },
     userdoc: {
-      kind: 'user',
+      kind: "user",
       methods: {},
-      version: 1,
-    },
+      version: 1
+    }
   },
   settings: {
     compilationTarget: {
-      'contracts/DesmoLdHub.sol': 'DesmoLDHub',
-    },
-    evmVersion: 'london',
+      "contracts/DesmoLDHub.sol": "DesmoLDHub"
+},
+evmVersion: "london",
     libraries: {},
-    metadata: {
-      bytecodeHash: 'ipfs',
-    },
-    optimizer: {
-      enabled: false,
-      runs: 200,
-    },
-    remappings: [],
-  },
+metadata: {
+  bytecodeHash: "ipfs"
+},
+optimizer: {
+  enabled: false,
+      runs: 200
+},
+remappings: []
+},
   sources: {
-    'contracts/DesmoLdHub.sol': {
-      keccak256:
-        '0x13ba05fa0069cda32c3332e1f9aba7bda539fb0581a4b5190dab5aa6fb84a021',
-      urls: [
-        'bzz-raw://328dada009a4fd443a0f48dd245c3693baaa281fe96c278c4c51086486aa034d',
-        'dweb:/ipfs/QmUnfHKBqVVK7nfsfpAqXqNi1bpL4rG99F2aN85MAVmd3z',
-      ],
+    "contracts/DesmoLDHub.sol": {
+      keccak256: "0x460cf92e8ea437c9f9039ec9e1a2ab5c117910b7a291a0bb28d210599db8c304",
+          urls: [
+        "bzz-raw://49fe035ecd21948c52da5a78e13e2c7c7018284719d213a1822e26bdbe8c482e",
+        "dweb:/ipfs/Qmddi5M7ETEVGJuS15n5D3hC26tn1c2TyATRXKbKaQxZUj"
+      ]
     },
-    'hardhat/console.sol': {
-      keccak256:
-        '0x72b6a1d297cd3b033d7c2e4a7e7864934bb767db6453623f1c3082c6534547f4',
-      license: 'MIT',
-      urls: [
-        'bzz-raw://a8cb8681076e765c214e0d51cac989325f6b98e315eaae06ee0cbd5a9f084763',
-        'dweb:/ipfs/QmNWGHi4zmjxQTYN3NMGnJd49jBT5dE4bxTdWEaDuJrC6N',
-      ],
-    },
+    "hardhat/console.sol": {
+      keccak256: "0x72b6a1d297cd3b033d7c2e4a7e7864934bb767db6453623f1c3082c6534547f4",
+          license: "MIT",
+          urls: [
+        "bzz-raw://a8cb8681076e765c214e0d51cac989325f6b98e315eaae06ee0cbd5a9f084763",
+        "dweb:/ipfs/QmNWGHi4zmjxQTYN3NMGnJd49jBT5dE4bxTdWEaDuJrC6N"
+      ]
+    }
   },
-  version: 1,
+  version: 1
 };

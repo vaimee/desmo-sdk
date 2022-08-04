@@ -54,7 +54,7 @@ export class DesmoContract {
     }
 
     this.appAddress = '0x6b04bAa0e557d1c570Fb2f5e66fF698D39A5a220';
-    this.callback = '0x0f04bC57374f9F8c705636142CEFf953e33a7249';
+    this.callback = '0x0626BEd7C648B6024DC7Bd3b71f02b789C5EE1E9';
 
     this.category = 0;
     this.dealId = '';
