@@ -42,14 +42,14 @@ export class DesmoContract {
 
     if (this.isConnected) {
       this.contract = this.contract.connect(this.wallet);
-    }
 
-    try {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      this.iexec = new IExec({ ethProvider: walletSigner.wallet });
-    } catch (e) {
-      throw new Error('Desmo Contract could not connect with iExec');
+      try {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        this.iexec = new IExec({ ethProvider: this.wallet });
+      } catch (e) {
+        throw new Error('Desmo Contract could not connect with iExec');
+      }
     }
 
     this.appAddress = '0x6b04bAa0e557d1c570Fb2f5e66fF698D39A5a220';
@@ -71,6 +71,15 @@ export class DesmoContract {
     }
 
     this.contract = this.contract.connect(this.wallet);
+
+    try {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      this.iexec = new IExec({ ethProvider: this.wallet });
+    } catch (e) {
+      throw new Error('Desmo Contract could not connect with iExec');
+    }
+
     this._isConnected = true;
   }
 
