@@ -42,14 +42,14 @@ export class DesmoContract {
 
     if (this.isConnected) {
       this.contract = this.contract.connect(this.wallet);
-    }
 
-    try {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      this.iexec = new IExec({ ethProvider: walletSigner.wallet });
-    } catch (e) {
-      throw new Error('Desmo Contract could not connect with iExec');
+      try {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        this.iexec = new IExec({ ethProvider: this.wallet });
+      } catch (e) {
+        throw new Error('Desmo Contract could not connect with iExec');
+      }
     }
 
     this.appAddress = '0x6b04bAa0e557d1c570Fb2f5e66fF698D39A5a220';
@@ -71,6 +71,15 @@ export class DesmoContract {
     }
 
     this.contract = this.contract.connect(this.wallet);
+
+    try {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      this.iexec = new IExec({ ethProvider: this.wallet });
+    } catch (e) {
+      throw new Error('Desmo Contract could not connect with iExec');
+    }
+
     this._isConnected = true;
   }
 
@@ -128,7 +137,7 @@ export class DesmoContract {
   }
 
   public async buyQuery(requestID: ethers.Bytes, query: string): Promise<void> {
-    if (!this._walletSigner.isConnected) {
+    if (!this.isConnected) {
       throw new Error(
         'This method requires the wallet signer to be already signed-in!',
       );
@@ -172,6 +181,12 @@ export class DesmoContract {
 
   // TODO decode the result
   public async getQueryResult(): Promise<any> {
+    if (!this.isConnected) {
+      throw new Error(
+        'This method requires the wallet signer to be already signed-in!',
+      );
+    }
+
     const taskID: string = await this.retrieveTaskID();
     try {
       const result: string = await this.iexec.task.show(taskID);
@@ -185,6 +200,12 @@ export class DesmoContract {
 
   // TODO access a different source with the address
   public async verifyCallbackAddress(callbackAddress: string): Promise<any> {
+    if (!this.isConnected) {
+      throw new Error(
+        'This method requires the wallet signer to be already signed-in!',
+      );
+    }
+
     try {
       const registeredAddress: string = await this.retrieveCallbackAddress();
       console.log('Address: ');

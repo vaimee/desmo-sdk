@@ -113,7 +113,7 @@ export class DesmoHub {
   }
 
   public async startListeners() {
-    if (!this._walletSigner.isConnected) {
+    if (!this.isConnected) {
       throw new Error(
         'This method requires the wallet signer to be already signed-in!',
       );
@@ -178,7 +178,7 @@ export class DesmoHub {
   }
 
   public async registerTDD(tddUrl: string): Promise<void> {
-    if (!this._walletSigner.isConnected) {
+    if (!this.isConnected) {
       throw new Error(
         'This method requires the wallet signer to be already signed-in!',
       );
@@ -193,7 +193,7 @@ export class DesmoHub {
   }
 
   public async disableTDD(): Promise<void> {
-    if (!this._walletSigner.isConnected) {
+    if (!this.isConnected) {
       throw new Error(
         'This method requires the wallet signer to be already signed-in!',
       );
@@ -208,7 +208,7 @@ export class DesmoHub {
   }
 
   public async enableTDD(): Promise<void> {
-    if (!this._walletSigner.isConnected) {
+    if (!this.isConnected) {
       throw new Error(
         'This method requires the wallet signer to be already signed-in!',
       );
@@ -223,7 +223,7 @@ export class DesmoHub {
   }
 
   public async getNewRequestID(): Promise<void> {
-    if (!this._walletSigner.isConnected) {
+    if (!this.isConnected) {
       throw new Error(
         'This method requires the wallet signer to be already signed-in!',
       );
