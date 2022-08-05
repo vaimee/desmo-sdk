@@ -36,9 +36,10 @@ describe('DesmoContract Tests', function () {
 
   describe('Buy query process', function () {
     it('should buy a query', async () => {
+      const eventPromise = firstValueFrom(desmohub.requestID$);
       await desmohub.getNewRequestID();
+      const event: IRequestIDEvent = await eventPromise;
 
-      const event: IRequestIDEvent = await firstValueFrom(desmohub.requestID$);
       await buyer.buyQuery(event.requestID, 'test query', '0x7529d35aD28eee02De4C1B3E5f8457ecce704775');
 
       // TODO
@@ -52,9 +53,10 @@ describe('DesmoContract Tests', function () {
 
   describe('Callback address verification process', function () {
     it('should verify callback address', async () => {
+      // const eventPromise = firstValueFrom(desmohub.requestID$);
       // await desmohub.getNewRequestID();
+      // const event: IRequestIDEvent = await eventPromise;
 
-      // const event: IRequestIDEvent = await firstValueFrom(desmohub.requestID$);
       // await buyer.buyQuery(event.requestID, 'test query');
       // await buyer.verifyCallbackAddress(
       //   '0x0f04bC57374f9F8c705636142CEFf953e33a7249',
