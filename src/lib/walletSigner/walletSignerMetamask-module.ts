@@ -14,7 +14,7 @@ export class WalletSignerMetamask extends WalletSigner {
     super();
     this._provider = new ethers.providers.Web3Provider(_window_ethereum, 'any');
     this._isConnected = this._window_ethereum.selectedAddress !== null;
-    if (this._isConnected) {
+    if (this.isConnected) {
       this._wallet = this.provider.getSigner();
     }
   }
