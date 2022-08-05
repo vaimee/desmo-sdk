@@ -12,7 +12,11 @@ export class WalletSignerMetamask extends WalletSigner {
 
   constructor(private _window_ethereum: any) {
     super();
-    this._provider = new ethers.providers.Web3Provider(_window_ethereum, 'any');
+    /**
+     * By specifying the correct chainID (133 for Viviani), the provider will emit an error
+     * when trying to interact with a different network:
+     */
+    this._provider = new ethers.providers.Web3Provider(_window_ethereum, 133);
     this._isConnected = this._window_ethereum.selectedAddress !== null;
     if (this.isConnected) {
       this._wallet = this.provider.getSigner();
@@ -33,8 +37,18 @@ export class WalletSignerMetamask extends WalletSigner {
     if (this.isConnected) {
       throw new Error('Already connected!');
     }
-    await this.provider.send('eth_requestAccounts', []);
-    this._wallet = this.provider.getSigner();
-    this._isConnected = true;
+    try {
+      await this.provider.send('eth_requestAccounts', []);
+      this._wallet = this.provider.getSigner();
+      this._isConnected = true;
+    } catch (error: any) {
+      this._isConnected = false;
+      if (error.code === 4001) {
+        // User chose not to sign-in!
+        throw new Error("You may need to sign-in in order to get full access to the Dapp features!");
+      } else {
+        throw error;
+      }
+    }
   }
 }
