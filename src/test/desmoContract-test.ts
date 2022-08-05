@@ -39,7 +39,7 @@ describe('DesmoContract Tests', function () {
       await desmohub.getNewRequestID();
 
       const event: IRequestIDEvent = await firstValueFrom(desmohub.requestID$);
-      await buyer.buyQuery(event.requestID, 'test query');
+      await buyer.buyQuery(event.requestID, 'test query', '0x7529d35aD28eee02De4C1B3E5f8457ecce704775');
 
       // TODO
     });
