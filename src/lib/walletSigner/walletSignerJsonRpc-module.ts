@@ -10,6 +10,7 @@ import { EnhancedWallet } from 'iexec/dist/common/utils/signers';
 import { WalletSigner } from './walletSigner-module';
 
 export class WalletSignerJsonRpc extends WalletSigner {
+  protected _provider: ethers.providers.JsonRpcProvider;
 
   constructor(private rpcUrl: string) {
     super();
@@ -17,20 +18,26 @@ export class WalletSignerJsonRpc extends WalletSigner {
   }
 
   // Public getters:
- 
-  public get provider(): ethers.providers.Provider {
-    return this._provider!;
+  public get provider(): ethers.providers.JsonRpcProvider {
+    return this._provider;
+  }
+
+  public get ethProvider(): EnhancedWallet {
+    if (!this.isConnected) {
+      throw new Error(
+        'ETH provider (Wallet) unavailable. Please sign in before trying again.',
+      );
+    }
+    return this._wallet! as EnhancedWallet;
   }
 
   // Public methods to sign in:
-
   public signInWithPrivateKey(privateKey: string): void {
     if (this.isConnected) {
       throw new Error('Already signed in!');
     }
 
     this._wallet = new EnhancedWallet(privateKey, this.provider);
-    this._ethProvider = this._wallet as EnhancedWallet;
     this._isConnected = true;
   }
 
@@ -42,8 +49,7 @@ export class WalletSignerJsonRpc extends WalletSigner {
       throw new Error('Already signed in!');
     }
     const account: any = await decryptJsonWallet(encryptedJson, password);
-    this._wallet = new EnhancedWallet (account.privateKey, this.provider);
-    this._ethProvider = this._wallet as EnhancedWallet;
+    this._wallet = new EnhancedWallet(account.privateKey, this.provider);
     this._isConnected = true;
   }
 }

@@ -21,7 +21,7 @@ import { WalletSigner } from './walletSigner/walletSigner-module';
 const contractABI = abi;
 
 export class DesmoHub {
-  private isListening: boolean;
+  private _isListening: boolean;
   private _walletSigner: WalletSigner;
   private _isConnected: boolean;
   private contract: ethers.Contract;
@@ -43,7 +43,7 @@ export class DesmoHub {
   transactionSent$: Observable<ISentTransaction>;
 
   constructor(walletSigner: WalletSigner) {
-    this.isListening = false;
+    this._isListening = false;
 
     this.abiInterface = new ethers.utils.Interface(contractABI);
 
@@ -104,6 +104,10 @@ export class DesmoHub {
     return this._isConnected;
   }
 
+  public get isListening(): boolean {
+    return this._isListening;
+  }
+
   private attachListenerForNewEvents(eventFilter: any, listener: any) {
     // The following is a workaround that will stop to be required when ethers.js v6 will be released:
     // (see https://github.com/ethers-io/ethers.js/issues/2310)
@@ -122,7 +126,7 @@ export class DesmoHub {
     if (this.isListening) {
       return;
     }
-    this.isListening = true;
+    this._isListening = true;
 
     const ownerAddress: string = await this.wallet.getAddress();
 
@@ -172,7 +176,7 @@ export class DesmoHub {
     if (!this.isListening) {
       return;
     }
-    this.isListening = false;
+    this._isListening = false;
 
     this.provider.removeAllListeners();
   }

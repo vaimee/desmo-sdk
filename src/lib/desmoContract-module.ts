@@ -21,8 +21,7 @@ export class DesmoContract {
   private abiInterface: ethers.utils.Interface;
 
   private iexec: any;
-  private readonly appAddress: string;
-  private readonly callback: string;
+  private readonly callback: string = contractAddress;
   private readonly category: number;
   private dealId: string;
   private taskId: string;
@@ -44,16 +43,11 @@ export class DesmoContract {
       this.contract = this.contract.connect(this.wallet);
 
       try {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        this.iexec = new IExec({ ethProvider: this.wallet });
+        this.iexec = new IExec({ ethProvider: this._walletSigner.ethProvider });
       } catch (e) {
         throw new Error('Desmo Contract could not connect with iExec');
       }
     }
-
-    this.appAddress = '0x6b04bAa0e557d1c570Fb2f5e66fF698D39A5a220';
-    this.callback = '0x0626BEd7C648B6024DC7Bd3b71f02b789C5EE1E9';
 
     this.category = 0;
     this.dealId = '';
@@ -73,9 +67,7 @@ export class DesmoContract {
     this.contract = this.contract.connect(this.wallet);
 
     try {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      this.iexec = new IExec({ ethProvider: this.wallet });
+      this.iexec = new IExec({ ethProvider: this._walletSigner.ethProvider });
     } catch (e) {
       throw new Error('Desmo Contract could not connect with iExec');
     }
@@ -95,15 +87,15 @@ export class DesmoContract {
     return this._isConnected;
   }
 
-  private async fetchAppOrder(): Promise<AppOrder> {
+  private async fetchAppOrder(appAddress: string): Promise<AppOrder> {
     const { orders: appOrders } = await this.iexec.orderbook.fetchAppOrderbook(
-      this.appAddress,
+      appAddress,
     );
 
     const appOrder = appOrders && appOrders[0] && appOrders[0].order;
 
     if (!appOrder) {
-      throw Error(`no apporder found for app ${this.appAddress}`);
+      throw Error(`no apporder found for app ${appAddress}`);
     } else {
       return appOrder;
     }
@@ -136,7 +128,11 @@ export class DesmoContract {
     return deal.callback;
   }
 
-  public async buyQuery(requestID: ethers.Bytes, query: string): Promise<void> {
+  public async buyQuery(
+    requestID: ethers.Bytes,
+    query: string,
+    appAddress: string,
+  ): Promise<void> {
     if (!this.isConnected) {
       throw new Error(
         'This method requires the wallet signer to be already signed-in!',
@@ -144,7 +140,7 @@ export class DesmoContract {
     }
 
     try {
-      const resultAppOrder: AppOrder = await this.fetchAppOrder();
+      const resultAppOrder: AppOrder = await this.fetchAppOrder(appAddress);
 
       const resultWorkerPoolOrder: WorkerpoolOrder =
         await this.fetchWorkerPoolOrder();
@@ -153,7 +149,7 @@ export class DesmoContract {
       const userAddress = await this.iexec.wallet.getAddress();
 
       const requestOrderToSign = await this.iexec.order.createRequestorder({
-        app: this.appAddress,
+        app: appAddress,
         appmaxprice: resultAppOrder.appprice,
         workerpoolmaxprice: resultWorkerPoolOrder.workerpoolprice,
         requester: userAddress,

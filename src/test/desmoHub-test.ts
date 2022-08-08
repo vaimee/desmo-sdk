@@ -50,11 +50,10 @@ describe('DesmoHub Tests', function () {
 
   describe('Disable', function () {
     it('should disable my TDD', async () => {
+      const eventPromise = firstValueFrom(desmohub.tddDisabled$);
       await desmohub.disableTDD();
+      const event: ITDDDisabledEvent = await eventPromise;
 
-      const event: ITDDDisabledEvent = await firstValueFrom(
-        desmohub.tddDisabled$,
-      );
       expect(event.url).to.equal(myTDDUrl);
 
       const myTDDObject = await desmohub.getTDD();
@@ -64,11 +63,10 @@ describe('DesmoHub Tests', function () {
 
   describe('Enable', function () {
     it('should enable a tdd', async () => {
+      const eventPromise = firstValueFrom(desmohub.tddEnabled$);
       await desmohub.enableTDD();
+      const event: ITDDEnabledEvent = await eventPromise;
 
-      const event: ITDDEnabledEvent = await firstValueFrom(
-        desmohub.tddEnabled$,
-      );
       expect(event.url).to.equal(myTDDUrl);
 
       const myTDDObject = await desmohub.getTDD();
@@ -78,24 +76,27 @@ describe('DesmoHub Tests', function () {
 
   describe('TDDs Request ID', function () {
     it('should retrieve a newly-generated request ID', async () => {
+      const eventPromise = firstValueFrom(desmohub.requestID$);
       await desmohub.getNewRequestID();
+      const event: IRequestIDEvent = await eventPromise;
 
-      const event: IRequestIDEvent = await firstValueFrom(desmohub.requestID$);
       expect(event.requestID.length == 64 + 2); // 64 c
     });
 
     it('should retrieve the newly-generated list of selected TDDs', async () => {
+      const eventPromise = firstValueFrom(desmohub.requestID$);
       await desmohub.getNewRequestID();
+      const event: IRequestIDEvent = await eventPromise;
 
-      const event: IRequestIDEvent = await firstValueFrom(desmohub.requestID$);
       const selectedTDDs = await desmohub.getTDDByRequestID(event.requestID);
       expect(selectedTDDs.length > 0);
     });
 
     it('should retrieve the scores of the newly-generated list of selected TDDs', async () => {
+      const eventPromise = firstValueFrom(desmohub.requestID$);
       await desmohub.getNewRequestID();
-
-      const event: IRequestIDEvent = await firstValueFrom(desmohub.requestID$);
+      const event: IRequestIDEvent = await eventPromise;
+      
       const tddScores = await desmohub.getScoresByRequestID(event.requestID);
       expect(tddScores.length > 0);
     });
