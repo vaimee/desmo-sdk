@@ -1,4 +1,4 @@
-export const contractAddress = "0xCe33c8EC9d418bB1e1095bB4C6d99834C7996BF0";
+export const contractAddress = "0x579afd382E18c9BB5fDDD26f99Dd5aE093Ca5ff9";
 
 export const abi = [
   {
@@ -6,6 +6,11 @@ export const abi = [
       {
         "internalType": "address",
         "name": "desmoHubAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "iexecproxy",
         "type": "address"
       }
     ],
@@ -17,28 +22,87 @@ export const abi = [
     "inputs": [
       {
         "indexed": true,
+        "internalType": "address",
+        "name": "previousOwner",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "OwnershipTransferred",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
         "internalType": "bytes32",
         "name": "id",
         "type": "bytes32"
       },
       {
+        "components": [
+          {
+            "internalType": "bytes32",
+            "name": "requestID",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "taskID",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "bytes",
+            "name": "result",
+            "type": "bytes"
+          }
+        ],
         "indexed": false,
-        "internalType": "bytes",
-        "name": "_calldata",
-        "type": "bytes"
+        "internalType": "struct Desmo.QueryResult",
+        "name": "result",
+        "type": "tuple"
       }
     ],
-    "name": "QueryResult",
+    "name": "QueryCompleted",
     "type": "event"
   },
   {
-    "inputs": [],
-    "name": "desmoHub",
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "taskID",
+        "type": "bytes32"
+      }
+    ],
+    "name": "getQueryResult",
     "outputs": [
       {
-        "internalType": "contract DesmoLDHub",
-        "name": "",
-        "type": "address"
+        "components": [
+          {
+            "internalType": "bytes32",
+            "name": "requestID",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "taskID",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "bytes",
+            "name": "result",
+            "type": "bytes"
+          }
+        ],
+        "internalType": "struct Desmo.QueryResult",
+        "name": "result",
+        "type": "tuple"
       }
     ],
     "stateMutability": "view",
@@ -48,16 +112,33 @@ export const abi = [
     "inputs": [
       {
         "internalType": "bytes32",
-        "name": "_oracleId",
+        "name": "requestID",
         "type": "bytes32"
       }
     ],
-    "name": "getRaw",
+    "name": "getQueryResultByRequestID",
     "outputs": [
       {
-        "internalType": "bytes",
-        "name": "bytesValue",
-        "type": "bytes"
+        "components": [
+          {
+            "internalType": "bytes32",
+            "name": "requestID",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "taskID",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "bytes",
+            "name": "result",
+            "type": "bytes"
+          }
+        ],
+        "internalType": "struct Desmo.QueryResult",
+        "name": "result",
+        "type": "tuple"
       }
     ],
     "stateMutability": "view",
@@ -142,15 +223,28 @@ export const abi = [
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "owner",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "bytes32",
-        "name": "id",
+        "name": "taskID",
         "type": "bytes32"
       },
       {
         "internalType": "bytes",
-        "name": "_calldata",
+        "name": "data",
         "type": "bytes"
       }
     ],
@@ -160,22 +254,56 @@ export const abi = [
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "renounceOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
-        "internalType": "bytes",
-        "name": "requestID",
-        "type": "bytes"
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
       }
     ],
-    "name": "viewScores",
-    "outputs": [
+    "name": "transferOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
       {
-        "internalType": "bytes",
-        "name": "",
-        "type": "bytes"
+        "internalType": "address",
+        "name": "authorizedApp",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "authorizedDataset",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "authorizedWorkerpool",
+        "type": "address"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "requiredtag",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "uint256",
+        "name": "requiredtrust",
+        "type": "uint256"
       }
     ],
-    "stateMutability": "view",
+    "name": "updateEnv",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   }
 ];

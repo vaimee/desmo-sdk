@@ -1,4 +1,4 @@
-export const contractAddress = '0xb2766acEFFC0Ba82Ee921e34156C950B07e8760B';
+export const contractAddress = '0xe3eb8F758994e7fdf904010B33D9340728906bE5';
 
 export const abi = [
   {
@@ -161,7 +161,7 @@ export const abi = [
             "type": "uint256"
           }
         ],
-        "internalType": "struct DesmoLDHub.TDD",
+        "internalType": "struct DesmoHub.TDD",
         "name": "",
         "type": "tuple"
       }
