@@ -176,7 +176,12 @@ export class DesmoContract {
   }
 
   // TODO decode the result
-  public async getQueryResult(): Promise<any> {
+  public async getQueryResult(): Promise<{
+    requestId: string;
+    taskId: string;
+    result: string;
+  }> {
+    const myIexec = this.iexec as IExec;
     if (!this.isConnected) {
       throw new Error(
         'This method requires the wallet signer to be already signed-in!',
@@ -185,8 +190,10 @@ export class DesmoContract {
 
     const taskID: string = await this.retrieveTaskID();
     try {
-      const result: string = await this.iexec.task.show(taskID);
-      console.log(`Query result: ${result}`);
+      const tx = await this.contract.receiveResult(taskID, "0x00");
+      await tx.wait();
+
+      const result = this.contract.getQueryResult(taskID);
       return result;
     } catch (e) {
       console.log(e);
