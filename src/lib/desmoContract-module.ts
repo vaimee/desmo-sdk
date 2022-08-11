@@ -154,7 +154,7 @@ export class DesmoContract {
         workerpoolmaxprice: resultWorkerPoolOrder.workerpoolprice,
         requester: userAddress,
         volume: 1,
-        params: requestID.toString() + ' | ' + query,
+        params: requestID.toString() + ' ' + query,
         category: this.category,
         callback: this.callback,
       });
@@ -186,22 +186,27 @@ export class DesmoContract {
         'This method requires the wallet signer to be already signed-in!',
       );
     }
-
+    
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    const self = this;
     return new Promise( (resolve, reject) => {
-      const interval = setInterval(async () => {
-          const taskId = await this.retrieveTaskID();
+      (function loop(){
+        setTimeout(async () => {
+          const taskId = await self.retrieveTaskID();
           const taskDetail = await myIexec.task.show(taskId);
           console.log(`The status of the task ${taskId} is ${taskDetail.statusName}`);
           if (taskDetail.statusName === TaskStatus.COMPLETED) {
-            clearInterval(interval);
-            const tx = await this.contract.receiveResult(taskId, '0x00');
+            const tx = await self.contract.receiveResult(taskId, '0x00');
             await tx.wait();
-            const result = this.contract.getQueryResult(taskId);
+            const result = await self.contract.getQueryResult(taskId);
             // TODO: Decode the result
             resolve({ requestId: '', taskId, result });
+          } else {
+            loop();
           }
-        }, 1000);
-      });
+        }, 1000)
+      })();
+    });
   }
 
   // TODO access a different source with the address
