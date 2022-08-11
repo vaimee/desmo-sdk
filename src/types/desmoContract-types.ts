@@ -29,3 +29,7 @@ export interface WorkerpoolOrder {
     salt: string,
     sign: string
 }
+
+export enum TaskStatus {
+    COMPLETED = 'COMPLETED',
+}

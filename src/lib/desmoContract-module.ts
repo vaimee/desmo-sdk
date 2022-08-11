@@ -6,7 +6,7 @@
 
 import { contractAddress, abi } from '../resources/desmoContract-config';
 
-import { AppOrder, WorkerpoolOrder } from '../types';
+import { AppOrder, TaskStatus, WorkerpoolOrder } from '../types';
 
 import { ethers } from 'ethers';
 import { WalletSigner } from './walletSigner/walletSigner-module';
@@ -175,7 +175,6 @@ export class DesmoContract {
     }
   }
 
-  // TODO decode the result
   public async getQueryResult(): Promise<{
     requestId: string;
     taskId: string;
@@ -188,17 +187,21 @@ export class DesmoContract {
       );
     }
 
-    const taskID: string = await this.retrieveTaskID();
-    try {
-      const tx = await this.contract.receiveResult(taskID, "0x00");
-      await tx.wait();
-
-      const result = this.contract.getQueryResult(taskID);
-      return result;
-    } catch (e) {
-      console.log(e);
-      throw Error(`Error to retrieve result: ${e}`);
-    }
+    return new Promise( (resolve, reject) => {
+      const interval = setInterval(async () => {
+          const taskId = await this.retrieveTaskID();
+          const taskDetail = await myIexec.task.show(taskId);
+          console.log(`The status of the task ${taskId} is ${taskDetail.statusName}`);
+          if (taskDetail.statusName === TaskStatus.COMPLETED) {
+            clearInterval(interval);
+            const tx = await this.contract.receiveResult(taskId, '0x00');
+            await tx.wait();
+            const result = this.contract.getQueryResult(taskId);
+            // TODO: Decode the result
+            resolve({ requestId: '', taskId, result });
+          }
+        }, 1000);
+      });
   }
 
   // TODO access a different source with the address
