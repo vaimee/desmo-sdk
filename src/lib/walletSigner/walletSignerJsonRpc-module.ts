@@ -4,7 +4,6 @@
  * exporting your lib modules from the ./src/index.ts entrypoint.
  */
 
-import { decryptJsonWallet } from '@ethersproject/json-wallets';
 import { ethers } from 'ethers';
 import { EnhancedWallet } from 'iexec/dist/common/utils/signers';
 import { WalletSigner } from './walletSigner-module';
@@ -48,7 +47,10 @@ export class WalletSignerJsonRpc extends WalletSigner {
     if (this.isConnected) {
       throw new Error('Already signed in!');
     }
-    const account: any = await decryptJsonWallet(encryptedJson, password);
+    const account: ethers.Wallet = await ethers.Wallet.fromEncryptedJson(
+      encryptedJson,
+      password,
+    );
     this._wallet = new EnhancedWallet(account.privateKey, this.provider);
     this._isConnected = true;
   }

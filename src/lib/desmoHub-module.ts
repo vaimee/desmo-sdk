@@ -78,7 +78,7 @@ export class DesmoHub {
     this.transactionSent$ = this.TRANSACTION_SENT.asObservable();
   }
 
-  public connect() {
+  public connect(): void {
     if (this.isConnected) {
       throw new Error('The provided wallet signer is already connected!');
     }
@@ -108,7 +108,10 @@ export class DesmoHub {
     return this._isListening;
   }
 
-  private attachListenerForNewEvents(eventFilter: any, listener: any) {
+  private attachListenerForNewEvents(
+    eventFilter: ethers.EventFilter,
+    listener: ethers.providers.Listener,
+  ): void {
     // The following is a workaround that will stop to be required when ethers.js v6 will be released:
     // (see https://github.com/ethers-io/ethers.js/issues/2310)
     this.provider.once('block', () => {
@@ -116,7 +119,7 @@ export class DesmoHub {
     });
   }
 
-  public async startListeners() {
+  public async startListeners(): Promise<void> {
     if (!this.isConnected) {
       throw new Error(
         'This method requires the wallet signer to be already signed-in!',
@@ -124,14 +127,14 @@ export class DesmoHub {
     }
 
     if (this.isListening) {
-      return;
+      throw new Error('Listeners are already active!');
     }
     this._isListening = true;
 
     const ownerAddress: string = await this.wallet.getAddress();
 
     const filterCreated = this.contract.filters.TDDCreated(ownerAddress);
-    this.attachListenerForNewEvents(filterCreated, (event: any) => {
+    this.attachListenerForNewEvents(filterCreated, (event: ethers.Event) => {
       const parsedEvent = this.abiInterface.parseLog(event);
 
       this.TDD_CREATED.next({
@@ -143,7 +146,7 @@ export class DesmoHub {
     });
 
     const filterDisabled = this.contract.filters.TDDDisabled(ownerAddress);
-    this.attachListenerForNewEvents(filterDisabled, (event: any) => {
+    this.attachListenerForNewEvents(filterDisabled, (event: ethers.Event) => {
       const parsedEvent = this.abiInterface.parseLog(event);
 
       this.TDD_DISABLED.next({
@@ -153,7 +156,7 @@ export class DesmoHub {
     });
 
     const filterEnabled = this.contract.filters.TDDEnabled(ownerAddress);
-    this.attachListenerForNewEvents(filterEnabled, (event: any) => {
+    this.attachListenerForNewEvents(filterEnabled, (event: ethers.Event) => {
       const parsedEvent = this.abiInterface.parseLog(event);
 
       this.TDD_ENABLED.next({
@@ -163,7 +166,7 @@ export class DesmoHub {
     });
 
     const filterRequestID = this.contract.filters.RequestID();
-    this.attachListenerForNewEvents(filterRequestID, (event: any) => {
+    this.attachListenerForNewEvents(filterRequestID, (event: ethers.Event) => {
       const parsedEvent = this.abiInterface.parseLog(event);
 
       this.REQUEST_ID.next({
@@ -172,9 +175,9 @@ export class DesmoHub {
     });
   }
 
-  public stopListeners() {
+  public stopListeners(): void {
     if (!this.isListening) {
-      return;
+      throw new Error('Listeners are already stopped!');
     }
     this._isListening = false;
 

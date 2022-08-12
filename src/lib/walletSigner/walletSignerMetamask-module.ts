@@ -10,14 +10,18 @@ import { WalletSigner } from './walletSigner-module';
 export class WalletSignerMetamask extends WalletSigner {
   protected _provider: ethers.providers.Web3Provider;
 
-  constructor(private _window_ethereum: any) {
+  constructor(
+    private _windowEthereum: {
+      selectedAddress: string;
+    } & ethers.providers.ExternalProvider,
+  ) {
     super();
     /**
      * By specifying the correct chainID (133 for Viviani), the provider will emit an error
      * when trying to interact with a different network:
      */
-    this._provider = new ethers.providers.Web3Provider(_window_ethereum, 133);
-    this._isConnected = this._window_ethereum.selectedAddress !== null;
+    this._provider = new ethers.providers.Web3Provider(_windowEthereum, 133);
+    this._isConnected = this._windowEthereum.selectedAddress !== null;
     if (this.isConnected) {
       this._wallet = this.provider.getSigner();
     }
@@ -29,7 +33,7 @@ export class WalletSignerMetamask extends WalletSigner {
   }
 
   public get ethProvider(): ethers.providers.ExternalProvider {
-    return this._window_ethereum as ethers.providers.ExternalProvider;
+    return this._windowEthereum as ethers.providers.ExternalProvider;
   }
 
   // Public methods to sign in:
@@ -43,9 +47,11 @@ export class WalletSignerMetamask extends WalletSigner {
       this._isConnected = true;
     } catch (error: any) {
       this._isConnected = false;
-      if (error.code === 4001) {
+      if ('code' in error && error.code === 4001) {
         // User chose not to sign-in!
-        throw new Error("You may need to sign-in in order to get full access to the Dapp features!");
+        throw new Error(
+          'You may need to sign-in in order to get full access to the Dapp features!',
+        );
       } else {
         throw error;
       }
