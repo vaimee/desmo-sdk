@@ -23,12 +23,12 @@ export class WalletSignerJsonRpc extends WalletSigner {
   }
 
   public get ethProvider(): EnhancedWallet {
-    if (!this.isConnected) {
+    if (!this._wallet === undefined) {
       throw new Error(
         'ETH provider (Wallet) unavailable. Please sign in before trying again.',
       );
     }
-    return this._wallet! as EnhancedWallet;
+    return this._wallet as EnhancedWallet;
   }
 
   // Public methods to sign in:

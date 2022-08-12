@@ -21,12 +21,12 @@
    public abstract get ethProvider(): EnhancedWallet | ExternalProvider;
 
    public get wallet(): ethers.Signer {
-     if (!this.isConnected) {
+     if (this._wallet === undefined) {
        throw new Error(
          'Wallet unavailable. Please sign in before trying again.',
        );
      }
-     return this._wallet!;
+     return this._wallet;
    }
 
    public get isConnected(): boolean {
