@@ -6,30 +6,34 @@
  * of a published npm module use the '.ts' extension instead.
  */
 
+import { Tag } from "iexec/dist/lib/types";
+
 export interface AppOrder {
-    app: string,
-    appprice: number,
-    volume: number,
-    tag: string,
-    datasetrestrict: string,
-    workerpoolrestrict: string,
-    requesterrestrict: string,
-    salt: string,
-    sign: string
+  app: string;
+  appprice: number;
+  volume: number;
+  tag: string;
+  datasetrestrict: string;
+  workerpoolrestrict: string;
+  requesterrestrict: string;
+  salt: string;
+  sign: string;
 }
 
 export interface WorkerpoolOrder {
-    workerpool: string,
-    workerpoolprice: number
-    volume: number,
-    tag: string,
-    datasetrestrict: string,
-    workerpoolrestrict: string,
-    requesterrestrict: string,
-    salt: string,
-    sign: string
+  workerpool: string;
+  workerpoolprice: number;
+  volume: number;
+  tag: Tag;
+  category: number;
+  trust: number;
+  apprestrict: string;
+  datasetrestrict: string;
+  requesterrestrict: string;
+  salt: string;
+  sign: string;
 }
 
 export enum TaskStatus {
-    COMPLETED = 'COMPLETED',
+  COMPLETED = 'COMPLETED',
 }

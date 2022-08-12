@@ -96,7 +96,7 @@ describe('DesmoHub Tests', function () {
       const eventPromise = firstValueFrom(desmohub.requestID$);
       await desmohub.getNewRequestID();
       const event: IRequestIDEvent = await eventPromise;
-      
+
       const tddScores = await desmohub.getScoresByRequestID(event.requestID);
       expect(tddScores.length > 0);
     });

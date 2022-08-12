@@ -6,6 +6,6 @@
  * of a published npm module use the '.ts' extension instead.
  */
 
-export * from "./desmoHub-types";
-export * from "./desmoContract-types";
+export * from './desmoHub-types';
+export * from './desmoContract-types';
 export default undefined;

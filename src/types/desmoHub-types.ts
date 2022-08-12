@@ -6,12 +6,12 @@
  * of a published npm module use the '.ts' extension instead.
  */
 
-import { ethers } from "ethers";
+import { ethers } from 'ethers';
 
 export interface ITDD {
   url: string;
   owner: string;
-  disabled : boolean;
+  disabled: boolean;
   score: ethers.BigNumber;
 }
 
