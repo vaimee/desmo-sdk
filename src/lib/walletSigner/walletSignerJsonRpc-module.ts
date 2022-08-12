@@ -9,7 +9,7 @@ import { EnhancedWallet } from 'iexec/dist/common/utils/signers';
 import { WalletSigner } from './walletSigner-module';
 
 export class WalletSignerJsonRpc extends WalletSigner {
-  protected _provider: ethers.providers.JsonRpcProvider;
+  private _provider: ethers.providers.JsonRpcProvider;
 
   constructor(private rpcUrl: string) {
     super();

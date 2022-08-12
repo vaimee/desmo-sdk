@@ -8,7 +8,7 @@ import { ethers } from 'ethers';
 import { WalletSigner } from './walletSigner-module';
 
 export class WalletSignerMetamask extends WalletSigner {
-  protected _provider: ethers.providers.Web3Provider;
+  private _provider: ethers.providers.Web3Provider;
 
   constructor(
     private _windowEthereum: {
