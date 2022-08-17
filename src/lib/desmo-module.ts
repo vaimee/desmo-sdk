@@ -18,7 +18,7 @@ export class Desmo {
   private contract: ethers.Contract;
   private abiInterface: ethers.utils.Interface;
 
-  private iexec: any;
+  private iexec?: IExec;
   private readonly callback: string = contractAddress;
   private readonly category: number;
   private dealId: string;
@@ -98,6 +98,9 @@ export class Desmo {
   }
 
   private async fetchAppOrder(appAddress: string): Promise<AppOrder> {
+    if (this.iexec === undefined) {
+      throw new Error('A connection to iExec is required!');
+    }
     const { orders: appOrders } = await this.iexec.orderbook.fetchAppOrderbook(
       appAddress,
     );
@@ -105,13 +108,16 @@ export class Desmo {
     const appOrder = appOrders && appOrders[0] && appOrders[0].order;
 
     if (!appOrder) {
-      throw Error(`no apporder found for app ${appAddress}`);
+      throw new Error(`no apporder found for app ${appAddress}`);
     } else {
-      return appOrder;
+      return appOrder as AppOrder;
     }
   }
 
   private async fetchWorkerPoolOrder(): Promise<WorkerpoolOrder> {
+    if (this.iexec === undefined) {
+      throw new Error('A connection to iExec is required!');
+    }
     const { orders: workerpoolOrders } =
       await this.iexec.orderbook.fetchWorkerpoolOrderbook({
         category: this.category,
@@ -121,18 +127,24 @@ export class Desmo {
       workerpoolOrders && workerpoolOrders[0] && workerpoolOrders[0].order;
 
     if (!workerpoolOrder) {
-      throw Error(`no workerpoolorder found for category ${this.category}`);
+      throw new Error(`no workerpoolorder found for category ${this.category}`);
     } else {
-      return workerpoolOrder;
+      return workerpoolOrder as WorkerpoolOrder;
     }
   }
 
   private async retrieveTaskID(): Promise<string> {
+    if (this.iexec === undefined) {
+      throw new Error('A connection to iExec is required!');
+    }
     const deal = await this.iexec.deal.show(this.dealId);
     return (this.taskId = deal.tasks['0']);
   }
 
   private async retrieveCallbackAddress(): Promise<string> {
+    if (this.iexec === undefined) {
+      throw new Error('A connection to iExec is required!');
+    }
     const deal = await this.iexec.deal.show(this.dealId);
     //console.log(deal);
     return deal.callback;
@@ -185,10 +197,8 @@ await desmoContract.buyQuery(
     query: string,
     appAddress: string,
   ): Promise<void> {
-    if (!this.isConnected) {
-      throw new Error(
-        'This method requires the wallet signer to be already signed-in!',
-      );
+    if (this.iexec === undefined) {
+      throw new Error('A connection to iExec is required!');
     }
 
     try {
@@ -208,6 +218,8 @@ await desmoContract.buyQuery(
         volume: 1,
         params: requestID.toString() + ' ' + query,
         category: this.category,
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
         callback: this.callback,
       });
 
@@ -235,20 +247,22 @@ await desmoContract.buyQuery(
     taskId: string;
     result: string;
   }> {
-    const myIexec = this.iexec as IExec;
     if (!this.isConnected) {
       throw new Error(
         'This method requires the wallet signer to be already signed-in!',
       );
     }
-
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const self = this;
     return new Promise((resolve, reject) => {
       (function loop(): void {
         setTimeout(async () => {
+          if (self.iexec === undefined) {
+            reject('A connection to iExec is required!');
+            return;
+          }
           const taskId = await self.retrieveTaskID();
-          const taskDetail = await myIexec.task.show(taskId);
+          const taskDetail = await self.iexec.task.show(taskId);
           console.log(
             `The status of the task ${taskId} is ${taskDetail.statusName}`,
           );
@@ -290,7 +304,7 @@ await desmoContract.buyQuery(
       }
     } catch (e) {
       console.log(e);
-      throw Error(`Error to retrieve result: ${e}`);
+      throw new Error(`Error to retrieve result: ${e}`);
     }
   }
 }
