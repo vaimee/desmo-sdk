@@ -5,12 +5,12 @@
  */
 
 import { firstValueFrom } from 'rxjs';
+import { DesmoHub } from '../lib/desmoHub-module';
 import {
-  DesmoHub,
   IRequestIDEvent,
   ITDDDisabledEvent,
   ITDDEnabledEvent,
-} from '..';
+} from '../types/desmoHub-types';
 import { WalletSignerJsonRpc } from '@/walletSigner/walletSignerJsonRpc-module';
 import 'mocha';
 import { chainURL, myTDDUrl, privateKEY } from './config';

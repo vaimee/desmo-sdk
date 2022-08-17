@@ -12,7 +12,7 @@ import {
   OperationType,
   IRequestIDEvent,
   ITDD,
-} from '../types';
+} from '../types/desmoHub-types';
 import { ethers } from 'ethers';
 import { contractAddress, abi } from '../resources/desmoHub-config';
 import { Observable, Subject } from 'rxjs';
