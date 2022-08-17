@@ -14,11 +14,10 @@ import {
   ITDD,
 } from '../types/desmoHub-types';
 import { ethers } from 'ethers';
-import { contractAddress, abi } from '../resources/desmoHub-config';
+import { contractAddress, abi as contractABI } from '../resources/desmoHub-config';
 import { Observable, Subject } from 'rxjs';
 import { WalletSigner } from './walletSigner/walletSigner-module';
 
-const contractABI = abi;
 
 export class DesmoHub {
   private _isListening: boolean;

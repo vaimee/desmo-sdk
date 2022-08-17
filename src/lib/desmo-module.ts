@@ -4,7 +4,7 @@
  * exporting your lib modules from the ./src/index.ts entrypoint.
  */
 
-import { contractAddress, abi } from '../resources/desmo-config';
+import { contractAddress, abi as contractABI } from '../resources/desmo-config';
 
 import { AppOrder, TaskStatus, WorkerpoolOrder } from '../types/desmo-types';
 
@@ -12,7 +12,6 @@ import { ethers } from 'ethers';
 import { WalletSigner } from './walletSigner/walletSigner-module';
 import { IExec } from 'iexec';
 
-const contractABI = abi;
 
 export class Desmo {
   private _walletSigner: WalletSigner;
