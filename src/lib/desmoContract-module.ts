@@ -54,7 +54,7 @@ export class DesmoContract {
     this.taskId = '';
   }
 
-  public connect() {
+  public connect(): void {
     if (this.isConnected) {
       throw new Error('The provided wallet signer is already connected!');
     }
@@ -190,7 +190,7 @@ export class DesmoContract {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const self = this;
     return new Promise( (resolve, reject) => {
-      (function loop(){
+      (function loop(): void {
         setTimeout(async () => {
           const taskId = await self.retrieveTaskID();
           const taskDetail = await myIexec.task.show(taskId);
@@ -210,7 +210,7 @@ export class DesmoContract {
   }
 
   // TODO access a different source with the address
-  public async verifyCallbackAddress(callbackAddress: string): Promise<any> {
+  public async verifyCallbackAddress(callbackAddress: string): Promise<string> {
     if (!this.isConnected) {
       throw new Error(
         'This method requires the wallet signer to be already signed-in!',
