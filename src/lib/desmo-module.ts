@@ -25,6 +25,10 @@ export class Desmo {
   private dealId: string;
   private taskId: string;
 
+  /**
+   * 
+   * @param walletSigner 
+   */
   constructor(walletSigner: WalletSigner) {
     this.abiInterface = new ethers.utils.Interface(contractABI);
 
@@ -52,7 +56,9 @@ export class Desmo {
     this.dealId = '';
     this.taskId = '';
   }
-
+/**
+ * connect the desmo contract to the wallet
+ */
   public connect(): void {
     if (this.isConnected) {
       throw new Error('The provided wallet signer is already connected!');
@@ -73,15 +79,21 @@ export class Desmo {
 
     this._isConnected = true;
   }
-
+/**
+ * @returns the provider used by the wallet signer
+ */
   public get provider(): ethers.providers.Provider {
     return this._walletSigner.provider;
   }
-
+/**
+ * @returns the wallet used by the current user
+ */
   public get wallet(): ethers.Signer {
     return this._walletSigner.wallet;
   }
-
+/**
+ * @returns whether the wallet signer is connected to the contract
+ */
   public get isConnected(): boolean {
     return this._isConnected;
   }
@@ -126,7 +138,13 @@ export class Desmo {
     //console.log(deal);
     return deal.callback;
   }
-
+/**
+ * This method is used to submit a query 
+ * 
+ * @param requestID 
+ * @param query 
+ * @param appAddress 
+ */
   public async buyQuery(
     requestID: ethers.Bytes,
     query: string,
@@ -173,7 +191,10 @@ export class Desmo {
       console.log(err);
     }
   }
-
+/**
+ * 
+ * @returns the result of the query 
+ */
   public async getQueryResult(): Promise<{
     requestId: string;
     taskId: string;
@@ -209,6 +230,11 @@ export class Desmo {
   }
 
   // TODO access a different source with the address
+  /**
+   * 
+   * @param callbackAddress 
+   * @returns 
+   */
   public async verifyCallbackAddress(callbackAddress: string): Promise<string> {
     if (!this.isConnected) {
       throw new Error(
