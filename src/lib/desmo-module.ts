@@ -142,7 +142,7 @@ export class Desmo {
  * This method is used to submit a query 
  * 
  * @param requestID 
- * @param query 
+ * @param query example-> {'prefixList':[{'abbreviation':'desmo','completeURI':'https://desmo.vaimee.it/'},{'abbreviation':'qudt','completeURI':'http://qudt.org/schema/qudt/'},{'abbreviation':'xsd','completeURI':'http://www.w3.org/2001/XMLSchema/'},{'abbreviation':'monas','completeURI':'https://pod.dasibreaker.vaimee.it/monas/'}],'property':{'identifier':'value','unit':'qudt:DEG_C','datatype':1},'staticFilter':'$[?(@["type"]=="Sensor")]'}'
  * @param appAddress 
  */
   public async buyQuery(

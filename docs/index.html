@@ -14,17 +14,113 @@
 <a href="#desmo-sdk" id="desmo-sdk" style="color: inherit; text-decoration: none;">
   <h1>DESMO-SDK</h1>
 </a>
+<p><a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>
+<img src="https://img.shields.io/badge/eslint-3A33D1?style=flat-square&logo=eslint&logoColor=white" alt="">
+<img src="https://img.shields.io/badge/prettier-1A2C34?style=flat-square&logo=prettier&logoColor=F7BA3E" alt=""></p>
 <p><strong>Overview</strong></p>
 <blockquote>
-<p>In the context of the <a href="https://github.com/vaimee/desmo/tree/c763cec12f6c9060a9f1a3335ff4cff60ece3df2">DESMO-LD</a> an  important part of the project relay on storing The Thing Description Directories (TDDs) URLs on-chain so that they can be selected to provide the query result and increase its score, thus the DESMO-SDK is a tool that provides all the features required to interact with then.</p>
+<p>In the context of the <a href="https://github.com/vaimee/desmo/tree/c763cec12f6c9060a9f1a3335ff4cff60ece3df2">DESMO-LD</a> an important part of the project relay on storing The Thing Description Directories (TDDs) URLs on-chain so that they can be selected to provide the query result and increase its score, thus the DESMO-SDK is a tool that provides all the features required to interact with them.</p>
 </blockquote>
-<p><a href="vaimee.com">VAIMEE</a> - <a href="https://twitter.com/MaVaimee">@MaVaimee</a> - <a href="mailto://info@vaimee.com">info@vaimee.com</a></p>
+<details>
+  <summary>Table of Contents</summary>
+  <ul>
+    <li>
+      <a href="#features">Features</a>
+    </li>
+    <li>
+      <a href="#installation">Installation</a>
+    </li>
+    <li>
+    <a href="#usage-examples">Usage Examples</a>
+    <ul>
+    <li>
+    <a href="#desmohub-contract">DesmoHub contract</a>
+    <ul>
+    <li><a href="#register-your-tdd">Register your TDD</a></li>
+    <li><a href="#get-your-tdd">Get your TDD</a></li>
+    </ul>
+    </li>
+    <li>
+    <a href="#desmo-contract">Desmo contract</a>
+    <ul>
+    <li><a href="#buy-a-query">Buy a query</a></li>
+    </ul>
+    </li>
+    </li>
+    </ul>
+    <li><a href="#documentation">Documentation</a></li>
+    <li><a href="#acknowledgments">Acknowledgments</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</details>
+
+
+<a href="#features" id="features" style="color: inherit; text-decoration: none;">
+  <h2>Features</h2>
+</a>
+<p>The Desmo-SDK provides an easy way to interact with the contracts defined in <a href="https://github.com/vaimee/desmo-contracts">desmo-contracts</a>.
+The Desmo-SDK provides functions to:</p>
+<ul>
+<li>Sign in your wallet with MetaMask or with a RPC provider</li>
+<li>Interact with the <a href="https://github.com/vaimee/desmo-contracts/blob/main/contracts/DesmoHub.sol">Desmo-Hub</a> and <a href="https://github.com/vaimee/desmo-contracts/blob/main/contracts/DesmoHub.sol">Desmo</a> contracts :<ul>
+<li>calling all the public function on the contracts</li>
+<li>retrieve the results with an event based approach</li>
+</ul>
+</li>
+</ul>
+
+<a href="#installation" id="installation" style="color: inherit; text-decoration: none;">
+  <h2>Installation</h2>
+</a>
+<p>Starting using the Desmo-SDK is really easy, just use the following command in your Node.js project:</p>
+<p><code>npm i @vaimee/desmold-sdk</code></p>
+
+<a href="#usage-examples" id="usage-examples" style="color: inherit; text-decoration: none;">
+  <h2>Usage Examples</h2>
+</a>
+
+<a href="#desmohub-contract" id="desmohub-contract" style="color: inherit; text-decoration: none;">
+  <h3>DesmoHub contract</h3>
+</a>
+
+<a href="#register-your-tdd" id="register-your-tdd" style="color: inherit; text-decoration: none;">
+  <h4>Register your TDD</h4>
+</a>
+<pre><code class="language-ts"><span class="hl-0">// Sign in with a RPC provider and a private key</span><br/><span class="hl-1">const</span><span class="hl-2"> </span><span class="hl-3">walletSigner</span><span class="hl-2">: </span><span class="hl-4">WalletSignerJsonRpc</span><span class="hl-2"> = </span><span class="hl-1">new</span><span class="hl-2"> </span><span class="hl-5">WalletSignerJsonRpc</span><span class="hl-2">(</span><span class="hl-6">chainURL</span><span class="hl-2">);</span><br/><span class="hl-6">walletSigner</span><span class="hl-2">.</span><span class="hl-5">signInWithPrivateKey</span><span class="hl-2">(</span><span class="hl-6">privateKEY</span><span class="hl-2">);</span><br/><span class="hl-0">// Otherwise Sign in with MetaMask</span><br/><span class="hl-0">// const walletSigner = new WalletSignerMetamask(window.ethereum);</span><br/><span class="hl-1">const</span><span class="hl-2"> </span><span class="hl-3">desmohub</span><span class="hl-2">: </span><span class="hl-4">DesmoHub</span><span class="hl-2"> = </span><span class="hl-1">new</span><span class="hl-2"> </span><span class="hl-5">DesmoHub</span><span class="hl-2">(</span><span class="hl-6">walletSigner</span><span class="hl-2">);</span><br/><span class="hl-0">// state changing methods work with an event based approach</span><br/><span class="hl-7">await</span><span class="hl-2"> </span><span class="hl-6">desmohub</span><span class="hl-2">.</span><span class="hl-5">startListeners</span><span class="hl-2">();</span><br/><span class="hl-6">desmoHub</span><span class="hl-2">.</span><span class="hl-6">tddCreated$</span><span class="hl-2">.</span><span class="hl-5">subscribe</span><span class="hl-2">(() </span><span class="hl-1">=&gt;</span><span class="hl-2"> </span><span class="hl-6">console</span><span class="hl-2">.</span><span class="hl-5">log</span><span class="hl-2">(</span><span class="hl-8">&#39;tdd created&#39;</span><span class="hl-2">));</span><br/><span class="hl-7">await</span><span class="hl-2"> </span><span class="hl-6">desmoHub</span><span class="hl-2">.</span><span class="hl-5">registerTDD</span><span class="hl-2">(</span><span class="hl-6">TDDUrl</span><span class="hl-2">);</span>
+</code></pre>
+
+<a href="#get-your-tdd" id="get-your-tdd" style="color: inherit; text-decoration: none;">
+  <h4>Get your TDD</h4>
+</a>
+<pre><code class="language-ts"><span class="hl-0">// Sign in with a RPC provider and a private key</span><br/><span class="hl-1">const</span><span class="hl-2"> </span><span class="hl-3">walletSigner</span><span class="hl-2">: </span><span class="hl-4">WalletSignerJsonRpc</span><span class="hl-2"> = </span><span class="hl-1">new</span><span class="hl-2"> </span><span class="hl-5">WalletSignerJsonRpc</span><span class="hl-2">(</span><span class="hl-6">chainURL</span><span class="hl-2">);</span><br/><span class="hl-6">walletSigner</span><span class="hl-2">.</span><span class="hl-5">signInWithPrivateKey</span><span class="hl-2">(</span><span class="hl-6">privateKEY</span><span class="hl-2">);</span><br/><span class="hl-0">// Otherwise Sign in with MetaMask</span><br/><span class="hl-0">// const walletSigner = new WalletSignerMetamask(window.ethereum);</span><br/><span class="hl-1">const</span><span class="hl-2"> </span><span class="hl-3">desmohub</span><span class="hl-2">: </span><span class="hl-4">DesmoHub</span><span class="hl-2"> = </span><span class="hl-1">new</span><span class="hl-2"> </span><span class="hl-5">DesmoHub</span><span class="hl-2">(</span><span class="hl-6">walletSigner</span><span class="hl-2">);</span><br/><span class="hl-0">// no need to listen for events -&gt; not a state changing method</span><br/><span class="hl-1">const</span><span class="hl-2"> </span><span class="hl-3">myTDDObject</span><span class="hl-2"> = </span><span class="hl-7">await</span><span class="hl-2"> </span><span class="hl-6">desmohub</span><span class="hl-2">.</span><span class="hl-5">getTDD</span><span class="hl-2">();</span>
+</code></pre>
+
+<a href="#desmo-contract" id="desmo-contract" style="color: inherit; text-decoration: none;">
+  <h3>Desmo Contract</h3>
+</a>
+
+<a href="#buy-a-query" id="buy-a-query" style="color: inherit; text-decoration: none;">
+  <h4>Buy a query</h4>
+</a>
+<pre><code class="language-ts"><span class="hl-0">// Sign in with a RPC provider and a private key</span><br/><span class="hl-1">const</span><span class="hl-2"> </span><span class="hl-3">walletSigner</span><span class="hl-2">: </span><span class="hl-4">WalletSignerJsonRpc</span><span class="hl-2"> = </span><span class="hl-1">new</span><span class="hl-2"> </span><span class="hl-5">WalletSignerJsonRpc</span><span class="hl-2">(</span><span class="hl-6">chainURL</span><span class="hl-2">);</span><br/><span class="hl-6">walletSigner</span><span class="hl-2">.</span><span class="hl-5">signInWithPrivateKey</span><span class="hl-2">(</span><span class="hl-6">privateKEY</span><span class="hl-2">);</span><br/><span class="hl-0">// Otherwise Sign in with MetaMask</span><br/><span class="hl-0">// const walletSigner = new WalletSignerMetamask(window.ethereum);</span><br/><span class="hl-1">const</span><span class="hl-2"> </span><span class="hl-3">desmohub</span><span class="hl-2">: </span><span class="hl-4">DesmoHub</span><span class="hl-2"> = </span><span class="hl-1">new</span><span class="hl-2"> </span><span class="hl-5">DesmoHub</span><span class="hl-2">(</span><span class="hl-6">walletSigner</span><span class="hl-2">);</span><br/><span class="hl-1">const</span><span class="hl-2"> </span><span class="hl-3">desmoContract</span><span class="hl-2"> = </span><span class="hl-1">new</span><span class="hl-2"> </span><span class="hl-5">DesmoContract</span><span class="hl-2">(</span><span class="hl-6">walletSigner</span><span class="hl-2">);</span><br/><span class="hl-1">const</span><span class="hl-2"> </span><span class="hl-3">eventPromise</span><span class="hl-2"> = </span><span class="hl-5">firstValueFrom</span><span class="hl-2">(</span><span class="hl-6">desmoHub</span><span class="hl-2">.</span><span class="hl-6">requestID$</span><span class="hl-2">);</span><br/><span class="hl-7">await</span><span class="hl-2"> </span><span class="hl-6">desmoHub</span><span class="hl-2">.</span><span class="hl-5">getNewRequestID</span><span class="hl-2">();</span><br/><span class="hl-1">const</span><span class="hl-2"> </span><span class="hl-3">event</span><span class="hl-2"> = </span><span class="hl-7">await</span><span class="hl-2"> </span><span class="hl-6">eventPromise</span><span class="hl-2">;</span><br/><span class="hl-7">await</span><span class="hl-2"> </span><span class="hl-6">desmoContract</span><span class="hl-2">.</span><span class="hl-5">buyQuery</span><span class="hl-2">(</span><br/><span class="hl-2">  </span><span class="hl-6">event</span><span class="hl-2">.</span><span class="hl-6">requestID</span><span class="hl-2">,</span><br/><span class="hl-2">  </span><span class="hl-4">JSON</span><span class="hl-2">.</span><span class="hl-5">stringify</span><span class="hl-2">(</span><span class="hl-6">query</span><span class="hl-2">),</span><br/><span class="hl-2">  </span><span class="hl-6">iExecDAppAddress</span><span class="hl-2">,</span><br/><span class="hl-2">);</span>
+</code></pre>
+<p>For further usage examples we suggest to go check out our <a href="https://github.com/vaimee/desmo-front">front-end</a> that make use of the Desmo-SDK</p>
+
+<a href="#documentation" id="documentation" style="color: inherit; text-decoration: none;">
+  <h2>Documentation</h2>
+</a>
+<p>Our code is well documented, if you have any doubt you can check our <a href="docs/modules.html">documentation page</a></p>
 
 <a href="#acknowledgments" id="acknowledgments" style="color: inherit; text-decoration: none;">
   <h2>Acknowledgments</h2>
 </a>
 <p><img src="https://github.com/vaimee/desmo/blob/c763cec12f6c9060a9f1a3335ff4cff60ece3df2/imgs/desmo-logo.png" alt="DESMO-LD"></p>
 <p>DESMO-SDK is founded by the <a href="https://ontochain.ngi.eu/content/desmo-ld">DESMO-LD project</a> inside the <a href="https://ontochain.ngi.eu/">ONTOCHAIN</a> european organization part of the <a href="https://www.ngi.eu/">Next Generation Internet</a> fund.</p>
+
+<a href="#contact" id="contact" style="color: inherit; text-decoration: none;">
+  <h2>Contact</h2>
+</a>
+<p><a href="vaimee.com">VAIMEE</a> - <a href="https://twitter.com/MaVaimee">@MaVaimee</a> - <a href="mailto://info@vaimee.com">info@vaimee.com</a></p>
 </div></div>
 <div class="col-4 col-menu menu-sticky-wrap menu-highlight">
 <div class="tsd-navigation settings">
