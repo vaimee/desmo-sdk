@@ -103,12 +103,10 @@ export class Desmo {
       appAddress,
     );
 
-    const appOrder = appOrders && appOrders[0] && appOrders[0].order;
-
-    if (!appOrder) {
+    if (appOrders.length <= 0) {
       throw new Error(`no apporder found for app ${appAddress}`);
     } else {
-      return appOrder as AppOrder;
+      return appOrders[0].order as AppOrder;
     }
   }
 
@@ -121,13 +119,10 @@ export class Desmo {
         category: this.category,
       });
 
-    const workerpoolOrder =
-      workerpoolOrders && workerpoolOrders[0] && workerpoolOrders[0].order;
-
-    if (!workerpoolOrder) {
+    if (workerpoolOrders.length <= 0) {
       throw new Error(`no workerpoolorder found for category ${this.category}`);
     } else {
-      return workerpoolOrder as WorkerpoolOrder;
+      return workerpoolOrders[0].order as WorkerpoolOrder;
     }
   }
 
