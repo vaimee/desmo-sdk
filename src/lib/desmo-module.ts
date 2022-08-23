@@ -22,7 +22,6 @@ export class Desmo {
   private readonly callback: string = contractAddress;
   private readonly category: number;
   private dealId: string;
-  private taskId: string;
 
   /**
    *
@@ -53,7 +52,6 @@ export class Desmo {
 
     this.category = 0;
     this.dealId = '';
-    this.taskId = '';
   }
   /**
    * connect the desmo contract to the wallet
@@ -138,7 +136,7 @@ export class Desmo {
       throw new Error('A connection to iExec is required!');
     }
     const deal = await this.iexec.deal.show(this.dealId);
-    return (this.taskId = deal.tasks['0']);
+    return deal.tasks['0'];
   }
 
   private async retrieveCallbackAddress(): Promise<string> {
