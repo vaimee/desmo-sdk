@@ -12,7 +12,6 @@ import { ethers } from 'ethers';
 import { WalletSigner } from './walletSigner/walletSigner-module';
 import { IExec } from 'iexec';
 
-
 export class Desmo {
   private _walletSigner: WalletSigner;
   private _isConnected: boolean;
@@ -26,8 +25,8 @@ export class Desmo {
   private taskId: string;
 
   /**
-   * 
-   * @param walletSigner 
+   *
+   * @param walletSigner
    */
   constructor(walletSigner: WalletSigner) {
     this.abiInterface = new ethers.utils.Interface(contractABI);
@@ -56,9 +55,9 @@ export class Desmo {
     this.dealId = '';
     this.taskId = '';
   }
-/**
- * connect the desmo contract to the wallet
- */
+  /**
+   * connect the desmo contract to the wallet
+   */
   public connect(): void {
     if (this.isConnected) {
       throw new Error('The provided wallet signer is already connected!');
@@ -79,21 +78,21 @@ export class Desmo {
 
     this._isConnected = true;
   }
-/**
- * @returns the provider used by the wallet signer
- */
+  /**
+   * @returns the provider used by the wallet signer
+   */
   public get provider(): ethers.providers.Provider {
     return this._walletSigner.provider;
   }
-/**
- * @returns the wallet used by the current user
- */
+  /**
+   * @returns the wallet used by the current user
+   */
   public get wallet(): ethers.Signer {
     return this._walletSigner.wallet;
   }
-/**
- * @returns whether the wallet signer is connected to the contract
- */
+  /**
+   * @returns whether the wallet signer is connected to the contract
+   */
   public get isConnected(): boolean {
     return this._isConnected;
   }
@@ -138,12 +137,48 @@ export class Desmo {
     //console.log(deal);
     return deal.callback;
   }
-/**
+  /**
  * This method is used to submit a query 
  * 
  * @param requestID 
- * @param query example-> {'prefixList':[{'abbreviation':'desmo','completeURI':'https://desmo.vaimee.it/'},{'abbreviation':'qudt','completeURI':'http://qudt.org/schema/qudt/'},{'abbreviation':'xsd','completeURI':'http://www.w3.org/2001/XMLSchema/'},{'abbreviation':'monas','completeURI':'https://pod.dasibreaker.vaimee.it/monas/'}],'property':{'identifier':'value','unit':'qudt:DEG_C','datatype':1},'staticFilter':'$[?(@["type"]=="Sensor")]'}'
+ * @param query
  * @param appAddress 
+ * 
+ * @example
+ * ```ts
+// Sign in with a RPC provider and a private key
+const walletSigner: WalletSignerJsonRpc = new WalletSignerJsonRpc(chainURL);
+walletSigner.signInWithPrivateKey(privateKEY);
+// Otherwise Sign in with MetaMask
+// const walletSigner = new WalletSignerMetamask(window.ethereum);
+const desmohub: DesmoHub = new DesmoHub(walletSigner);
+const desmoContract = new DesmoContract(walletSigner);
+const eventPromise = firstValueFrom(desmoHub.requestID$);
+await desmoHub.getNewRequestID();
+const event = await eventPromise;
+    const query = {
+      prefixList: [
+        { abbreviation: 'desmo', completeURI: 'https://desmo.vaimee.it/' },
+        { abbreviation: 'qudt', completeURI: 'http://qudt.org/schema/qudt/' },
+        {
+          abbreviation: 'xsd',
+          completeURI: 'http://www.w3.org/2001/XMLSchema/',
+        },
+        {
+          abbreviation: 'monas',
+          completeURI: 'https://pod.dasibreaker.vaimee.it/monas/',
+        },
+      ],
+      property: { identifier: 'value', unit: 'qudt:DEG_C', datatype: 1 },
+      staticFilter: '$[?(@["type"]=="Sensor")]',
+    };
+await desmoContract.buyQuery(
+  event.requestID,
+  JSON.stringify(query),
+  iExecDAppAddress,
+);
+``` 
+ * 
  */
   public async buyQuery(
     requestID: ethers.Bytes,
@@ -191,10 +226,10 @@ export class Desmo {
       console.log(err);
     }
   }
-/**
- * 
- * @returns the result of the query 
- */
+  /**
+   *
+   * @returns the result of the query
+   */
   public async getQueryResult(): Promise<{
     requestId: string;
     taskId: string;
@@ -206,15 +241,17 @@ export class Desmo {
         'This method requires the wallet signer to be already signed-in!',
       );
     }
-    
+
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const self = this;
-    return new Promise( (resolve, reject) => {
+    return new Promise((resolve, reject) => {
       (function loop(): void {
         setTimeout(async () => {
           const taskId = await self.retrieveTaskID();
           const taskDetail = await myIexec.task.show(taskId);
-          console.log(`The status of the task ${taskId} is ${taskDetail.statusName}`);
+          console.log(
+            `The status of the task ${taskId} is ${taskDetail.statusName}`,
+          );
           if (taskDetail.statusName === TaskStatus.COMPLETED) {
             const tx = await self.contract.receiveResult(taskId, '0x00');
             await tx.wait();
@@ -224,16 +261,16 @@ export class Desmo {
           } else {
             loop();
           }
-        }, 1000)
+        }, 1000);
       })();
     });
   }
 
   // TODO access a different source with the address
   /**
-   * 
-   * @param callbackAddress 
-   * @returns 
+   *
+   * @param callbackAddress
+   * @returns
    */
   public async verifyCallbackAddress(callbackAddress: string): Promise<string> {
     if (!this.isConnected) {
