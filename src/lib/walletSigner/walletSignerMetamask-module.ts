@@ -7,9 +7,15 @@
 import { ethers } from 'ethers';
 import { WalletSigner } from './walletSigner-module';
 
+/**
+ * This class extends the WalletSigner class and describe a signer that uses Metamask.
+ */
 export class WalletSignerMetamask extends WalletSigner {
   private _provider: ethers.providers.Web3Provider;
-
+/**
+ * 
+ * @param _windowEthereum the window.ethereum injected by Metamask
+ */
   constructor(
     private _windowEthereum: {
       selectedAddress: string;
@@ -28,6 +34,9 @@ export class WalletSignerMetamask extends WalletSigner {
   }
 
   // Public getters:
+  /**
+   * @returns the provider of the wallet signer.
+   */
   public get provider(): ethers.providers.Web3Provider {
     return this._provider;
   }
@@ -37,6 +46,9 @@ export class WalletSignerMetamask extends WalletSigner {
   }
 
   // Public methods to sign in:
+  /**
+   * Method to sign in using Metamask.
+   */
   public async connect(): Promise<void> {
     if (this.isConnected) {
       throw new Error('Already connected!');
