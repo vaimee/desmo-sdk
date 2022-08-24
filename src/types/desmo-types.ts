@@ -6,7 +6,7 @@
  * of a published npm module use the '.ts' extension instead.
  */
 
-import { Tag } from "iexec/dist/lib/types";
+import { Tag } from 'iexec/dist/lib/types';
 
 export interface AppOrder {
   app: string;
@@ -35,5 +35,8 @@ export interface WorkerpoolOrder {
 }
 
 export enum TaskStatus {
-  COMPLETED = 'COMPLETED',
+  TASK_UPDATED = 'TASK_UPDATED',
+  TASK_COMPLETED = 'TASK_COMPLETED',
+  TASK_TIMEDOUT = 'TASK_TIMEDOUT',
+  TASK_FAILED = 'TASK_FAILED',
 }
