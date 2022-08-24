@@ -103,7 +103,7 @@ export class Desmo {
       appAddress,
     );
 
-    if (appOrders.length <= 0) {
+    if (appOrders.length < 1) {
       throw new Error(`no apporder found for app ${appAddress}`);
     } else {
       return appOrders[0].order as AppOrder;
@@ -119,7 +119,7 @@ export class Desmo {
         category: this.category,
       });
 
-    if (workerpoolOrders.length <= 0) {
+    if (workerpoolOrders.length < 1) {
       throw new Error(`no workerpoolorder found for category ${this.category}`);
     } else {
       return workerpoolOrders[0].order as WorkerpoolOrder;
@@ -211,6 +211,7 @@ await desmoContract.buyQuery(
         volume: 1,
         params: requestID.toString() + ' ' + query,
         category: this.category,
+        // TODO: understand why the callback is needed and why the typing is wrong
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         callback: this.callback,
