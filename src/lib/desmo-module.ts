@@ -130,8 +130,8 @@ export class Desmo {
     if (this.iexec === undefined) {
       throw new Error('A connection to iExec is required!');
     }
-    const deal = await this.iexec.deal.show(this.dealId);
-    return deal.tasks['0'];
+    const { tasks } = await this.iexec.deal.show(this.dealId);
+    return tasks[0];
   }
 
   private async retrieveCallbackAddress(): Promise<string> {
