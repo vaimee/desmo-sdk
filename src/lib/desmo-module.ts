@@ -18,11 +18,10 @@ export class Desmo {
   private contract: ethers.Contract;
   private abiInterface: ethers.utils.Interface;
 
-  private iexec: any;
+  private iexec?: IExec;
   private readonly callback: string = contractAddress;
   private readonly category: number;
   private dealId: string;
-  private taskId: string;
 
   /**
    *
@@ -53,7 +52,6 @@ export class Desmo {
 
     this.category = 0;
     this.dealId = '';
-    this.taskId = '';
   }
   /**
    * connect the desmo contract to the wallet
@@ -98,41 +96,48 @@ export class Desmo {
   }
 
   private async fetchAppOrder(appAddress: string): Promise<AppOrder> {
+    if (this.iexec === undefined) {
+      throw new Error('A connection to iExec is required!');
+    }
     const { orders: appOrders } = await this.iexec.orderbook.fetchAppOrderbook(
       appAddress,
     );
 
-    const appOrder = appOrders && appOrders[0] && appOrders[0].order;
-
-    if (!appOrder) {
-      throw Error(`no apporder found for app ${appAddress}`);
+    if (appOrders.length < 1) {
+      throw new Error(`no apporder found for app ${appAddress}`);
     } else {
-      return appOrder;
+      return appOrders[0].order as AppOrder;
     }
   }
 
   private async fetchWorkerPoolOrder(): Promise<WorkerpoolOrder> {
+    if (this.iexec === undefined) {
+      throw new Error('A connection to iExec is required!');
+    }
     const { orders: workerpoolOrders } =
       await this.iexec.orderbook.fetchWorkerpoolOrderbook({
         category: this.category,
       });
 
-    const workerpoolOrder =
-      workerpoolOrders && workerpoolOrders[0] && workerpoolOrders[0].order;
-
-    if (!workerpoolOrder) {
-      throw Error(`no workerpoolorder found for category ${this.category}`);
+    if (workerpoolOrders.length < 1) {
+      throw new Error(`no workerpoolorder found for category ${this.category}`);
     } else {
-      return workerpoolOrder;
+      return workerpoolOrders[0].order as WorkerpoolOrder;
     }
   }
 
   private async retrieveTaskID(): Promise<string> {
-    const deal = await this.iexec.deal.show(this.dealId);
-    return (this.taskId = deal.tasks['0']);
+    if (this.iexec === undefined) {
+      throw new Error('A connection to iExec is required!');
+    }
+    const { tasks } = await this.iexec.deal.show(this.dealId);
+    return tasks[0];
   }
 
   private async retrieveCallbackAddress(): Promise<string> {
+    if (this.iexec === undefined) {
+      throw new Error('A connection to iExec is required!');
+    }
     const deal = await this.iexec.deal.show(this.dealId);
     //console.log(deal);
     return deal.callback;
@@ -185,10 +190,8 @@ await desmoContract.buyQuery(
     query: string,
     appAddress: string,
   ): Promise<void> {
-    if (!this.isConnected) {
-      throw new Error(
-        'This method requires the wallet signer to be already signed-in!',
-      );
+    if (this.iexec === undefined) {
+      throw new Error('A connection to iExec is required!');
     }
 
     try {
@@ -208,6 +211,9 @@ await desmoContract.buyQuery(
         volume: 1,
         params: requestID.toString() + ' ' + query,
         category: this.category,
+        // TODO: understand why the callback is needed and why the typing is wrong
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
         callback: this.callback,
       });
 
@@ -243,7 +249,7 @@ await desmoContract.buyQuery(
         'This method requires the wallet signer to be already signed-in!',
       );
     }
-
+    
     const taskId = await this.retrieveTaskID();
 
     const taskObservable = await this.iexec.task.obsTask(taskId, {
@@ -306,7 +312,7 @@ await desmoContract.buyQuery(
       }
     } catch (e) {
       console.log(e);
-      throw Error(`Error to retrieve result: ${e}`);
+      throw new Error(`Error to retrieve result: ${e}`);
     }
   }
 }
