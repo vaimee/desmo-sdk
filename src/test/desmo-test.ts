@@ -34,24 +34,34 @@ describe('Desmo Tests', function () {
     desmohub.stopListeners();
   });
 
-  beforeEach((done) => setTimeout(done, 20000));
-
   describe('Buy query process', function () {
-    it('should buy a query', async () => {
+    it('should buy a query and retrieve its result', async () => {
       const eventPromise = firstValueFrom(desmohub.requestID$);
       await desmohub.getNewRequestID();
       const event: IRequestIDEvent = await eventPromise;
 
+      const query = {
+        prefixList: [
+          { abbreviation: 'desmo', completeURI: 'https://desmo.vaimee.it/' },
+          { abbreviation: 'qudt', completeURI: 'http://qudt.org/schema/qudt/' },
+          {
+            abbreviation: 'xsd',
+            completeURI: 'http://www.w3.org/2001/XMLSchema/',
+          },
+          {
+            abbreviation: 'monas',
+            completeURI: 'https://pod.dasibreaker.vaimee.it/monas/',
+          },
+        ],
+        property: { identifier: 'value', unit: 'qudt:DEG_C', datatype: 1 },
+        staticFilter: '$[?(@["type"]=="Sensor")]',
+      };
       await buyer.buyQuery(
         event.requestID,
-        'test query',
+        JSON.stringify(query),
         '0x7529d35aD28eee02De4C1B3E5f8457ecce704775',
       );
 
-      // TODO
-    });
-
-    it('should retrieve the query result from chain', async () => {
       const result = await buyer.getQueryResult();
       console.log(result);
     });

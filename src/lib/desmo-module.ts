@@ -6,7 +6,7 @@
 
 import { contractAddress, abi as contractABI } from '../resources/desmo-config';
 
-import { AppOrder, TaskStatus, WorkerpoolOrder } from '../types/desmo-types';
+import { AppOrder, WorkerpoolOrder, TaskStatus } from '../types/desmo-types';
 
 import { ethers } from 'ethers';
 import { WalletSigner } from './walletSigner/walletSigner-module';
@@ -241,37 +241,51 @@ await desmoContract.buyQuery(
     taskId: string;
     result: string;
   }> {
+    if (this.iexec === undefined) {
+      throw new Error('A connection to iExec is required!');
+    }
     if (!this.isConnected) {
       throw new Error(
         'This method requires the wallet signer to be already signed-in!',
       );
     }
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
-    const self = this;
-    return new Promise((resolve, reject) => {
-      (function loop(): void {
-        setTimeout(async () => {
-          if (self.iexec === undefined) {
-            reject('A connection to iExec is required!');
-            return;
-          }
-          const taskId = await self.retrieveTaskID();
-          const taskDetail = await self.iexec.task.show(taskId);
-          console.log(
-            `The status of the task ${taskId} is ${taskDetail.statusName}`,
-          );
-          if (taskDetail.statusName === TaskStatus.COMPLETED) {
-            const tx = await self.contract.receiveResult(taskId, '0x00');
-            await tx.wait();
-            const result = await self.contract.getQueryResult(taskId);
-            // TODO: Decode the result
-            resolve({ requestId: '', taskId, result });
-          } else {
-            loop();
-          }
-        }, 1000);
-      })();
+    
+    const taskId = await this.retrieveTaskID();
+
+    const taskObservable = await this.iexec.task.obsTask(taskId, {
+      dealid: this.dealId,
     });
+
+    const taskCompletion: Promise<ethers.Bytes> = new Promise(
+      (resolve, reject) => {
+        taskObservable.subscribe({
+          next: async ({ message }) => {
+            switch (message) {
+              case TaskStatus.TASK_COMPLETED:
+                {
+                  const tx = await this.contract.receiveResult(taskId, '0x00');
+                  await tx.wait();
+                  const result: ethers.Bytes =
+                    await this.contract.getQueryResult(taskId);
+                  resolve(result);
+                }
+                break;
+              case TaskStatus.TASK_FAILED:
+              case TaskStatus.TASK_TIMEDOUT:
+                {
+                  reject(`Task execution failed. Reason: ${message}.`);
+                }
+                break;
+            }
+          },
+          error: (e) => reject(e),
+        });
+      },
+    );
+
+    const result = await taskCompletion;
+    // TODO: Decode the result
+    return { requestId: '', taskId, result: result.toString() };
   }
 
   // TODO access a different source with the address
