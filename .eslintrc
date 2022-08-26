@@ -23,45 +23,25 @@
     "prettier.config.js"
   ],
   "rules": {
-    "@typescript-eslint/ban-ts-ignore": "off",
-    "@typescript-eslint/type-annotation-spacing": "off",
-    "@typescript-eslint/explicit-function-return-type": "off",
-    "no-unused-vars": "off",
-    "@typescript-eslint/no-unused-vars": [
-      "warn",
-      {
-        "args": "none"
-      }
-    ],
-    "@typescript-eslint/adjacent-overload-signatures": "error",
-    "@typescript-eslint/ban-types": "error",
-    "camelcase": "off",
+    "@typescript-eslint/type-annotation-spacing": "error",
+    "no-unused-vars": "off", // note you must disable the base rule as it can report incorrect errors
+    "@typescript-eslint/no-unused-vars": "error",
     "@typescript-eslint/consistent-type-assertions": "error",
-    "no-array-constructor": "off",
+    "no-array-constructor": "error",
     "@typescript-eslint/no-array-constructor": "error",
-    "no-empty": "off",
-    "no-empty-function": "off",
-    "@typescript-eslint/explicit-module-boundary-types": "off",
+    "no-empty-function": "error", // note you must disable the base rule as it can report incorrect errors
     "@typescript-eslint/no-empty-function": "error",
-    "@typescript-eslint/no-empty-interface": "error",
-    "@typescript-eslint/no-explicit-any": "off",
-    "@typescript-eslint/no-inferrable-types": "error",
-    "@typescript-eslint/no-misused-new": "error",
-    "@typescript-eslint/no-namespace": "error",
-    "@typescript-eslint/no-non-null-assertion": "off",
-    "@typescript-eslint/no-this-alias": "error",
-    "no-use-before-define": "off",
-    "@typescript-eslint/no-use-before-define": "off",
-    "@typescript-eslint/no-var-requires": "error",
-    "@typescript-eslint/prefer-namespace-keyword": "error",
-    "@typescript-eslint/triple-slash-reference": "error",
-    "@typescript-eslint/no-floating-promises": [
-      "error"
-    ],
+    "@typescript-eslint/no-non-null-assertion": "error",
+    "no-use-before-define": "off", // note you must disable the base rule as it can report incorrect errors
+    "@typescript-eslint/no-use-before-define": "error",
+    "@typescript-eslint/no-floating-promises": "error",
     "no-var": "error",
+    "@typescript-eslint/no-var-requires": "error", // overridden below
     "prefer-const": "error",
     "prefer-rest-params": "error",
-    "prefer-spread": "error"
+    "prefer-spread": "error",
+    "@typescript-eslint/explicit-function-return-type": "off", // overridden below
+    "camelcase": "error"
   },
   "overrides": [
     {
@@ -70,6 +50,13 @@
       ],
       "rules": {
         "@typescript-eslint/no-var-requires": "off"
+      }
+    },
+    {
+      // enable the rule specifically for TypeScript files
+      "files": ["*.ts", "*.mts", "*.cts", "*.tsx"],
+      "rules": {
+        "@typescript-eslint/explicit-function-return-type": ["error"]
       }
     }
   ]
