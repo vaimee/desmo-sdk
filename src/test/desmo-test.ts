@@ -10,7 +10,7 @@ import { firstValueFrom } from 'rxjs';
 
 describe('Desmo Tests', function () {
   const walletSigner: WalletSignerJsonRpc = new WalletSignerJsonRpc(chainURL);
-  walletSigner.signInWithPrivateKey(privateKEY); //remember to delete if you push to github
+  walletSigner.signInWithPrivateKey(privateKEY);
 
   const desmohub: DesmoHub = new DesmoHub(walletSigner);
   const buyer: Desmo = new Desmo(walletSigner);
@@ -58,9 +58,8 @@ describe('Desmo Tests', function () {
         '0x11391F354CFE180cBc2C92e186e691B63CEB4763',
       );
 
-      const result = await buyer.getQueryResult();
+      const { result } = await buyer.getQueryResult();
       expect(result).to.be.a('number');
-      console.log(result);
     });
   });
 

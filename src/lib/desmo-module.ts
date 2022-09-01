@@ -5,7 +5,7 @@ import { AppOrder, WorkerpoolOrder, TaskStatus } from '../types/desmo-types';
 import { ethers } from 'ethers';
 import { WalletSigner } from './walletSigner/walletSigner-module';
 import { IExec } from 'iexec';
-import EncoderLightManual from './encoding/EncoderLightManual';
+import { decodeQueryResult } from './utils/decoder';
 
 export class Desmo {
   private _walletSigner: WalletSigner;
@@ -234,9 +234,9 @@ await desmoContract.buyQuery(
    * @returns the result of the query
    */
   public async getQueryResult(): Promise<{
-    requestId: string;
-    taskId: string;
-    result: string;
+    requestID: string;
+    taskID: string;
+    result: number | string;
   }> {
     if (this.iexec === undefined) {
       throw new Error('A connection to iExec is required!');
@@ -247,44 +247,38 @@ await desmoContract.buyQuery(
       );
     }
 
-    const taskId = await this.retrieveTaskID();
+    const taskID = await this.retrieveTaskID();
 
-    const taskObservable = await this.iexec.task.obsTask(taskId, {
+    const taskObservable = await this.iexec.task.obsTask(taskID, {
       dealid: this.dealId,
     });
 
-    const taskCompletion: Promise<ethers.Bytes> = new Promise(
-      (resolve, reject) => {
-        taskObservable.subscribe({
-          next: async ({ message }) => {
-            switch (message) {
-              case TaskStatus.TASK_COMPLETED:
-                {
-                  const tx = await this.contract.receiveResult(taskId, '0x00');
-                  await tx.wait();
-                  const result: ethers.Bytes =
-                    await this.contract.getQueryResult(taskId);
-                  resolve(result);
-                }
-                break;
-              case TaskStatus.TASK_FAILED:
-              case TaskStatus.TASK_TIMEDOUT:
-                {
-                  reject(`Task execution failed. Reason: ${message}.`);
-                }
-                break;
-            }
-          },
-          error: (e) => reject(e),
-          complete: function () {},
-        });
-      },
-    );
+    const taskCompletion: Promise<void> = new Promise((resolve, reject) => {
+      taskObservable.subscribe({
+        next: async ({ message }) => {
+          switch (message) {
+            case TaskStatus.TASK_COMPLETED:
+              resolve();
+              break;
+            case TaskStatus.TASK_FAILED:
+            case TaskStatus.TASK_TIMEDOUT:
+              reject(`Task execution failed. Reason: ${message}.`);
+              break;
+          }
+        },
+        error: (e) => reject(e),
+        complete: () => undefined,
+      });
+    });
 
-    const callbackData = await taskCompletion;
-    const em = new EncoderLightManual();
-    const result = em.decode(callbackData.toString());
-    return result;
+    await taskCompletion;
+
+    const tx = await this.contract.receiveResult(taskID, '0x00');
+    await tx.wait();
+    const { requestID, result } = await this.contract.getQueryResult(taskID);
+
+    const convertedResult = decodeQueryResult(result);
+    return { requestID, taskID, result: convertedResult };
   }
 
   // TODO access a different source with the address
