@@ -5,6 +5,7 @@ import { AppOrder, WorkerpoolOrder, TaskStatus } from '../types/desmo-types';
 import { ethers } from 'ethers';
 import { WalletSigner } from './walletSigner/walletSigner-module';
 import { IExec } from 'iexec';
+import EncoderLightManual from './encoding/EncoderLightManual';
 
 export class Desmo {
   private _walletSigner: WalletSigner;
@@ -275,13 +276,15 @@ await desmoContract.buyQuery(
             }
           },
           error: (e) => reject(e),
+          complete: function () {},
         });
       },
     );
 
-    const result = await taskCompletion;
-    // TODO: Decode the result
-    return { requestId: '', taskId, result: result.toString() };
+    const callbackData = await taskCompletion;
+    const em = new EncoderLightManual();
+    const result = em.decode(callbackData.toString());
+    return result;
   }
 
   // TODO access a different source with the address
