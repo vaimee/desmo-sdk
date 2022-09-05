@@ -1,4 +1,4 @@
-export const contractAddress = '0xe3eb8F758994e7fdf904010B33D9340728906bE5';
+export const contractAddress = '0x10fFd14a2dd48Cc0d9eB00e5d2c0957aCB97F3Cd';
 
 export const abi = [
   {
@@ -137,6 +137,47 @@ export const abi = [
   {
     "inputs": [],
     "name": "getTDD",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "url",
+            "type": "string"
+          },
+          {
+            "internalType": "address",
+            "name": "owner",
+            "type": "address"
+          },
+          {
+            "internalType": "bool",
+            "name": "disabled",
+            "type": "bool"
+          },
+          {
+            "internalType": "uint256",
+            "name": "score",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct DesmoHub.TDD",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "index",
+        "type": "uint256"
+      }
+    ],
+    "name": "getTDDByIndex",
     "outputs": [
       {
         "components": [
