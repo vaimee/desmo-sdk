@@ -1,9 +1,3 @@
-/**
- * @file Test suite, using Mocha and Chai.
- * Compiled files inside the 'test' folder are excluded from
- * published npm projects.
- */
-
 import { expect } from 'chai';
 
 import { Desmo } from '../lib/desmo-module';

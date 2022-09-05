@@ -1,9 +1,3 @@
-/**
- * @file ./lib is a great place to keep all your code.
- * You can then choose what to make available by default by
- * exporting your lib modules from the ./src/index.ts entrypoint.
- */
-
 import { contractAddress, abi as contractABI } from '../resources/desmo-config';
 
 import { AppOrder, WorkerpoolOrder, TaskStatus } from '../types/desmo-types';
@@ -53,6 +47,7 @@ export class Desmo {
     this.category = 0;
     this.dealId = '';
   }
+
   /**
    * connect the desmo contract to the wallet
    */
@@ -76,18 +71,21 @@ export class Desmo {
 
     this._isConnected = true;
   }
+
   /**
    * @returns the provider used by the wallet signer
    */
   public get provider(): ethers.providers.Provider {
     return this._walletSigner.provider;
   }
+
   /**
    * @returns the wallet used by the current user
    */
   public get wallet(): ethers.Signer {
     return this._walletSigner.wallet;
   }
+
   /**
    * @returns whether the wallet signer is connected to the contract
    */
@@ -142,15 +140,16 @@ export class Desmo {
     //console.log(deal);
     return deal.callback;
   }
+
   /**
- * This method is used to submit a query 
- * 
- * @param requestID 
- * @param query
- * @param appAddress 
- * 
- * @example
- * ```ts
+   * This method is used to submit a query
+   *
+   * @param requestID
+   * @param query
+   * @param appAddress
+   *
+   * @example
+   * ```ts
 // Sign in with a RPC provider and a private key
 const walletSigner: WalletSignerJsonRpc = new WalletSignerJsonRpc(chainURL);
 walletSigner.signInWithPrivateKey(privateKEY);
@@ -183,8 +182,8 @@ await desmoContract.buyQuery(
   iExecDAppAddress,
 );
 ``` 
- * 
- */
+   *
+   */
   public async buyQuery(
     requestID: ethers.Bytes,
     query: string,
@@ -232,6 +231,7 @@ await desmoContract.buyQuery(
       console.log(err);
     }
   }
+
   /**
    *
    * @returns the result of the query

@@ -1,9 +1,3 @@
-/**
- * @file Test suite, using Mocha and Chai.
- * Compiled files inside the 'test' folder are excluded from
- * published npm projects.
- */
-
 import { firstValueFrom } from 'rxjs';
 import { DesmoHub } from '../lib/desmoHub-module';
 import {
@@ -80,7 +74,7 @@ describe('DesmoHub Tests', function () {
       await desmohub.getNewRequestID();
       const event: IRequestIDEvent = await eventPromise;
 
-      expect(event.requestID.length == 64 + 2); // 64 c
+      expect(event.requestID.length == 64 + 2); // length of '0x' + 32 bytes hex value
     });
 
     it('should retrieve the newly-generated list of selected TDDs', async () => {

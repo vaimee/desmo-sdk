@@ -1,9 +1,3 @@
-/**
- * @file ./lib is a great place to keep all your code.
- * You can then choose what to make available by default by
- * exporting your lib modules from the ./src/index.ts entrypoint.
- */
-
 import { ethers } from 'ethers';
 import { EnhancedWallet } from 'iexec/dist/common/utils/signers';
 import { ExternalProvider } from '@ethersproject/providers';
@@ -34,9 +28,10 @@ export abstract class WalletSigner {
     }
     return this._wallet;
   }
-/**
- * @returns true if you are signed in.
- */
+
+  /**
+   * @returns true if you are signed in.
+   */
   public get isConnected(): boolean {
     return this._isConnected;
   }
