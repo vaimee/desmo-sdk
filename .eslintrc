@@ -24,15 +24,15 @@
   ],
   "rules": {
     "@typescript-eslint/type-annotation-spacing": "error",
-    "no-unused-vars": "off", // note you must disable the base rule as it can report incorrect errors
+    "no-unused-vars": "off", // note: you must disable the base rule as it can report incorrect errors
     "@typescript-eslint/no-unused-vars": "error",
     "@typescript-eslint/consistent-type-assertions": "error",
     "no-array-constructor": "error",
     "@typescript-eslint/no-array-constructor": "error",
-    "no-empty-function": "error", // note you must disable the base rule as it can report incorrect errors
+    "no-empty-function": "off", // note: you must disable the base rule as it can report incorrect errors
     "@typescript-eslint/no-empty-function": "error",
     "@typescript-eslint/no-non-null-assertion": "error",
-    "no-use-before-define": "off", // note you must disable the base rule as it can report incorrect errors
+    "no-use-before-define": "off", // note: you must disable the base rule as it can report incorrect errors
     "@typescript-eslint/no-use-before-define": "error",
     "@typescript-eslint/no-floating-promises": "error",
     "no-var": "error",
