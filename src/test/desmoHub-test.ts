@@ -5,12 +5,12 @@
  */
 
 import { firstValueFrom } from 'rxjs';
+import { DesmoHub } from '../lib/desmoHub-module';
 import {
-  DesmoHub,
   IRequestIDEvent,
   ITDDDisabledEvent,
   ITDDEnabledEvent,
-} from '..';
+} from '../types/desmoHub-types';
 import { WalletSignerJsonRpc } from '@/walletSigner/walletSignerJsonRpc-module';
 import 'mocha';
 import { chainURL, myTDDUrl, privateKEY } from './config';
@@ -96,7 +96,7 @@ describe('DesmoHub Tests', function () {
       const eventPromise = firstValueFrom(desmohub.requestID$);
       await desmohub.getNewRequestID();
       const event: IRequestIDEvent = await eventPromise;
-      
+
       const tddScores = await desmohub.getScoresByRequestID(event.requestID);
       expect(tddScores.length > 0);
     });
