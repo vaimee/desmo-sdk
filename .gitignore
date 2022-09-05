@@ -1,8 +1,4 @@
 node_modules
 build
-sandbox
-samples
-.parcel-cache
 .DS_Store
-configs
-dist
+.idea
