@@ -331,4 +331,54 @@ export class DesmoHub {
     const { url, owner, disabled, score }: ITDD = await this.contract.getTDD();
     return { url, owner, disabled, score } as ITDD;
   }
+
+  /**
+   * @param start the initial TDD index to retrieve
+   * @param stop the index at which to stop retrieving TDDs (if not specified, the full length of the TDD storage inside the contract)
+   * @returns an array containing the requested TDD descriptions.
+   */
+  public async getTDDList(start = 0, stop?: number): Promise<ITDD[]> {
+    const tddStorageLength = (await this.getTDDStorageLength()).toNumber();
+
+    if (tddStorageLength < 1) {
+      throw new Error('No TDDs are currently registered in the contract.');
+    }
+
+    // Make sure that `start` and `stop` are integer numbers:
+    start = Math.floor(start ?? 0);
+    stop = Math.floor(stop ?? tddStorageLength);
+
+    // Apply limits to `start` and `stop` indexes:
+    start = Math.max(start, 0);
+    stop = Math.min(stop, tddStorageLength);
+
+    if (start >= tddStorageLength) {
+      throw new Error(
+        `Start index must be lower than the TDD storage length (${tddStorageLength}).`,
+      );
+    }
+    if (start > stop) {
+      throw new Error(
+        `Start index (${start}) is greater than stop index (${stop}).`,
+      );
+    }
+
+    /**
+     * Summarizing, here we should have:
+     * 0 <= start < tddStorageLength
+     * 0 <= stop <= tddStorageLength
+     */
+
+    const promises: Promise<ITDD>[] = [];
+    for (let i = start; i < stop; ++i) {
+      promises.push(this.contract.getTDDByIndex(i));
+    }
+    const tddList = await Promise.all(promises);
+
+    // Clean up the TDD objects from their numeric properties:
+    return tddList.map(
+      ({ url, owner, disabled, score }) =>
+        ({ url, owner, disabled, score } as ITDD),
+    );
+  }
 }
