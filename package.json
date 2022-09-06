@@ -28,6 +28,8 @@
   },
   "license": "MIT",
   "dependencies": {
+    "@types/chai-as-promised": "^7.1.5",
+    "chai-as-promised": "^7.1.1",
     "ethers": "^5.6.9",
     "iexec": "^7.0.0",
     "rxjs": "^7.5.5"

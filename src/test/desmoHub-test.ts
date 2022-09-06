@@ -10,6 +10,11 @@ import 'mocha';
 import { chainURL, myTDDUrl, privateKEY } from './config';
 import { expect } from 'chai';
 
+import chai from 'chai';
+import ChaiAsPromised from 'chai-as-promised';
+
+chai.use(ChaiAsPromised);
+
 describe('DesmoHub Tests', function () {
   const walletSigner: WalletSignerJsonRpc = new WalletSignerJsonRpc(chainURL);
   walletSigner.signInWithPrivateKey(privateKEY);
@@ -28,6 +33,44 @@ describe('DesmoHub Tests', function () {
 
   after(function () {
     desmohub.stopListeners();
+  });
+
+  describe('Retrieve TDD list', function () {
+    it('should retrieve a list of 3 selected TDDs', async () => {
+      const start = 1;
+      const stop = 4;
+      const tddList = await desmohub.getTDDList(start, stop);
+      expect(tddList.length).to.equal(3);
+    });
+
+    it('should retrieve an empty list of TDDs if start and stop indexes are equal', async () => {
+      const start = 1;
+      const stop = 1;
+      const tddList = await desmohub.getTDDList(start, stop);
+      expect(tddList.length).to.equal(0);
+    });
+
+    it('should fail if start index is higher than stop index', async () => {
+      const start = 3;
+      const stop = 1;
+      await expect(desmohub.getTDDList(start, stop)).to.be.rejectedWith(
+        `Start index (${start}) is greater than stop index (${stop}).`,
+      );
+    });
+
+    it('should fail if start index is greater or equal to the length of TDD storage', async () => {
+      const tddStorageLength = (
+        await desmohub.getTDDStorageLength()
+      ).toNumber();
+      await expect(desmohub.getTDDList(tddStorageLength)).to.be.rejectedWith(
+        `Start index must be lower than the TDD storage length (${tddStorageLength}).`,
+      );
+      await expect(
+        desmohub.getTDDList(tddStorageLength + 1),
+      ).to.be.rejectedWith(
+        `Start index must be lower than the TDD storage length (${tddStorageLength}).`,
+      );
+    });
   });
 
   describe('Retrieve', function () {
