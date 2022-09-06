@@ -193,43 +193,39 @@ await desmoContract.buyQuery(
       throw new Error('A connection to iExec is required!');
     }
 
-    try {
-      const resultAppOrder: AppOrder = await this.fetchAppOrder(appAddress);
+    const resultAppOrder: AppOrder = await this.fetchAppOrder(appAddress);
 
-      const resultWorkerPoolOrder: WorkerpoolOrder =
-        await this.fetchWorkerPoolOrder();
+    const resultWorkerPoolOrder: WorkerpoolOrder =
+      await this.fetchWorkerPoolOrder();
 
-      // Check if we can use the address from the wallet.
-      const userAddress = await this.iexec.wallet.getAddress();
+    // Check if we can use the address from the wallet.
+    const userAddress = await this.iexec.wallet.getAddress();
 
-      const requestOrderToSign = await this.iexec.order.createRequestorder({
-        app: appAddress,
-        appmaxprice: resultAppOrder.appprice,
-        workerpoolmaxprice: resultWorkerPoolOrder.workerpoolprice,
-        requester: userAddress,
-        volume: 1,
-        params: requestID.toString() + ' ' + query,
-        category: this.category,
-        // TODO: understand why the callback is needed and why the typing is wrong
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        callback: this.callback,
-      });
+    const requestOrderToSign = await this.iexec.order.createRequestorder({
+      app: appAddress,
+      appmaxprice: resultAppOrder.appprice,
+      workerpoolmaxprice: resultWorkerPoolOrder.workerpoolprice,
+      requester: userAddress,
+      volume: 1,
+      params: requestID.toString() + ' ' + query,
+      category: this.category,
+      // TODO: understand why the callback is needed and why the typing is wrong
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      callback: this.callback,
+    });
 
-      const requestOrder = await this.iexec.order.signRequestorder(
-        requestOrderToSign,
-      );
+    const requestOrder = await this.iexec.order.signRequestorder(
+      requestOrderToSign,
+    );
 
-      const res = await this.iexec.order.matchOrders({
-        apporder: resultAppOrder,
-        requestorder: requestOrder,
-        workerpoolorder: resultWorkerPoolOrder,
-      });
+    const res = await this.iexec.order.matchOrders({
+      apporder: resultAppOrder,
+      requestorder: requestOrder,
+      workerpoolorder: resultWorkerPoolOrder,
+    });
 
-      this.dealId = res.dealid;
-    } catch (err) {
-      console.log(err);
-    }
+    this.dealId = res.dealid;
   }
 
   /**
@@ -249,7 +245,7 @@ await desmoContract.buyQuery(
         'This method requires the wallet signer to be already signed-in!',
       );
     }
-    
+
     const taskId = await this.retrieveTaskID();
 
     const taskObservable = await this.iexec.task.obsTask(taskId, {

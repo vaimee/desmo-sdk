@@ -6,7 +6,7 @@ import { WalletSigner } from './walletSigner-module';
  */
 export class WalletSignerMetamask extends WalletSigner {
   private _provider: ethers.providers.Web3Provider;
-  
+
   /**
    *
    * @param _windowEthereum the window.ethereum injected by Metamask
@@ -52,9 +52,11 @@ export class WalletSignerMetamask extends WalletSigner {
       await this.provider.send('eth_requestAccounts', []);
       this._wallet = this.provider.getSigner();
       this._isConnected = true;
-    } catch (error: any) {
+    } catch (e: unknown) {
       this._isConnected = false;
-      if ('code' in error && error.code === 4001) {
+
+      const error = e as { code?: number };
+      if (error.code === 4001) {
         // User chose not to sign-in!
         throw new Error(
           'You may need to sign-in in order to get full access to the Dapp features!',
