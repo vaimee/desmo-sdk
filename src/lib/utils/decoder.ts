@@ -4,13 +4,13 @@
  * exporting your lib modules from the ./src/index.ts entrypoint.
  */
 
-enum QueryResultTypes {
+export enum QueryResultTypes {
   POS_INTEGER = 0,
   POS_FLOAT = 1,
   NEG_INTEGER = 2,
   NEG_FLOAT = 3,
   STRING = 4,
-  BOOLEAN = 5, //##############WIP
+  BOOLEAN = 5,
   FUTURE_USE_2 = 6,
   FUTURE_USE_3 = 7,
 }
@@ -31,25 +31,30 @@ function decodeHexString(str: string): string {
   return result;
 }
 
-export function decodeQueryResult(result: string): number | string {
+export function decodeQueryResult(result: string): {
+  value: number | string;
+  type: QueryResultTypes;
+} {
   // If it starts with 0x, we remove it:
   if (result.startsWith('0x')) {
     result = result.substring(2);
   }
 
-  // Handle padding:
-  let padding = 0;
-  if (result[padding] === '1') {
-    padding += 1;
-  } else {
-    padding += 2;
+  // Parse padding:
+  const padding = result[0] === '1' ? 1 : 2;
+
+  // Parse and validate result type:
+  const type = parseInt(result[padding], 16);
+  if (isNaN(type)) {
+    throw new Error(`Result type encoding is not a valid hex string (${result[padding]}).`)
   }
 
-  // Parse result type:
-  const type = parseInt(result[padding], 16);
-
-  // Parse result value:
+  // Parse and validate result value:
   const dataEncoded = result.substring(padding + 1);
+  const validHexRegex = /^[0-9A-Fa-f]+$/g;
+  if (!validHexRegex.test(dataEncoded)) {
+    throw new Error(`Result value encoding is not a valid hex string (${dataEncoded}).`)
+  }
 
   let value: number | string;
   switch (type) {
@@ -86,5 +91,5 @@ export function decodeQueryResult(result: string): number | string {
     }
   }
 
-  return value;
+  return { value, type };
 }

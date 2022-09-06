@@ -41,8 +41,10 @@ describe('Desmo Tests', function () {
         '0x11391F354CFE180cBc2C92e186e691B63CEB4763',
       );
 
-      const { result } = await buyer.getQueryResult();
+      const { result, type } = await buyer.getQueryResult();
+
       expect(result).to.be.a('number');
+      expect(type).to.be.equal(QueryResultTypes.POS_FLOAT);
     });
   });
 

@@ -1,5 +1,5 @@
 import { contractAddress, abi as contractABI } from '../resources/desmo-config';
-
+import { QueryResultTypes } from './utils/decoder';
 import { AppOrder, WorkerpoolOrder, TaskStatus } from '../types/desmo-types';
 
 import { ethers } from 'ethers';
@@ -237,6 +237,7 @@ await desmoContract.buyQuery(
     requestID: string;
     taskID: string;
     result: number | string;
+    type: QueryResultTypes;
   }> {
     if (this.iexec === undefined) {
       throw new Error('A connection to iExec is required!');
@@ -277,8 +278,8 @@ await desmoContract.buyQuery(
     await tx.wait();
     const { requestID, result } = await this.contract.getQueryResult(taskID);
 
-    const convertedResult = decodeQueryResult(result);
-    return { requestID, taskID, result: convertedResult };
+    const { value, type } = decodeQueryResult(result);
+    return { requestID, taskID, result: value, type };
   }
 
   // TODO access a different source with the address
