@@ -7,6 +7,7 @@ import { WalletSignerJsonRpc } from '@/walletSigner/walletSignerJsonRpc-module';
 import 'mocha';
 import { chainURL, privateKEY } from './config';
 import { firstValueFrom } from 'rxjs';
+import { QueryResultTypes } from '@/utils/decoder';
 
 describe('Desmo Tests', function () {
   const walletSigner: WalletSignerJsonRpc = new WalletSignerJsonRpc(chainURL);
