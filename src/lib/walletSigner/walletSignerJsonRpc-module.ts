@@ -1,21 +1,15 @@
-/**
- * @file ./lib is a great place to keep all your code.
- * You can then choose what to make available by default by
- * exporting your lib modules from the ./src/index.ts entrypoint.
- */
-
 import { ethers } from 'ethers';
 import { EnhancedWallet } from 'iexec/dist/common/utils/signers';
 import { WalletSigner } from './walletSigner-module';
 
 /**
- * This class extends the WalletSigner class and describe a signer that uses an RPC provider. 
+ * This class extends the WalletSigner class and describe a signer that uses an RPC provider.
  */
 export class WalletSignerJsonRpc extends WalletSigner {
   private _provider: ethers.providers.JsonRpcProvider;
 
   /**
-   * 
+   *
    * @param rpcUrl The url of the RPC provider.
    */
   constructor(private rpcUrl: string) {
@@ -55,11 +49,12 @@ export class WalletSignerJsonRpc extends WalletSigner {
     this._wallet = new EnhancedWallet(privateKey, this.provider);
     this._isConnected = true;
   }
-/**
- * 
- * @param encryptedJson 
- * @param password 
- */
+
+  /**
+   *
+   * @param encryptedJson
+   * @param password
+   */
   public async signInWithJsonWallet(
     encryptedJson: string,
     password: string,

@@ -1,9 +1,3 @@
-/**
- * @file ./lib is a great place to keep all your code.
- * You can then choose what to make available by default by
- * exporting your lib modules from the ./src/index.ts entrypoint.
- */
-
 import { ethers } from 'ethers';
 import { WalletSigner } from './walletSigner-module';
 
@@ -12,10 +6,11 @@ import { WalletSigner } from './walletSigner-module';
  */
 export class WalletSignerMetamask extends WalletSigner {
   private _provider: ethers.providers.Web3Provider;
-/**
- * 
- * @param _windowEthereum the window.ethereum injected by Metamask
- */
+
+  /**
+   *
+   * @param _windowEthereum the window.ethereum injected by Metamask
+   */
   constructor(
     private _windowEthereum: {
       selectedAddress: string;
@@ -57,9 +52,11 @@ export class WalletSignerMetamask extends WalletSigner {
       await this.provider.send('eth_requestAccounts', []);
       this._wallet = this.provider.getSigner();
       this._isConnected = true;
-    } catch (error: any) {
+    } catch (e: unknown) {
       this._isConnected = false;
-      if ('code' in error && error.code === 4001) {
+
+      const error = e as { code?: number };
+      if (error.code === 4001) {
         // User chose not to sign-in!
         throw new Error(
           'You may need to sign-in in order to get full access to the Dapp features!',

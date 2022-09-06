@@ -1,9 +1,3 @@
-/**
- * @file ./lib is a great place to keep all your code.
- * You can then choose what to make available by default by
- * exporting your lib modules from the ./src/index.ts entrypoint.
- */
-
 import { contractAddress, abi as contractABI } from '../resources/desmo-config';
 
 import { AppOrder, WorkerpoolOrder, TaskStatus } from '../types/desmo-types';
@@ -53,6 +47,7 @@ export class Desmo {
     this.category = 0;
     this.dealId = '';
   }
+
   /**
    * connect the desmo contract to the wallet
    */
@@ -76,18 +71,21 @@ export class Desmo {
 
     this._isConnected = true;
   }
+
   /**
    * @returns the provider used by the wallet signer
    */
   public get provider(): ethers.providers.Provider {
     return this._walletSigner.provider;
   }
+
   /**
    * @returns the wallet used by the current user
    */
   public get wallet(): ethers.Signer {
     return this._walletSigner.wallet;
   }
+
   /**
    * @returns whether the wallet signer is connected to the contract
    */
@@ -142,15 +140,16 @@ export class Desmo {
     //console.log(deal);
     return deal.callback;
   }
+
   /**
- * This method is used to submit a query 
- * 
- * @param requestID 
- * @param query
- * @param appAddress 
- * 
- * @example
- * ```ts
+   * This method is used to submit a query
+   *
+   * @param requestID
+   * @param query
+   * @param appAddress
+   *
+   * @example
+   * ```ts
 // Sign in with a RPC provider and a private key
 const walletSigner: WalletSignerJsonRpc = new WalletSignerJsonRpc(chainURL);
 walletSigner.signInWithPrivateKey(privateKEY);
@@ -183,8 +182,8 @@ await desmoContract.buyQuery(
   iExecDAppAddress,
 );
 ``` 
- * 
- */
+   *
+   */
   public async buyQuery(
     requestID: ethers.Bytes,
     query: string,
@@ -194,44 +193,41 @@ await desmoContract.buyQuery(
       throw new Error('A connection to iExec is required!');
     }
 
-    try {
-      const resultAppOrder: AppOrder = await this.fetchAppOrder(appAddress);
+    const resultAppOrder: AppOrder = await this.fetchAppOrder(appAddress);
 
-      const resultWorkerPoolOrder: WorkerpoolOrder =
-        await this.fetchWorkerPoolOrder();
+    const resultWorkerPoolOrder: WorkerpoolOrder =
+      await this.fetchWorkerPoolOrder();
 
-      // Check if we can use the address from the wallet.
-      const userAddress = await this.iexec.wallet.getAddress();
+    // Check if we can use the address from the wallet.
+    const userAddress = await this.iexec.wallet.getAddress();
 
-      const requestOrderToSign = await this.iexec.order.createRequestorder({
-        app: appAddress,
-        appmaxprice: resultAppOrder.appprice,
-        workerpoolmaxprice: resultWorkerPoolOrder.workerpoolprice,
-        requester: userAddress,
-        volume: 1,
-        params: requestID.toString() + ' ' + query,
-        category: this.category,
-        // TODO: understand why the callback is needed and why the typing is wrong
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        callback: this.callback,
-      });
+    const requestOrderToSign = await this.iexec.order.createRequestorder({
+      app: appAddress,
+      appmaxprice: resultAppOrder.appprice,
+      workerpoolmaxprice: resultWorkerPoolOrder.workerpoolprice,
+      requester: userAddress,
+      volume: 1,
+      params: requestID.toString() + ' ' + query,
+      category: this.category,
+      // TODO: understand why the callback is needed and why the typing is wrong
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      callback: this.callback,
+    });
 
-      const requestOrder = await this.iexec.order.signRequestorder(
-        requestOrderToSign,
-      );
+    const requestOrder = await this.iexec.order.signRequestorder(
+      requestOrderToSign,
+    );
 
-      const res = await this.iexec.order.matchOrders({
-        apporder: resultAppOrder,
-        requestorder: requestOrder,
-        workerpoolorder: resultWorkerPoolOrder,
-      });
+    const res = await this.iexec.order.matchOrders({
+      apporder: resultAppOrder,
+      requestorder: requestOrder,
+      workerpoolorder: resultWorkerPoolOrder,
+    });
 
-      this.dealId = res.dealid;
-    } catch (err) {
-      console.log(err);
-    }
+    this.dealId = res.dealid;
   }
+
   /**
    *
    * @returns the result of the query
@@ -249,7 +245,7 @@ await desmoContract.buyQuery(
         'This method requires the wallet signer to be already signed-in!',
       );
     }
-    
+
     const taskId = await this.retrieveTaskID();
 
     const taskObservable = await this.iexec.task.obsTask(taskId, {
