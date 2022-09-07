@@ -1,5 +1,6 @@
 # DESMO-SDK
 
+[![npm version](https://badge.fury.io/js/@vaimee%2Fdesmold-sdk.svg)](https://badge.fury.io/js/@vaimee%2Fdesmold-sdk)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 ![](https://img.shields.io/badge/eslint-3A33D1?style=flat-square&logo=eslint&logoColor=white)
 ![](https://img.shields.io/badge/prettier-1A2C34?style=flat-square&logo=prettier&logoColor=F7BA3E)
