@@ -3,62 +3,17 @@ import { DesmoHub } from '@/desmoHub-module';
 import { IRequestIDEvent } from '$/types/desmoHub-types';
 import { WalletSignerJsonRpc } from '@/walletSigner/walletSignerJsonRpc-module';
 import { QueryResultTypes } from '@/utils/decoder';
-import {
-  abi as DesmoABI,
-  bytecode as DesmoBytecode,
-} from '$/resources/desmo-config';
-import {
-  abi as DesmoHubABI,
-  bytecode as DesmoHubBytecode,
-} from '$/resources/desmoHub-config';
+import { abi as DesmoABI } from '$/resources/desmo-config';
+import { abi as DesmoHubABI } from '$/resources/desmoHub-config';
+import { getMockIExecSDK, setupMockEnvironment } from './iexec-mock';
 
-import { MockProvider } from '@ethereum-waffle/provider';
-import { getMockIExecContract, getMockIExecSDK } from './iexec-mock';
-
-import { ethers, ContractFactory } from 'ethers';
+import { ethers } from 'ethers';
 import { firstValueFrom } from 'rxjs';
 
 import 'mocha';
 import chai, { expect } from 'chai';
 import ChaiAsPromised from 'chai-as-promised';
 chai.use(ChaiAsPromised);
-
-async function setup(): Promise<{
-  account: ethers.Wallet;
-  desmoHubContract: ethers.Contract;
-  desmoContract: ethers.Contract;
-}> {
-  const wallets = new MockProvider().getWallets(); // Returns 10 different wallets
-
-  const desmoHubContractFactory = new ContractFactory(
-    DesmoHubABI,
-    DesmoHubBytecode,
-    wallets[0],
-  );
-  const desmoHubContract = await desmoHubContractFactory.deploy();
-
-  for (let i = 0; i < 4; i++) {
-    const account = wallets[i];
-    const url = `https://desmold-zion-${i + 1}.vaimee.it`;
-    const tx = await desmoHubContract.connect(account).registerTDD(url, {
-      from: account.address,
-    });
-    await tx.wait();
-  }
-
-  const iexecProxy = await getMockIExecContract(wallets[0]);
-  const desmoContractFactory = new ContractFactory(
-    DesmoABI,
-    DesmoBytecode,
-    wallets[0],
-  );
-  const desmoContract = await desmoContractFactory.deploy(
-    desmoHubContract.address,
-    iexecProxy.address,
-  );
-
-  return { account: wallets[0], desmoHubContract, desmoContract };
-}
 
 describe('Desmo Tests', function () {
   let desmohub: DesmoHub;
@@ -71,7 +26,8 @@ describe('Desmo Tests', function () {
    * of a 'describe' block:
    */
   before(async function () {
-    const { account, desmoHubContract, desmoContract } = await setup();
+    const { account, desmoHubContract, desmoContract } =
+      await setupMockEnvironment();
 
     walletSigner = new WalletSignerJsonRpc('');
     walletSigner['_wallet'] = account;

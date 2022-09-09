@@ -4,38 +4,17 @@ import {
   ITDDDisabledEvent,
   ITDDEnabledEvent,
 } from '$/types/desmoHub-types';
-import { abi, bytecode } from '$/resources/desmoHub-config';
+import { abi as DesmoHubABI } from '$/resources/desmoHub-config';
 import { WalletSignerJsonRpc } from '@/walletSigner/walletSignerJsonRpc-module';
+import { setupMockEnvironment } from './iexec-mock';
 
-import { MockProvider } from '@ethereum-waffle/provider';
-
-import { ethers, ContractFactory } from 'ethers';
+import { ethers } from 'ethers';
 import { firstValueFrom } from 'rxjs';
 
 import 'mocha';
 import chai, { expect } from 'chai';
 import ChaiAsPromised from 'chai-as-promised';
 chai.use(ChaiAsPromised);
-
-async function setup(): Promise<{
-  account: ethers.Wallet;
-  contract: ethers.Contract;
-}> {
-  const wallets = new MockProvider().getWallets(); // Returns 10 different wallets
-
-  const contractFactory = new ContractFactory(abi, bytecode, wallets[0]);
-  const contract = await contractFactory.deploy();
-
-  for (let i = 0; i < 4; i++) {
-    const account = wallets[i];
-    const url = `https://desmold-zion-${i + 1}.vaimee.it`;
-    const tx = await contract.connect(account).registerTDD(url, {
-      from: account.address,
-    });
-    await tx.wait();
-  }
-  return { account: wallets[0], contract };
-}
 
 describe('DesmoHub Tests', function () {
   let desmohub: DesmoHub;
@@ -47,7 +26,7 @@ describe('DesmoHub Tests', function () {
    * of a 'describe' block:
    */
   before(async function () {
-    const { account, contract } = await setup();
+    const { account, desmoHubContract } = await setupMockEnvironment();
 
     walletSigner = new WalletSignerJsonRpc('');
     walletSigner['_wallet'] = account;
@@ -55,8 +34,8 @@ describe('DesmoHub Tests', function () {
     walletSigner.signInWithPrivateKey(account.privateKey);
 
     desmohub = new DesmoHub(walletSigner);
-    desmohub['contract'] = contract;
-    desmohub['abiInterface'] = new ethers.utils.Interface(abi);
+    desmohub['contract'] = desmoHubContract;
+    desmohub['abiInterface'] = new ethers.utils.Interface(DesmoHubABI);
 
     //start all listeners
     await desmohub.startListeners();

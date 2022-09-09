@@ -1,11 +1,20 @@
 import IexecProxyBuild from '@iexec/poco/build/contracts/IexecInterfaceToken.json';
 import { deployMockContract, MockContract } from 'ethereum-waffle';
-import { ethers } from 'ethers';
+import { ethers, ContractFactory } from 'ethers';
 import { IExec } from 'iexec';
 import { catchError, finalize, of, ReplaySubject, tap } from 'rxjs';
 import { TaskStatus } from '$/types/desmo-types';
+import { MockProvider } from '@ethereum-waffle/provider';
+import {
+  abi as DesmoABI,
+  bytecode as DesmoBytecode,
+} from '$/resources/desmo-config';
+import {
+  abi as DesmoHubABI,
+  bytecode as DesmoHubBytecode,
+} from '$/resources/desmoHub-config';
 
-export async function getMockIExecContract(
+async function getMockIExecContract(
   wallet: ethers.Wallet,
 ): Promise<MockContract> {
   const iexecProxy = await deployMockContract(wallet, IexecProxyBuild.abi);
@@ -56,6 +65,43 @@ export async function getMockIExecContract(
   await iexecProxy.mock.viewDeal.returns(Object.values(deal));
 
   return iexecProxy;
+}
+
+export async function setupMockEnvironment(): Promise<{
+  account: ethers.Wallet;
+  desmoHubContract: ethers.Contract;
+  desmoContract: ethers.Contract;
+}> {
+  const wallets = new MockProvider().getWallets(); // Returns 10 different wallets
+
+  const desmoHubContractFactory = new ContractFactory(
+    DesmoHubABI,
+    DesmoHubBytecode,
+    wallets[0],
+  );
+  const desmoHubContract = await desmoHubContractFactory.deploy();
+
+  for (let i = 0; i < 4; i++) {
+    const account = wallets[i];
+    const url = `https://desmold-zion-${i + 1}.vaimee.it`;
+    const tx = await desmoHubContract.connect(account).registerTDD(url, {
+      from: account.address,
+    });
+    await tx.wait();
+  }
+
+  const iexecProxy = await getMockIExecContract(wallets[0]);
+  const desmoContractFactory = new ContractFactory(
+    DesmoABI,
+    DesmoBytecode,
+    wallets[0],
+  );
+  const desmoContract = await desmoContractFactory.deploy(
+    desmoHubContract.address,
+    iexecProxy.address,
+  );
+
+  return { account: wallets[0], desmoHubContract, desmoContract };
 }
 
 export function getMockIExecSDK(
