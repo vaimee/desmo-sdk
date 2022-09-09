@@ -1,7 +1,7 @@
-import { QueryResultTypes } from './../lib/utils/decoder';
+import { decodeQueryResult, QueryResultTypes } from '@/utils/decoder';
+
 import 'mocha';
 import { expect } from 'chai';
-import { decodeQueryResult } from '@/utils/decoder';
 
 describe('Decoder Tests', function () {
   it('should decode a positive integer number', () => {
