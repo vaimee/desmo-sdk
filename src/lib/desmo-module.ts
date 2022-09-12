@@ -1,5 +1,6 @@
-import {abi as contractABI} from '@vaimee/desmo-contracts/artifacts/contracts/Desmo.sol/Desmo.json'
-import {desmo as contractAddress} from '@vaimee/desmo-contracts/deployed.json'
+import { abi as contractABI } from '@vaimee/desmo-contracts/artifacts/contracts/Desmo.sol/Desmo.json';
+import { Desmo as DesmoContract } from '@vaimee/desmo-contracts/typechain/Desmo';
+import { desmo as contractAddress } from '@vaimee/desmo-contracts/deployed.json';
 import { QueryResultTypes } from './utils/decoder';
 import { AppOrder, WorkerpoolOrder, TaskStatus } from '../types/desmo-types';
 
@@ -8,10 +9,16 @@ import { WalletSigner } from './walletSigner/walletSigner-module';
 import { IExec } from 'iexec';
 import { decodeQueryResult } from './utils/decoder';
 
+export interface DesmoTransaction {
+  transaction: string;
+  requestID: string;
+  result: string;
+  taskID: string;
+}
 export class Desmo {
   private _walletSigner: WalletSigner;
   private _isConnected: boolean;
-  private contract: ethers.Contract;
+  private contract: DesmoContract;
   private abiInterface: ethers.utils.Interface;
 
   private iexec?: IExec;
@@ -32,7 +39,7 @@ export class Desmo {
       contractAddress,
       contractABI,
       this.provider,
-    );
+    ) as DesmoContract;
 
     this._isConnected = walletSigner.isConnected;
 
@@ -309,5 +316,18 @@ await desmoContract.buyQuery(
       console.log(e);
       throw new Error(`Error to retrieve result: ${e}`);
     }
+  }
+
+  public async listTransactions(): Promise<DesmoTransaction[]> {
+    const queryFilter = this.contract.filters.QueryCompleted();
+    const events = await this.contract.queryFilter(queryFilter);
+    return events.map((event) => {
+      return {
+        transaction: event.transactionHash,
+        requestID: event.args[1].requestID,
+        taskID: event.args[1].taskID,
+        result: event.args[1].result,
+      };
+    });
   }
 }
