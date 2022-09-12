@@ -1,4 +1,5 @@
-import { contractAddress, abi as contractABI } from '../resources/desmo-config';
+import {abi as contractABI} from '@vaimee/desmo-contracts/artifacts/contracts/Desmo.sol/Desmo.json'
+import {desmo as contractAddress} from '@vaimee/desmo-contracts/deployed.json'
 import { QueryResultTypes } from './utils/decoder';
 import { AppOrder, WorkerpoolOrder, TaskStatus } from '../types/desmo-types';
 

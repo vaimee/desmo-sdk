@@ -17,6 +17,7 @@
     "checkJs": true,
     "allowJs": true,
     "skipLibCheck": true,
+    "resolveJsonModule": true,
     "baseUrl": ".",
     "paths": {
       /*

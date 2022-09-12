@@ -3,8 +3,8 @@ import { DesmoHub } from '@/desmoHub-module';
 import { IRequestIDEvent } from '$/types/desmoHub-types';
 import { WalletSignerJsonRpc } from '@/walletSigner/walletSignerJsonRpc-module';
 import { QueryResultTypes } from '@/utils/decoder';
-import { abi as DesmoABI } from '$/resources/desmo-config';
-import { abi as DesmoHubABI } from '$/resources/desmoHub-config';
+import { abi as DesmoABI } from '@vaimee/desmo-contracts/artifacts/contracts/Desmo.sol/Desmo.json'
+import { abi as DesmoHubABI } from '@vaimee/desmo-contracts/artifacts/contracts/DesmoHub.sol/DesmoHub.json'
 import { getMockIExecSDK, setupMockEnvironment } from './iexec-mock';
 
 import { ethers } from 'ethers';
