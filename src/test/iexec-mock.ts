@@ -6,8 +6,14 @@ import { catchError, finalize, of, ReplaySubject, tap } from 'rxjs';
 import { TaskStatus } from '$/types/desmo-types';
 import { MockProvider } from '@ethereum-waffle/provider';
 
-import { abi as DesmoHubABI, bytecode as DesmoHubBytecode  } from '@vaimee/desmo-contracts/artifacts/contracts/DesmoHub.sol/DesmoHub.json'
-import { abi as DesmoABI, bytecode as DesmoBytecode  } from '@vaimee/desmo-contracts/artifacts/contracts/Desmo.sol/Desmo.json'
+import {
+  abi as DesmoHubABI,
+  bytecode as DesmoHubBytecode,
+} from '@vaimee/desmo-contracts/artifacts/contracts/DesmoHub.sol/DesmoHub.json';
+import {
+  abi as DesmoABI,
+  bytecode as DesmoBytecode,
+} from '@vaimee/desmo-contracts/artifacts/contracts/Desmo.sol/Desmo.json';
 
 async function getMockIExecContract(
   wallet: ethers.Wallet,

@@ -4,7 +4,7 @@ import {
   ITDDDisabledEvent,
   ITDDEnabledEvent,
 } from '$/types/desmoHub-types';
-import { abi as DesmoHubABI } from '@vaimee/desmo-contracts/artifacts/contracts/DesmoHub.sol/DesmoHub.json'
+import { abi as DesmoHubABI } from '@vaimee/desmo-contracts/artifacts/contracts/DesmoHub.sol/DesmoHub.json';
 import { WalletSignerJsonRpc } from '@/walletSigner/walletSignerJsonRpc-module';
 import { setupMockEnvironment } from './iexec-mock';
 

@@ -8,8 +8,8 @@ import {
   ITDD,
 } from '../types/desmoHub-types';
 import { ethers } from 'ethers';
-import { abi as contractABI } from '@vaimee/desmo-contracts/artifacts/contracts/DesmoHub.sol/DesmoHub.json'
-import { desmoHub as contractAddress } from '@vaimee/desmo-contracts/deployed.json'
+import { abi as contractABI } from '@vaimee/desmo-contracts/artifacts/contracts/DesmoHub.sol/DesmoHub.json';
+import { desmoHub as contractAddress } from '@vaimee/desmo-contracts/deployed.json';
 import { Observable, Subject } from 'rxjs';
 import { WalletSigner } from './walletSigner/walletSigner-module';
 

@@ -46,14 +46,18 @@ export function decodeQueryResult(result: string): {
   // Parse and validate result type:
   const type = parseInt(result[padding], 16);
   if (isNaN(type)) {
-    throw new Error(`Result type encoding is not a valid hex string (${result[padding]}).`)
+    throw new Error(
+      `Result type encoding is not a valid hex string (${result[padding]}).`,
+    );
   }
 
   // Parse and validate result value:
   const dataEncoded = result.substring(padding + 1);
   const validHexRegex = /^[0-9A-Fa-f]+$/g;
   if (!validHexRegex.test(dataEncoded)) {
-    throw new Error(`Result value encoding is not a valid hex string (${dataEncoded}).`)
+    throw new Error(
+      `Result value encoding is not a valid hex string (${dataEncoded}).`,
+    );
   }
 
   let value: number | string;
