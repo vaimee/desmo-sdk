@@ -1,20 +1,24 @@
-import { expect } from 'chai';
-
-import { Desmo } from '../lib/desmo-module';
-import { DesmoHub } from '../lib/desmoHub-module';
-import { IRequestIDEvent } from '../types/desmoHub-types';
+import { Desmo } from '@/desmo-module';
+import { DesmoHub } from '@/desmoHub-module';
+import { IRequestIDEvent } from '$/types/desmoHub-types';
 import { WalletSignerJsonRpc } from '@/walletSigner/walletSignerJsonRpc-module';
-import 'mocha';
-import { chainURL, privateKEY } from './config';
-import { firstValueFrom } from 'rxjs';
 import { QueryResultTypes } from '@/utils/decoder';
+import { abi as DesmoABI } from '$/resources/desmo-config';
+import { abi as DesmoHubABI } from '$/resources/desmoHub-config';
+import { getMockIExecSDK, setupMockEnvironment } from './iexec-mock';
+
+import { ethers } from 'ethers';
+import { firstValueFrom } from 'rxjs';
+
+import 'mocha';
+import chai, { expect } from 'chai';
+import ChaiAsPromised from 'chai-as-promised';
+chai.use(ChaiAsPromised);
 
 describe('Desmo Tests', function () {
-  const walletSigner: WalletSignerJsonRpc = new WalletSignerJsonRpc(chainURL);
-  walletSigner.signInWithPrivateKey(privateKEY);
-
-  const desmohub: DesmoHub = new DesmoHub(walletSigner);
-  const buyer: Desmo = new Desmo(walletSigner);
+  let desmohub: DesmoHub;
+  let desmo: Desmo;
+  let walletSigner: WalletSignerJsonRpc;
 
   /* We have to put all async initialisation code
    * inside a 'before' block because 'mocha' doesn't
@@ -22,6 +26,29 @@ describe('Desmo Tests', function () {
    * of a 'describe' block:
    */
   before(async function () {
+    const { account, desmoHubContract, desmoContract } =
+      await setupMockEnvironment();
+
+    walletSigner = new WalletSignerJsonRpc('');
+    walletSigner['_wallet'] = account;
+    (walletSigner as any)['_provider'] = account.provider;
+    walletSigner.signInWithPrivateKey(account.privateKey);
+
+    desmohub = new DesmoHub(walletSigner);
+    desmohub['contract'] = desmoHubContract;
+    desmohub['abiInterface'] = new ethers.utils.Interface(DesmoHubABI);
+
+    desmo = new Desmo(walletSigner);
+    desmo['contract'] = desmoContract;
+    desmo['abiInterface'] = new ethers.utils.Interface(DesmoABI);
+    if (desmo['iexec'] !== undefined) {
+      desmo['iexec'] = getMockIExecSDK(
+        desmo['iexec'],
+        account,
+        '0x11391F354CFE180cBc2C92e186e691B63CEB4763',
+      );
+    }
+
     await desmohub.startListeners();
   });
 
@@ -36,13 +63,13 @@ describe('Desmo Tests', function () {
       const event: IRequestIDEvent = await eventPromise;
       const query =
         '{__!_prefixList__!_:[{__!_abbreviation__!_:__!_desmo__!_,__!_completeURI__!_:__!_https://desmo.vaimee.it/__!_},{__!_abbreviation__!_:__!_qudt__!_,__!_completeURI__!_:__!_http://qudt.org/schema/qudt/__!_},{__!_abbreviation__!_:__!_xsd__!_,__!_completeURI__!_:__!_http://www.w3.org/2001/XMLSchema/__!_},{__!_abbreviation__!_:__!_monas__!_,__!_completeURI__!_:__!_https://pod.dasibreaker.vaimee.it/monas/__!_}],__!_property__!_:{__!_identifier__!_:__!_value__!_,__!_unit__!_:__!_qudt:DEG_C__!_,__!_datatype__!_:1},__!_staticFilter__!_:__!_$[?(@[--#-type--#-]==--#-Sensor--#-)]__!_}';
-      await buyer.buyQuery(
+      await desmo.buyQuery(
         event.requestID,
         query,
         '0x11391F354CFE180cBc2C92e186e691B63CEB4763',
       );
 
-      const { result, type } = await buyer.getQueryResult();
+      const { result, type } = await desmo.getQueryResult();
 
       expect(result).to.be.a('number');
       expect(type).to.be.equal(QueryResultTypes.POS_FLOAT);

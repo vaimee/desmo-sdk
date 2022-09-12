@@ -1,25 +1,24 @@
-import { firstValueFrom } from 'rxjs';
-import { DesmoHub } from '../lib/desmoHub-module';
+import { DesmoHub } from '@/desmoHub-module';
 import {
   IRequestIDEvent,
   ITDDDisabledEvent,
   ITDDEnabledEvent,
-} from '../types/desmoHub-types';
+} from '$/types/desmoHub-types';
+import { abi as DesmoHubABI } from '$/resources/desmoHub-config';
 import { WalletSignerJsonRpc } from '@/walletSigner/walletSignerJsonRpc-module';
+import { setupMockEnvironment } from './iexec-mock';
+
+import { ethers } from 'ethers';
+import { firstValueFrom } from 'rxjs';
+
 import 'mocha';
-import { chainURL, myTDDUrl, privateKEY } from './config';
-import { expect } from 'chai';
-
-import chai from 'chai';
+import chai, { expect } from 'chai';
 import ChaiAsPromised from 'chai-as-promised';
-
 chai.use(ChaiAsPromised);
 
 describe('DesmoHub Tests', function () {
-  const walletSigner: WalletSignerJsonRpc = new WalletSignerJsonRpc(chainURL);
-  walletSigner.signInWithPrivateKey(privateKEY);
-
-  const desmohub: DesmoHub = new DesmoHub(walletSigner);
+  let desmohub: DesmoHub;
+  let walletSigner: WalletSignerJsonRpc;
 
   /* We have to put all async initialisation code
    * inside a 'before' block because 'mocha' doesn't
@@ -27,6 +26,17 @@ describe('DesmoHub Tests', function () {
    * of a 'describe' block:
    */
   before(async function () {
+    const { account, desmoHubContract } = await setupMockEnvironment();
+
+    walletSigner = new WalletSignerJsonRpc('');
+    walletSigner['_wallet'] = account;
+    (walletSigner as any)['_provider'] = account.provider;
+    walletSigner.signInWithPrivateKey(account.privateKey);
+
+    desmohub = new DesmoHub(walletSigner);
+    desmohub['contract'] = desmoHubContract;
+    desmohub['abiInterface'] = new ethers.utils.Interface(DesmoHubABI);
+
     //start all listeners
     await desmohub.startListeners();
   });
@@ -76,7 +86,7 @@ describe('DesmoHub Tests', function () {
   describe('Retrieve', function () {
     it('should retrieve my TDD', async () => {
       const myTDDObject = await desmohub.getTDD();
-      expect(myTDDObject.url).to.equal(myTDDUrl);
+      expect(myTDDObject.url).to.equal('https://desmold-zion-1.vaimee.it');
     });
 
     it('should retrieve the TDD storage length', async () => {
@@ -91,7 +101,7 @@ describe('DesmoHub Tests', function () {
       await desmohub.disableTDD();
       const event: ITDDDisabledEvent = await eventPromise;
 
-      expect(event.url).to.equal(myTDDUrl);
+      expect(event.url).to.equal('https://desmold-zion-1.vaimee.it');
 
       const myTDDObject = await desmohub.getTDD();
       expect(myTDDObject.disabled).to.be.true;
@@ -104,7 +114,7 @@ describe('DesmoHub Tests', function () {
       await desmohub.enableTDD();
       const event: ITDDEnabledEvent = await eventPromise;
 
-      expect(event.url).to.equal(myTDDUrl);
+      expect(event.url).to.equal('https://desmold-zion-1.vaimee.it');
 
       const myTDDObject = await desmohub.getTDD();
       expect(myTDDObject.disabled).to.be.false;
