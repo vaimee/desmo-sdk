@@ -22,9 +22,8 @@ export class Desmo {
   private abiInterface: ethers.utils.Interface;
 
   private iexec?: IExec;
-  private readonly callback: string = contractAddress;
-  private readonly category: number;
-  private dealId: string;
+  private readonly category = 0;
+  private dealId = '';
 
   /**
    *
@@ -52,9 +51,6 @@ export class Desmo {
         throw new Error('Desmo Contract could not connect with iExec');
       }
     }
-
-    this.category = 0;
-    this.dealId = '';
   }
 
   /**
@@ -221,7 +217,7 @@ await desmoContract.buyQuery(
       // TODO: understand why the callback is needed and why the typing is wrong
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      callback: this.callback,
+      callback: contractAddress,
     });
 
     const requestOrder = await this.iexec.order.signRequestorder(
