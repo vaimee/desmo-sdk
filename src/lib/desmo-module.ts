@@ -7,6 +7,7 @@ import {
   WorkerpoolOrder,
   TaskStatus,
   IQueryState,
+  DesmoTransaction
 } from '../types/desmo-types';
 
 import { ethers } from 'ethers';
@@ -15,12 +16,6 @@ import { IExec } from 'iexec';
 import { decodeQueryResult } from './utils/decoder';
 import { Observable, Subject } from 'rxjs';
 
-export interface DesmoTransaction {
-  transaction: string;
-  requestID: string;
-  result: string;
-  taskID: string;
-}
 export class Desmo {
   private _walletSigner: WalletSigner;
   private _isConnected: boolean;
