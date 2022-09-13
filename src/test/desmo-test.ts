@@ -123,5 +123,33 @@ describe('Desmo Tests', function () {
       expect(list[0]).to.not.be.undefined;
       expect(list[1]).to.not.be.undefined;
     });
+
+    it('should retrieve an empty list if fromBlock and toBlock are equal', async () => {
+      const list = await desmo.listTransactions(1, 1);
+
+      expect(list.length).to.be.eql(0);
+    });
+
+    it('should fail if fromBlock is higher than toBlock', async () => {
+      const from = 2;
+      const to = 1;
+      await expect(desmo.listTransactions(from, to)).to.be.rejectedWith(
+        `fromBlock (${from}) must be lower than toBlock (${to}).`,
+      );
+    });
+
+    it('should fail if fromBlock is greater or equal to current block number', async () => {
+      const currBlockNumber = await desmo.provider.getBlockNumber();
+      await expect(desmo.listTransactions(currBlockNumber)).to.be.rejectedWith(
+        `fromBlock (${currBlockNumber}) must be lower than the current block number (${currBlockNumber}).`,
+      );
+      await expect(
+        desmo.listTransactions(currBlockNumber + 1),
+      ).to.be.rejectedWith(
+        `fromBlock (${
+          currBlockNumber + 1
+        }) must be lower than the current block number (${currBlockNumber}).`,
+      );
+    });
   });
 });
