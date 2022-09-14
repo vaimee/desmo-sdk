@@ -1,3 +1,7 @@
+# [1.0.0-alpha.12](https://github.com/vaimee/desmo-sdk/compare/v1.0.0-alpha.11...v1.0.0-alpha.12) (2022-09-14)
+
+
+
 # [1.0.0-alpha.11](https://github.com/vaimee/desmo-sdk/compare/v1.0.0-alpha.10...v1.0.0-alpha.11) (2022-09-12)
 
 
