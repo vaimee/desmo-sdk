@@ -17,8 +17,8 @@
     "build/types/**/*"
   ],
   "scripts": {
-    "test": "mocha --inspect --require source-map-support/register --bail ./build/src/test/",
-    "build": "rimraf build && tsc && tsc-alias",
+    "test": "mocha --inspect --require source-map-support/register --bail ./build/test/",
+    "build": "rimraf build && tsc -p tsconfig.build.json && tsc-alias",
     "preversion": "npm run lint && npm run build && npm test",
     "version": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0 && npm run format && git add -A",
     "postversion": "git push --follow-tags && npm publish",
