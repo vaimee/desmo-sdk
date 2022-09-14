@@ -6,8 +6,7 @@
 ![](https://img.shields.io/badge/prettier-1A2C34?style=flat-square&logo=prettier&logoColor=F7BA3E)
 
 **Overview**
-
-> In the context of the [DESMO-LD](https://github.com/vaimee/desmo/tree/c763cec12f6c9060a9f1a3335ff4cff60ece3df2) an important part of the project relay on storing The Thing Description Directories (TDDs) URLs on-chain so that they can be selected to provide the query result and increase its score, thus the DESMO-SDK is a tool that provides all the features required to interact with them.
+> [DESMO-LD](https://github.com/vaimee/desmo/tree/c763cec12f6c9060a9f1a3335ff4cff60ece3df2) is a distributed oracle for IoT data. This project exposes a practical NodeJS and browser API to interact with DESMO-LD system components.
 
 <details>
   <summary>Table of Contents</summary>
