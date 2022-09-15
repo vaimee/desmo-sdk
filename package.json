@@ -5,7 +5,7 @@
   "homepage": "https://github.com/vaimee/desmo",
   "author": "De Faria, B. T., Granata, L. Persiani, S.",
   "keywords": [],
-  "version": "1.0.0-alpha.14",
+  "version": "1.0.0-alpha.15",
   "engines": {
     "node": ">=13.2.0"
   },
