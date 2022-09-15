@@ -2,7 +2,14 @@ import IexecProxyBuild from '@iexec/poco/build/contracts/IexecInterfaceToken.jso
 import { deployMockContract, MockContract } from 'ethereum-waffle';
 import { ethers, ContractFactory } from 'ethers';
 import { IExec } from 'iexec';
-import { catchError, finalize, of, ReplaySubject, tap } from 'rxjs';
+import {
+  catchError,
+  finalize,
+  of,
+  ReplaySubject,
+  Subscription,
+  tap,
+} from 'rxjs';
 import { TaskStatus } from '$/types/desmo-types';
 import { MockProvider } from '@ethereum-waffle/provider';
 
@@ -301,7 +308,7 @@ export function getMockIExecSDK(
         next: (data: { message: string }) => void;
         error: (error: unknown) => void;
         complete: () => void;
-      }) =>
+      }): Subscription =>
         obsTask
           .asObservable()
           .pipe(
