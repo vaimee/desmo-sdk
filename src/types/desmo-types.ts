@@ -32,3 +32,8 @@ export enum TaskStatus {
   TASK_TIMEDOUT = 'TASK_TIMEDOUT',
   TASK_FAILED = 'TASK_FAILED',
 }
+
+export interface IQueryState {
+  taskID: string;
+  state: string;
+}

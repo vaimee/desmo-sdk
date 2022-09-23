@@ -2,12 +2,18 @@ import { abi as contractABI } from '@vaimee/desmo-contracts/artifacts/contracts/
 import { Desmo as DesmoContract } from '@vaimee/desmo-contracts/typechain/Desmo';
 import { desmo as contractAddress } from '@vaimee/desmo-contracts/deployed.json';
 import { QueryResultTypes } from './utils/decoder';
-import { AppOrder, WorkerpoolOrder, TaskStatus } from '../types/desmo-types';
+import {
+  AppOrder,
+  WorkerpoolOrder,
+  TaskStatus,
+  IQueryState,
+} from '../types/desmo-types';
 
 import { ethers } from 'ethers';
 import { WalletSigner } from './walletSigner/walletSigner-module';
 import { IExec } from 'iexec';
 import { decodeQueryResult } from './utils/decoder';
+import { Observable, Subject } from 'rxjs';
 
 export interface DesmoTransaction {
   transaction: string;
@@ -25,6 +31,8 @@ export class Desmo {
   private readonly callback: string = contractAddress;
   private readonly category: number;
   private dealId: string;
+
+  private QUERY_STATE: Subject<IQueryState>;
 
   /**
    *
@@ -55,6 +63,8 @@ export class Desmo {
 
     this.category = 0;
     this.dealId = '';
+
+    this.QUERY_STATE = new Subject<IQueryState>();
   }
 
   /**
@@ -100,6 +110,13 @@ export class Desmo {
    */
   public get isConnected(): boolean {
     return this._isConnected;
+  }
+
+  /**
+   * @returns an observable that emits whenever the status of a task gets updated
+   */
+  public get queryState(): Observable<IQueryState> {
+    return this.QUERY_STATE.asObservable();
   }
 
   private async fetchAppOrder(appAddress: string): Promise<AppOrder> {
@@ -265,6 +282,7 @@ await desmoContract.buyQuery(
     const taskCompletion: Promise<void> = new Promise((resolve, reject) => {
       taskObservable.subscribe({
         next: async ({ message }) => {
+          this.QUERY_STATE.next({ taskID, state: message });
           switch (message) {
             case TaskStatus.TASK_COMPLETED:
               resolve();
