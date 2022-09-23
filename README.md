@@ -1,9 +1,9 @@
 # DESMO-SDK
-
-[![npm version](https://badge.fury.io/js/@vaimee%2Fdesmold-sdk.svg)](https://badge.fury.io/js/@vaimee%2Fdesmold-sdk)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-![](https://img.shields.io/badge/eslint-3A33D1?style=flat-square&logo=eslint&logoColor=white)
-![](https://img.shields.io/badge/prettier-1A2C34?style=flat-square&logo=prettier&logoColor=F7BA3E)
+<a href="https://www.npmjs.com/package/@vaimee/desmold-sdk" target="_blank"><img alt="npm" src="https://img.shields.io/npm/v/@vaimee/desmold-sdk?style=flat-square"></a>
+<a href="https://github.com/vaimee/desmo-sdk/issues" target="_blank"><img src="https://img.shields.io/github/issues/vaimee/desmo-sdk.svg?style=flat-square" alt="Issues" /></a>
+<a href="https://github.com/vaimee/zion/blob/main/LICENSE" target="_blank"><img src="https://img.shields.io/github/license/vaimee/desmo-sdk.svg?style=flat-square" alt="License" /></a>
+<a href="https://discord.gg/B7WZswnH" target="_blank"><img src="https://img.shields.io/badge/Discord-7289DA?style=flat-square&logo=discord&logoColor=white&label=desmo" alt="Discord chat" /></a>
+<a href="https://www.linkedin.com/company/vaimee/" target="_blank"><img src="https://img.shields.io/badge/-LinkedIn-black.svg?style=flat-square&logo=linkedin&color=blue" alt="LinkedIn" /></a>
 
 **Overview**
 > [DESMO-LD](https://github.com/vaimee/desmo/tree/c763cec12f6c9060a9f1a3335ff4cff60ece3df2) is a distributed oracle for IoT data. This project exposes a practical NodeJS and browser API to interact with DESMO-LD system components.
