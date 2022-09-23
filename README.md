@@ -1,3 +1,5 @@
+<img src="https://github.com/vaimee/desmo/blob/main/imgs/desmo-logo.png" width="40%" alt='DESMO'/>
+
 # DESMO-SDK
 <a href="https://www.npmjs.com/package/@vaimee/desmold-sdk" target="_blank"><img alt="npm" src="https://img.shields.io/npm/v/@vaimee/desmold-sdk?style=flat-square"></a>
 <a href="https://github.com/vaimee/desmo-sdk/issues" target="_blank"><img src="https://img.shields.io/github/issues/vaimee/desmo-sdk.svg?style=flat-square" alt="Issues" /></a>
