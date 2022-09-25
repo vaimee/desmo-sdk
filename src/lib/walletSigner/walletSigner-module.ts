@@ -23,7 +23,7 @@ export abstract class WalletSigner {
   public get wallet(): ethers.Signer {
     if (this._wallet === undefined) {
       throw new Error(
-        'Wallet unavailable. Please sign in before trying again.',
+        'Wallet unavailable. Please sign in before trying again.'
       );
     }
     return this._wallet;

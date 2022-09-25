@@ -1,11 +1,11 @@
 import {
+  IRequestIDEvent,
+  ISentTransaction,
+  ITDD,
   ITDDCreatedEvent,
   ITDDDisabledEvent,
   ITDDEnabledEvent,
-  ISentTransaction,
   OperationType,
-  IRequestIDEvent,
-  ITDD,
 } from '../types/desmoHub-types';
 import { ethers } from 'ethers';
 import { abi as contractABI } from '@vaimee/desmo-contracts/artifacts/contracts/DesmoHub.sol/DesmoHub.json';
@@ -49,7 +49,7 @@ export class DesmoHub {
     this.contract = new ethers.Contract(
       contractAddress,
       contractABI,
-      this.provider,
+      this.provider
     );
 
     this._isConnected = walletSigner.isConnected;
@@ -84,7 +84,7 @@ export class DesmoHub {
     }
     if (!this._walletSigner.isConnected) {
       throw new Error(
-        'The provided wallet signer must be connected before calling this method!',
+        'The provided wallet signer must be connected before calling this method!'
       );
     }
 
@@ -122,7 +122,7 @@ export class DesmoHub {
 
   private attachListenerForNewEvents(
     eventFilter: ethers.EventFilter,
-    listener: ethers.providers.Listener,
+    listener: ethers.providers.Listener
   ): void {
     // The following is a workaround that will stop to be required when ethers.js v6 will be released:
     // (see https://github.com/ethers-io/ethers.js/issues/2310)
@@ -144,7 +144,7 @@ export class DesmoHub {
   public async startListeners(): Promise<void> {
     if (!this.isConnected) {
       throw new Error(
-        'This method requires the wallet signer to be already signed-in!',
+        'This method requires the wallet signer to be already signed-in!'
       );
     }
 
@@ -219,7 +219,7 @@ export class DesmoHub {
   public async registerTDD(tddUrl: string): Promise<void> {
     if (!this.isConnected) {
       throw new Error(
-        'This method requires the wallet signer to be already signed-in!',
+        'This method requires the wallet signer to be already signed-in!'
       );
     }
 
@@ -239,7 +239,7 @@ export class DesmoHub {
   public async disableTDD(): Promise<void> {
     if (!this.isConnected) {
       throw new Error(
-        'This method requires the wallet signer to be already signed-in!',
+        'This method requires the wallet signer to be already signed-in!'
       );
     }
 
@@ -259,7 +259,7 @@ export class DesmoHub {
   public async enableTDD(): Promise<void> {
     if (!this.isConnected) {
       throw new Error(
-        'This method requires the wallet signer to be already signed-in!',
+        'This method requires the wallet signer to be already signed-in!'
       );
     }
 
@@ -279,7 +279,7 @@ export class DesmoHub {
   public async getNewRequestID(): Promise<void> {
     if (!this.isConnected) {
       throw new Error(
-        'This method requires the wallet signer to be already signed-in!',
+        'This method requires the wallet signer to be already signed-in!'
       );
     }
 
@@ -306,7 +306,7 @@ export class DesmoHub {
    * @returns
    */
   public async getScoresByRequestID(
-    requestID: ethers.Bytes,
+    requestID: ethers.Bytes
   ): Promise<ethers.Bytes> {
     return await this.contract.getScoresByRequestID(requestID);
   }
@@ -352,12 +352,12 @@ export class DesmoHub {
 
     if (start >= tddStorageLength) {
       throw new Error(
-        `Start index must be lower than the TDD storage length (${tddStorageLength}).`,
+        `Start index must be lower than the TDD storage length (${tddStorageLength}).`
       );
     }
     if (start > stop) {
       throw new Error(
-        `Start index (${start}) is greater than stop index (${stop}).`,
+        `Start index (${start}) is greater than stop index (${stop}).`
       );
     }
 
@@ -376,7 +376,7 @@ export class DesmoHub {
     // Clean up the TDD objects from their numeric properties:
     return tddList.map(
       ({ url, owner, disabled, score }) =>
-        ({ url, owner, disabled, score } as ITDD),
+        ({ url, owner, disabled, score } as ITDD)
     );
   }
 }

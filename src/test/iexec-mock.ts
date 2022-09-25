@@ -1,13 +1,13 @@
 import IexecProxyBuild from '@iexec/poco/build/contracts/IexecInterfaceToken.json';
-import { deployMockContract, MockContract } from 'ethereum-waffle';
-import { ethers, ContractFactory } from 'ethers';
+import { MockContract, deployMockContract } from 'ethereum-waffle';
+import { ContractFactory, ethers } from 'ethers';
 import { IExec } from 'iexec';
 import {
+  ReplaySubject,
+  Subscription,
   catchError,
   finalize,
   of,
-  ReplaySubject,
-  Subscription,
   tap,
 } from 'rxjs';
 import { TaskStatus } from '$/types/desmo-types';
@@ -23,7 +23,7 @@ import {
 } from '@vaimee/desmo-contracts/artifacts/contracts/Desmo.sol/Desmo.json';
 
 async function getMockIExecContract(
-  wallet: ethers.Wallet,
+  wallet: ethers.Wallet
 ): Promise<MockContract> {
   const iexecProxy = await deployMockContract(wallet, IexecProxyBuild.abi);
 
@@ -85,7 +85,7 @@ export async function setupMockEnvironment(): Promise<{
   const desmoHubContractFactory = new ContractFactory(
     DesmoHubABI,
     DesmoHubBytecode,
-    wallets[0],
+    wallets[0]
   );
   const desmoHubContract = await desmoHubContractFactory.deploy();
 
@@ -102,11 +102,11 @@ export async function setupMockEnvironment(): Promise<{
   const desmoContractFactory = new ContractFactory(
     DesmoABI,
     DesmoBytecode,
-    wallets[0],
+    wallets[0]
   );
   const desmoContract = await desmoContractFactory.deploy(
     desmoHubContract.address,
-    iexecProxy.address,
+    iexecProxy.address
   );
 
   return { account: wallets[0], desmoHubContract, desmoContract };
@@ -115,7 +115,7 @@ export async function setupMockEnvironment(): Promise<{
 export function getMockIExecSDK(
   iExec: IExec,
   wallet: ethers.Wallet,
-  dAppAddress: string,
+  dAppAddress: string
 ): IExec {
   /**
    * Mock orderbook.fetchAppOrderbook
@@ -317,7 +317,7 @@ export function getMockIExecSDK(
               callbacks.error(error);
               return of(error);
             }),
-            finalize(() => callbacks.complete()),
+            finalize(() => callbacks.complete())
           )
           .subscribe(),
     };
