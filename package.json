@@ -53,13 +53,14 @@
     "eslint-plugin-unused-imports": "^2.0.0",
     "ethereum-waffle": "^3.4.4",
     "hardhat": "^2.11.1",
+    "husky": "^8.0.0",
+    "lint-staged": "^13.0.3",
     "mocha": "^10.0.0",
     "prettier": "^2.7.1",
     "prettier-eslint": "^15.0.1",
     "rimraf": "^3.0.2",
     "source-map-support": "^0.5.19",
     "tsc-alias": "^1.2.11",
-    "typescript": "next",
-    "husky": "^8.0.0"
+    "typescript": "next"
   }
 }
