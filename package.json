@@ -24,7 +24,8 @@
     "postversion": "git push --follow-tags && npm publish",
     "lint": "eslint --ext ts,js src",
     "format": "eslint --ext ts,js src --fix",
-    "build-live": "tsc -w && tsc-alias -w"
+    "build-live": "tsc -w && tsc-alias -w",
+    "prepare": "husky install"
   },
   "license": "MIT",
   "dependencies": {
@@ -58,6 +59,7 @@
     "rimraf": "^3.0.2",
     "source-map-support": "^0.5.19",
     "tsc-alias": "^1.2.11",
-    "typescript": "next"
+    "typescript": "next",
+    "husky": "^8.0.0"
   }
 }
