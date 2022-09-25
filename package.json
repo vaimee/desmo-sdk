@@ -22,8 +22,8 @@
     "preversion": "npm run lint && npm run build && npm test",
     "version": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0 && npm run format && git add -A",
     "postversion": "git push --follow-tags && npm publish",
-    "lint": "eslint --ext ts,js --fix src",
-    "format": "prettier src/**/*.ts -w",
+    "lint": "eslint --ext ts,js src",
+    "format": "eslint --ext ts,js src --fix",
     "build-live": "tsc -w && tsc-alias -w"
   },
   "license": "MIT",
