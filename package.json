@@ -62,5 +62,8 @@
     "source-map-support": "^0.5.19",
     "tsc-alias": "^1.2.11",
     "typescript": "next"
+  },
+  "lint-staged": {
+    "src/**/*.{ts,js}": "eslint --fix"
   }
 }
