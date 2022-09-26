@@ -1,8 +1,8 @@
-# [1.0.0-alpha.14](https://github.com/vaimee/desmo-sdk/compare/v1.0.0-alpha.13...v1.0.0-alpha.14) (2022-09-14)
+# [1.0.0-alpha.17](https://github.com/vaimee/desmo-sdk/compare/v1.0.0-alpha.16...v1.0.0-alpha.17) (2022-09-26)
 
 
 
-# [1.0.0-alpha.13](https://github.com/vaimee/desmo-sdk/compare/v1.0.0-alpha.12...v1.0.0-alpha.13) (2022-09-14)
+# [1.0.0-alpha.16](https://github.com/vaimee/desmo-sdk/compare/v1.0.0-alpha.15...v1.0.0-alpha.16) (2022-09-15)
 
 
 
@@ -10,11 +10,15 @@
 
 
 
-# [1.0.0-alpha.14](https://github.com/vaimee/desmo-sdk/compare/v1.0.0-alpha.13...v1.0.0-alpha.14) (2022-09-14)
+# [1.0.0-alpha.14](https://github.com/vaimee/desmo-sdk/compare/v1.0.0-alpha.13...v1.0.0-alpha.14) (2022-09-15)
 
 
 
-# [1.0.0-alpha.13](https://github.com/vaimee/desmo-sdk/compare/v1.0.0-alpha.12...v1.0.0-alpha.13) (2022-09-14)
+# [1.0.0-alpha.12](https://github.com/vaimee/desmo-sdk/compare/v1.0.0-alpha.11...v1.0.0-alpha.12) (2022-09-14)
+
+
+
+# [1.0.0-alpha.13](https://github.com/vaimee/desmo-sdk/compare/v1.0.0-alpha.12...v1.0.0-alpha.13) (2022-09-15)
 
 
 
