@@ -14,7 +14,7 @@ export class WalletSignerMetamask extends WalletSigner {
   constructor(
     private _windowEthereum: {
       selectedAddress: string;
-    } & ethers.providers.ExternalProvider,
+    } & ethers.providers.ExternalProvider
   ) {
     super();
     /**
@@ -59,7 +59,7 @@ export class WalletSignerMetamask extends WalletSigner {
       if (error.code === 4001) {
         // User chose not to sign-in!
         throw new Error(
-          'You may need to sign-in in order to get full access to the Dapp features!',
+          'You may need to sign-in in order to get full access to the Dapp features!'
         );
       } else {
         throw error;

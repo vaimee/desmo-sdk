@@ -64,7 +64,7 @@ describe('DesmoHub Tests', function () {
       const start = 3;
       const stop = 1;
       await expect(desmohub.getTDDList(start, stop)).to.be.rejectedWith(
-        `Start index (${start}) must be lower than stop index (${stop}).`,
+        `Start index (${start}) must be lower than stop index (${stop}).`
       );
     });
 
@@ -73,12 +73,14 @@ describe('DesmoHub Tests', function () {
         await desmohub.getTDDStorageLength()
       ).toNumber();
       await expect(desmohub.getTDDList(tddStorageLength)).to.be.rejectedWith(
-        `Start index (${tddStorageLength}) must be lower than the TDD storage length (${tddStorageLength}).`,
+        `Start index (${tddStorageLength}) must be lower than the TDD storage length (${tddStorageLength}).`
       );
       await expect(
-        desmohub.getTDDList(tddStorageLength + 1),
+        desmohub.getTDDList(tddStorageLength + 1)
       ).to.be.rejectedWith(
-        `Start index (${tddStorageLength + 1}) must be lower than the TDD storage length (${tddStorageLength}).`,
+        `Start index (${
+          tddStorageLength + 1
+        }) must be lower than the TDD storage length (${tddStorageLength}).`
       );
     });
   });
@@ -127,7 +129,7 @@ describe('DesmoHub Tests', function () {
       await desmohub.getNewRequestID();
       const event: IRequestIDEvent = await eventPromise;
 
-      expect(event.requestID.length == 64 + 2); // length of '0x' + 32 bytes hex value
+      expect(event.requestID.length === 64 + 2); // length of '0x' + 32 bytes hex value
     });
 
     it('should retrieve the newly-generated list of selected TDDs', async () => {

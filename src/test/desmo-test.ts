@@ -18,7 +18,7 @@ chai.use(ChaiAsPromised);
 
 async function query(
   desmo: Desmo,
-  desmoHub: DesmoHub,
+  desmoHub: DesmoHub
 ): Promise<ReturnType<Desmo['getQueryResult']>> {
   const eventPromise = firstValueFrom(desmoHub.requestID$);
   await desmoHub.getNewRequestID();
@@ -28,7 +28,7 @@ async function query(
   await desmo.buyQuery(
     event.requestID,
     query,
-    '0x11391F354CFE180cBc2C92e186e691B63CEB4763',
+    '0x11391F354CFE180cBc2C92e186e691B63CEB4763'
   );
 
   return desmo.getQueryResult();
@@ -64,7 +64,7 @@ describe('Desmo Tests', function () {
       desmo['iexec'] = getMockIExecSDK(
         desmo['iexec'],
         account,
-        '0x11391F354CFE180cBc2C92e186e691B63CEB4763',
+        '0x11391F354CFE180cBc2C92e186e691B63CEB4763'
       );
     }
 
@@ -134,21 +134,21 @@ describe('Desmo Tests', function () {
       const from = 2;
       const to = 1;
       await expect(desmo.listTransactions(from, to)).to.be.rejectedWith(
-        `fromBlock (${from}) must be lower than toBlock (${to}).`,
+        `fromBlock (${from}) must be lower than toBlock (${to}).`
       );
     });
 
     it('should fail if fromBlock is greater or equal to current block number', async () => {
       const currBlockNumber = await desmo.provider.getBlockNumber();
       await expect(desmo.listTransactions(currBlockNumber)).to.be.rejectedWith(
-        `fromBlock (${currBlockNumber}) must be lower than the current block number (${currBlockNumber}).`,
+        `fromBlock (${currBlockNumber}) must be lower than the current block number (${currBlockNumber}).`
       );
       await expect(
-        desmo.listTransactions(currBlockNumber + 1),
+        desmo.listTransactions(currBlockNumber + 1)
       ).to.be.rejectedWith(
         `fromBlock (${
           currBlockNumber + 1
-        }) must be lower than the current block number (${currBlockNumber}).`,
+        }) must be lower than the current block number (${currBlockNumber}).`
       );
     });
   });

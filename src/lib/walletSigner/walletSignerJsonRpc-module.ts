@@ -31,7 +31,7 @@ export class WalletSignerJsonRpc extends WalletSigner {
   public get ethProvider(): EnhancedWallet {
     if (!this._wallet === undefined) {
       throw new Error(
-        'ETH provider (Wallet) unavailable. Please sign in before trying again.',
+        'ETH provider (Wallet) unavailable. Please sign in before trying again.'
       );
     }
     return this._wallet as EnhancedWallet;
@@ -57,14 +57,14 @@ export class WalletSignerJsonRpc extends WalletSigner {
    */
   public async signInWithJsonWallet(
     encryptedJson: string,
-    password: string,
+    password: string
   ): Promise<void> {
     if (this.isConnected) {
       throw new Error('Already signed in!');
     }
     const account: ethers.Wallet = await ethers.Wallet.fromEncryptedJson(
       encryptedJson,
-      password,
+      password
     );
     this._wallet = new EnhancedWallet(account.privateKey, this.provider);
     this._isConnected = true;

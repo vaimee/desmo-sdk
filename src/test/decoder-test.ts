@@ -1,4 +1,4 @@
-import { decodeQueryResult, QueryResultTypes } from '@/utils/decoder';
+import { QueryResultTypes, decodeQueryResult } from '@/utils/decoder';
 
 import 'mocha';
 import { expect } from 'chai';
@@ -55,7 +55,7 @@ describe('Decoder Tests', function () {
     const encodedValue = `0x1${unknownType.toString(16)}00000000`;
 
     expect(decodeQueryResult.bind(null, encodedValue)).to.throw(
-      `Unknown query result type: ${unknownType}.`,
+      `Unknown query result type: ${unknownType}.`
     );
   });
 
@@ -64,7 +64,7 @@ describe('Decoder Tests', function () {
     const encodedValue = `0x1${invalidTypeEncoding}000000`;
 
     expect(decodeQueryResult.bind(null, encodedValue)).to.throw(
-      `Result type encoding is not a valid hex string (${invalidTypeEncoding}).`,
+      `Result type encoding is not a valid hex string (${invalidTypeEncoding}).`
     );
   });
 
@@ -73,7 +73,7 @@ describe('Decoder Tests', function () {
     const encodedValue = `0x11${invalidValueEncoding}`;
 
     expect(decodeQueryResult.bind(null, encodedValue)).to.throw(
-      `Result value encoding is not a valid hex string (${invalidValueEncoding}).`,
+      `Result value encoding is not a valid hex string (${invalidValueEncoding}).`
     );
   });
 });
