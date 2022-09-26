@@ -6,12 +6,14 @@
   },
   "extends": [
     "eslint:recommended",
-    "plugin:@typescript-eslint/recommended"
+    "plugin:@typescript-eslint/recommended",
+    "plugin:prettier/recommended"
   ],
   "parser": "@typescript-eslint/parser",
   "plugins": [
     "@typescript-eslint",
-    "prettier"
+    "prettier",
+    "unused-imports"
   ],
   "parserOptions": {
     "ecmaVersion": 2019,
@@ -41,7 +43,24 @@
     "prefer-rest-params": "error",
     "prefer-spread": "error",
     "@typescript-eslint/explicit-function-return-type": "off", // overridden below
-    "camelcase": "error"
+    "camelcase": "error",
+    "eqeqeq": ["error", "always"],
+    "unused-imports/no-unused-imports": "error",
+    "unused-imports/no-unused-vars": [
+      "warn",
+      {
+        "vars": "all",
+        "varsIgnorePattern": "^_",
+        "args": "after-used",
+        "argsIgnorePattern": "^_"
+      }
+    ],
+    "sort-imports": [
+      "error",
+      {
+        "ignoreDeclarationSort": true
+      }
+    ]
   },
   "overrides": [
     {

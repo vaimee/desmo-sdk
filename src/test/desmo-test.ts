@@ -18,7 +18,7 @@ chai.use(ChaiAsPromised);
 
 async function query(
   desmo: Desmo,
-  desmoHub: DesmoHub,
+  desmoHub: DesmoHub
 ): Promise<ReturnType<Desmo['getQueryResult']>> {
   const eventPromise = firstValueFrom(desmoHub.requestID$);
   await desmoHub.getNewRequestID();
@@ -28,7 +28,7 @@ async function query(
   await desmo.buyQuery(
     event.requestID,
     query,
-    '0x11391F354CFE180cBc2C92e186e691B63CEB4763',
+    '0x11391F354CFE180cBc2C92e186e691B63CEB4763'
   );
 
   return desmo.getQueryResult();
@@ -64,7 +64,7 @@ describe('Desmo Tests', function () {
       desmo['iexec'] = getMockIExecSDK(
         desmo['iexec'],
         account,
-        '0x11391F354CFE180cBc2C92e186e691B63CEB4763',
+        '0x11391F354CFE180cBc2C92e186e691B63CEB4763'
       );
     }
 

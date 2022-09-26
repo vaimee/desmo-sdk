@@ -4,9 +4,9 @@ import { desmo as contractAddress } from '@vaimee/desmo-contracts/deployed.json'
 import { QueryResultTypes } from './utils/decoder';
 import {
   AppOrder,
-  WorkerpoolOrder,
-  TaskStatus,
   IQueryState,
+  TaskStatus,
+  WorkerpoolOrder,
 } from '../types/desmo-types';
 
 import { ethers } from 'ethers';
@@ -46,7 +46,7 @@ export class Desmo {
     this.contract = new ethers.Contract(
       contractAddress,
       contractABI,
-      this.provider,
+      this.provider
     ) as DesmoContract;
 
     this._isConnected = walletSigner.isConnected;
@@ -76,7 +76,7 @@ export class Desmo {
     }
     if (!this._walletSigner.isConnected) {
       throw new Error(
-        'The provided wallet signer must be connected before calling this method!',
+        'The provided wallet signer must be connected before calling this method!'
       );
     }
 
@@ -124,7 +124,7 @@ export class Desmo {
       throw new Error('A connection to iExec is required!');
     }
     const { orders: appOrders } = await this.iexec.orderbook.fetchAppOrderbook(
-      appAddress,
+      appAddress
     );
 
     if (appOrders.length < 1) {
@@ -213,7 +213,7 @@ await desmoContract.buyQuery(
   public async buyQuery(
     requestID: ethers.Bytes,
     query: string,
-    appAddress: string,
+    appAddress: string
   ): Promise<void> {
     if (this.iexec === undefined) {
       throw new Error('A connection to iExec is required!');
@@ -242,7 +242,7 @@ await desmoContract.buyQuery(
     });
 
     const requestOrder = await this.iexec.order.signRequestorder(
-      requestOrderToSign,
+      requestOrderToSign
     );
 
     const res = await this.iexec.order.matchOrders({
@@ -269,7 +269,7 @@ await desmoContract.buyQuery(
     }
     if (!this.isConnected) {
       throw new Error(
-        'This method requires the wallet signer to be already signed-in!',
+        'This method requires the wallet signer to be already signed-in!'
       );
     }
 
@@ -317,7 +317,7 @@ await desmoContract.buyQuery(
   public async verifyCallbackAddress(callbackAddress: string): Promise<string> {
     if (!this.isConnected) {
       throw new Error(
-        'This method requires the wallet signer to be already signed-in!',
+        'This method requires the wallet signer to be already signed-in!'
       );
     }
 

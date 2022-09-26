@@ -41,7 +41,7 @@ export function decodeQueryResult(result: string): {
   const type = parseInt(result[padding], 16);
   if (isNaN(type)) {
     throw new Error(
-      `Result type encoding is not a valid hex string (${result[padding]}).`,
+      `Result type encoding is not a valid hex string (${result[padding]}).`
     );
   }
 
@@ -50,7 +50,7 @@ export function decodeQueryResult(result: string): {
   const validHexRegex = /^[0-9A-Fa-f]+$/g;
   if (!validHexRegex.test(dataEncoded)) {
     throw new Error(
-      `Result value encoding is not a valid hex string (${dataEncoded}).`,
+      `Result value encoding is not a valid hex string (${dataEncoded}).`
     );
   }
 
@@ -62,11 +62,11 @@ export function decodeQueryResult(result: string): {
         const sizePrecision = parseInt(dataEncoded[0], 16);
         const precision = parseInt(
           dataEncoded.substring(1, 1 + sizePrecision),
-          16,
+          16
         );
         const valueInt = parseInt(
           dataEncoded.substring(1 + sizePrecision, dataEncoded.length),
-          16,
+          16
         );
         const absValue = valueInt / 10 ** precision;
         value = type === QueryResultTypes.NEG_FLOAT ? -absValue : absValue;
