@@ -4,6 +4,7 @@ import { desmo as contractAddress } from '@vaimee/desmo-contracts/deployed.json'
 import { QueryResultTypes } from './utils/decoder';
 import {
   AppOrder,
+  DesmoTransaction,
   IQueryState,
   TaskStatus,
   WorkerpoolOrder,
@@ -15,12 +16,6 @@ import { IExec } from 'iexec';
 import { decodeQueryResult } from './utils/decoder';
 import { Observable, Subject } from 'rxjs';
 
-export interface DesmoTransaction {
-  transaction: string;
-  requestID: string;
-  result: string;
-  taskID: string;
-}
 export class Desmo {
   private _walletSigner: WalletSigner;
   private _isConnected: boolean;
@@ -336,9 +331,47 @@ await desmoContract.buyQuery(
     }
   }
 
-  public async listTransactions(): Promise<DesmoTransaction[]> {
+  /**
+   * @param fromBlock the initial block number from which to extract transaction logs
+   * @param toBlock the final block number from which to extract transaction logs (if not specified, the latest block number)
+   * @returns an array containing the requested transaction descriptions.
+   */
+  public async listTransactions(
+    fromBlock = 0,
+    toBlock?: number
+  ): Promise<DesmoTransaction[]> {
+    const currentBlock = await this.provider.getBlockNumber();
+
+    // Make sure that `fromBlock` and `toBlock` are integer numbers:
+    fromBlock = Math.floor(fromBlock ?? 0);
+    toBlock = Math.floor(toBlock ?? 0);
+
+    // Apply limits to `fromBlock` and `toBlock` indexes:
+    fromBlock = Math.max(fromBlock, 0);
+    toBlock = Math.min(toBlock, currentBlock);
+
+    if (fromBlock >= currentBlock) {
+      throw new Error(
+        `fromBlock (${fromBlock}) must be lower than the current block number (${currentBlock}).`
+      );
+    }
+    if (fromBlock > toBlock) {
+      throw new Error(
+        `fromBlock (${fromBlock}) must be lower than toBlock (${toBlock}).`
+      );
+    }
+
+    /**
+     * Summarizing, here we should have:
+     * 0 <= fromBlock < currentBlock
+     * 0 <= toBlock <= currentBlock
+     */
     const queryFilter = this.contract.filters.QueryCompleted();
-    const events = await this.contract.queryFilter(queryFilter);
+    const events = await this.contract.queryFilter(
+      queryFilter,
+      fromBlock,
+      toBlock !== 0 ? toBlock : 'latest'
+    );
     return events.map((event) => {
       return {
         transaction: event.transactionHash,

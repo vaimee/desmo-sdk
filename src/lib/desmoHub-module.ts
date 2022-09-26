@@ -352,12 +352,12 @@ export class DesmoHub {
 
     if (start >= tddStorageLength) {
       throw new Error(
-        `Start index must be lower than the TDD storage length (${tddStorageLength}).`
+        `Start index (${start}) must be lower than the TDD storage length (${tddStorageLength}).`
       );
     }
     if (start > stop) {
       throw new Error(
-        `Start index (${start}) is greater than stop index (${stop}).`
+        `Start index (${start}) must be lower than stop index (${stop}).`
       );
     }
 

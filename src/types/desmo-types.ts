@@ -1,5 +1,12 @@
 import { Tag } from 'iexec/dist/lib/types';
 
+export interface DesmoTransaction {
+  transaction: string;
+  requestID: string;
+  result: string;
+  taskID: string;
+}
+
 export interface AppOrder {
   app: string;
   appprice: number;

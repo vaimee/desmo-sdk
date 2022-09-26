@@ -64,7 +64,7 @@ describe('DesmoHub Tests', function () {
       const start = 3;
       const stop = 1;
       await expect(desmohub.getTDDList(start, stop)).to.be.rejectedWith(
-        `Start index (${start}) is greater than stop index (${stop}).`
+        `Start index (${start}) must be lower than stop index (${stop}).`
       );
     });
 
@@ -73,12 +73,14 @@ describe('DesmoHub Tests', function () {
         await desmohub.getTDDStorageLength()
       ).toNumber();
       await expect(desmohub.getTDDList(tddStorageLength)).to.be.rejectedWith(
-        `Start index must be lower than the TDD storage length (${tddStorageLength}).`
+        `Start index (${tddStorageLength}) must be lower than the TDD storage length (${tddStorageLength}).`
       );
       await expect(
         desmohub.getTDDList(tddStorageLength + 1)
       ).to.be.rejectedWith(
-        `Start index must be lower than the TDD storage length (${tddStorageLength}).`
+        `Start index (${
+          tddStorageLength + 1
+        }) must be lower than the TDD storage length (${tddStorageLength}).`
       );
     });
   });
