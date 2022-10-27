@@ -21,6 +21,7 @@ import {
   abi as DesmoABI,
   bytecode as DesmoBytecode,
 } from '@vaimee/desmo-contracts/artifacts/contracts/Desmo.sol/Desmo.json';
+import { DesmoHub } from '@vaimee/desmo-contracts/typechain/DesmoHub';
 
 async function getMockIExecContract(
   wallet: ethers.Wallet
@@ -77,7 +78,7 @@ async function getMockIExecContract(
 
 export async function setupMockEnvironment(): Promise<{
   account: ethers.Wallet;
-  desmoHubContract: ethers.Contract;
+  desmoHubContract: DesmoHub;
   desmoContract: ethers.Contract;
 }> {
   const wallets = new MockProvider().getWallets(); // Returns 10 different wallets
@@ -87,7 +88,7 @@ export async function setupMockEnvironment(): Promise<{
     DesmoHubBytecode,
     wallets[0]
   );
-  const desmoHubContract = await desmoHubContractFactory.deploy();
+  const desmoHubContract = (await desmoHubContractFactory.deploy()) as DesmoHub;
 
   for (let i = 0; i < 4; i++) {
     const account = wallets[i];

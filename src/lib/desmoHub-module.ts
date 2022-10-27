@@ -12,6 +12,7 @@ import { abi as contractABI } from '@vaimee/desmo-contracts/artifacts/contracts/
 import { desmoHub as contractAddress } from '@vaimee/desmo-contracts/deployed.json';
 import { Observable, Subject } from 'rxjs';
 import { WalletSigner } from './walletSigner/walletSigner-module';
+import { DesmoHub as DesmoHubContract } from '@vaimee/desmo-contracts/typechain/DesmoHub';
 
 /**
  * This class is the main entrypoint to interact with the DesmoHub contract.
@@ -21,7 +22,7 @@ export class DesmoHub {
   private _isListening: boolean;
   private _walletSigner: WalletSigner;
   private _isConnected: boolean;
-  private contract: ethers.Contract;
+  private contract: DesmoHubContract;
   private abiInterface: ethers.utils.Interface;
 
   private TDD_CREATED: Subject<ITDDCreatedEvent>;
@@ -50,7 +51,7 @@ export class DesmoHub {
       contractAddress,
       contractABI,
       this.provider
-    );
+    ) as DesmoHubContract;
 
     this._isConnected = walletSigner.isConnected;
 
@@ -186,15 +187,6 @@ export class DesmoHub {
         url: parsedEvent.args.url,
       });
     });
-
-    const filterRequestID = this.contract.filters.RequestID();
-    this.attachListenerForNewEvents(filterRequestID, (event: ethers.Event) => {
-      const parsedEvent = this.abiInterface.parseLog(event);
-
-      this.REQUEST_ID.next({
-        requestID: parsedEvent.args.requestID,
-      });
-    });
   }
 
   /**
@@ -272,53 +264,11 @@ export class DesmoHub {
   }
 
   /**
-   * This method is used to call the homonym function on the smart contract to get a new Request id.
-   * It produce an event when the transaction is sent.
-   * It is possible to get the result of the transaction by subscribing to the requestID$ observable, after having activated the listeners.
-   */
-  public async getNewRequestID(): Promise<void> {
-    if (!this.isConnected) {
-      throw new Error(
-        'This method requires the wallet signer to be already signed-in!'
-      );
-    }
-
-    const tx = await this.contract.getNewRequestID();
-    this.TRANSACTION_SENT.next({
-      invokedOperation: OperationType.getNewRequestID,
-      hash: tx.hash,
-      sent: new Date(Date.now()),
-    });
-  }
-
-  /**
    *
    * @returns the length of the TDD storage.
    */
   public async getTDDStorageLength(): Promise<ethers.BigNumber> {
     return await this.contract.getTDDStorageLength();
-  }
-
-  /**
-   * Get the scores relative to a request id.
-   *
-   * @param requestID
-   * @returns
-   */
-  public async getScoresByRequestID(
-    requestID: ethers.Bytes
-  ): Promise<ethers.Bytes> {
-    return await this.contract.getScoresByRequestID(requestID);
-  }
-
-  /**
-   * Get TDD by request id.
-   *
-   * @param requestID
-   * @returns
-   */
-  public async getTDDByRequestID(requestID: ethers.Bytes): Promise<string[]> {
-    return await this.contract.getTDDByRequestID(requestID);
   }
 
   /**

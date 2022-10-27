@@ -1,6 +1,5 @@
 import { Desmo } from '@/desmo-module';
 import { DesmoHub } from '@/desmoHub-module';
-import { IRequestIDEvent } from '$/types/desmoHub-types';
 import { WalletSignerJsonRpc } from '@/walletSigner/walletSignerJsonRpc-module';
 import { QueryResultTypes } from '@/utils/decoder';
 import { abi as DesmoABI } from '@vaimee/desmo-contracts/artifacts/contracts/Desmo.sol/Desmo.json';
@@ -9,7 +8,6 @@ import { Desmo as DesmoContract } from '@vaimee/desmo-contracts/typechain/Desmo'
 import { getMockIExecSDK, setupMockEnvironment } from './iexec-mock';
 
 import { ethers } from 'ethers';
-import { firstValueFrom } from 'rxjs';
 
 import 'mocha';
 import chai, { expect } from 'chai';
@@ -17,16 +15,14 @@ import ChaiAsPromised from 'chai-as-promised';
 chai.use(ChaiAsPromised);
 
 async function query(
-  desmo: Desmo,
-  desmoHub: DesmoHub
+  desmo: Desmo
 ): Promise<ReturnType<Desmo['getQueryResult']>> {
-  const eventPromise = firstValueFrom(desmoHub.requestID$);
-  await desmoHub.getNewRequestID();
-  const event: IRequestIDEvent = await eventPromise;
+  const requestID = await desmo.generateNewRequestID();
+
   const query =
     '{__!_prefixList__!_:[{__!_abbreviation__!_:__!_desmo__!_,__!_completeURI__!_:__!_https://desmo.vaimee.it/__!_},{__!_abbreviation__!_:__!_qudt__!_,__!_completeURI__!_:__!_http://qudt.org/schema/qudt/__!_},{__!_abbreviation__!_:__!_xsd__!_,__!_completeURI__!_:__!_http://www.w3.org/2001/XMLSchema/__!_},{__!_abbreviation__!_:__!_monas__!_,__!_completeURI__!_:__!_https://pod.dasibreaker.vaimee.it/monas/__!_}],__!_property__!_:{__!_identifier__!_:__!_value__!_,__!_unit__!_:__!_qudt:DEG_C__!_,__!_datatype__!_:1},__!_staticFilter__!_:__!_$[?(@[--#-type--#-]==--#-Sensor--#-)]__!_}';
   await desmo.buyQuery(
-    event.requestID,
+    requestID,
     query,
     '0x11391F354CFE180cBc2C92e186e691B63CEB4763'
   );
@@ -77,7 +73,7 @@ describe('Desmo Tests', function () {
 
   describe('Buy query process', function () {
     it('should buy a query and retrieve its result', async () => {
-      const { result, type } = await query(desmo, desmohub);
+      const { result, type } = await query(desmo);
 
       expect(result).to.be.a('number');
       expect(type).to.be.equal(QueryResultTypes.POS_FLOAT);
@@ -96,6 +92,32 @@ describe('Desmo Tests', function () {
     });
   });
 
+  describe('Request ID generation', function () {
+    it('should retrieve a newly-generated request ID', async () => {
+      const requestID = await desmo.generateNewRequestID();
+      expect(requestID.length === 64 + 2); // length of '0x' + 32 bytes hex value
+    });
+
+    it('should retrieve the newly-generated list of selected TDDs', async () => {
+      const requestID = await desmo.generateNewRequestID();
+      const bytesRequestID = ethers.utils.arrayify(
+        ethers.utils.hexlify(requestID)
+      );
+      const selectedTDDs = await desmo.getTDDByRequestID(bytesRequestID);
+      expect(selectedTDDs.length > 0);
+    });
+
+    it('should retrieve the scores of the newly-generated list of selected TDDs', async () => {
+      const requestID = await desmo.generateNewRequestID();
+      const bytesRequestID = ethers.utils.arrayify(
+        ethers.utils.hexlify(requestID)
+      );
+
+      const tddScores = await desmo.getResultByRequestID(bytesRequestID);
+      expect(tddScores.scores.length > 0);
+    });
+  });
+
   describe('List query transactions', () => {
     it('should be an empty list', async () => {
       const list = await desmo.listTransactions();
@@ -104,7 +126,7 @@ describe('Desmo Tests', function () {
     });
 
     it('should contain one correct transaction', async () => {
-      await query(desmo, desmohub);
+      await query(desmo);
       const list = await desmo.listTransactions();
 
       expect(list.length).to.be.eql(1);
@@ -115,8 +137,8 @@ describe('Desmo Tests', function () {
     });
 
     it('should contain more than one transaction', async () => {
-      await query(desmo, desmohub);
-      await query(desmo, desmohub);
+      await query(desmo);
+      await query(desmo);
       const list = await desmo.listTransactions();
 
       expect(list.length).to.be.eql(2);

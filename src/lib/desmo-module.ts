@@ -1,5 +1,8 @@
 import { abi as contractABI } from '@vaimee/desmo-contracts/artifacts/contracts/Desmo.sol/Desmo.json';
-import { Desmo as DesmoContract } from '@vaimee/desmo-contracts/typechain/Desmo';
+import {
+  Desmo as DesmoContract,
+  RequestCreatedEvent,
+} from '@vaimee/desmo-contracts/typechain/Desmo';
 import { desmo as contractAddress } from '@vaimee/desmo-contracts/deployed.json';
 import { QueryResultTypes } from './utils/decoder';
 import {
@@ -163,6 +166,78 @@ export class Desmo {
   }
 
   /**
+   * This method is used to call the homonym function on the smart contract to get a new Request id.
+   * It produce an event when the transaction is sent.
+   * It is possible to get the result of the transaction by subscribing to the requestID$ observable, after having activated the listeners.
+   */
+  public async generateNewRequestID(): Promise<string> {
+    if (!this.isConnected) {
+      throw new Error(
+        'This method requires the wallet signer to be already signed-in!'
+      );
+    }
+    const tx = await this.contract.generateNewRequestID();
+    const receipt = await tx.wait();
+
+    if (receipt.blockNumber === undefined) {
+      throw new Error('The transaction was not mined!');
+    }
+
+    const events = receipt.events;
+
+    if (events === undefined) {
+      throw new Error('The transaction is malformed; No events found!');
+    }
+
+    const event = receipt.events?.find(
+      (event) => event.event === 'RequestCreated'
+    ) as RequestCreatedEvent | undefined;
+
+    if (event === undefined) {
+      throw new Error('The transaction is malformed; No RequestCreated event!');
+    }
+
+    return event.args.requestID;
+  }
+
+  /**
+   * Get the scores relative to a request id.
+   *
+   * @param requestID
+   * @returns
+   */
+  public async getResultByRequestID(request: ethers.Bytes): Promise<{
+    requestID: string;
+    taskID: string;
+    scores: string[];
+    result: string;
+  }> {
+    const { result, scores, taskID, requestID } =
+      await this.contract.getQueryResultByRequestID(request);
+    return { result, scores, taskID, requestID };
+  }
+
+  /**
+   * Get TDD by request id.
+   *
+   * @param requestID
+   * @returns
+   */
+  public async getTDDByRequestID(requestID: ethers.Bytes): Promise<string[]> {
+    const events = await this.contract.queryFilter(
+      this.contract.filters.RequestCreated(requestID)
+    );
+
+    const event = events.pop() as RequestCreatedEvent | undefined;
+
+    if (event === undefined) {
+      throw new Error('No request found with the provided requestID!');
+    }
+
+    return event.args.request.selectedTDDsURLs;
+  }
+
+  /**
    * This method is used to submit a query
    *
    * @param requestID
@@ -206,7 +281,7 @@ await desmoContract.buyQuery(
    *
    */
   public async buyQuery(
-    requestID: ethers.Bytes,
+    requestID: string,
     query: string,
     appAddress: string
   ): Promise<void> {
@@ -228,7 +303,7 @@ await desmoContract.buyQuery(
       workerpoolmaxprice: resultWorkerPoolOrder.workerpoolprice,
       requester: userAddress,
       volume: 1,
-      params: requestID.toString() + ' ' + query,
+      params: requestID + ' ' + query,
       category: this.category,
       // TODO: understand why the callback is needed and why the typing is wrong
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
