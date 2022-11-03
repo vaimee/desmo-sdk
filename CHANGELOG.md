@@ -1,3 +1,12 @@
+## [1.1.1](https://github.com/vaimee/desmo-sdk/compare/v1.1.0...v1.1.1) (2022-11-03)
+
+
+### Bug Fixes
+
+* let prefix list and static filter be undefined ([4c44094](https://github.com/vaimee/desmo-sdk/commit/4c4409474b991a339f5b1d3e48bdf23d2b6659ac))
+
+
+
 # [1.1.0](https://github.com/vaimee/desmo-sdk/compare/v1.0.0...v1.1.0) (2022-11-03)
 
 
