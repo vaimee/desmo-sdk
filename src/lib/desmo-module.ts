@@ -19,6 +19,12 @@ import { IExec } from 'iexec';
 import { decodeQueryResult } from './utils/decoder';
 import { Observable, Subject } from 'rxjs';
 
+export type Query = {
+  prefixList: { abbreviation: string; completeURI: string }[];
+  property: { identifier: string; unit: string; datatype: QueryResultTypes };
+  staticFilter: string;
+};
+
 export class Desmo {
   private _walletSigner: WalletSigner;
   private _isConnected: boolean;
@@ -282,7 +288,7 @@ await desmoContract.buyQuery(
    */
   public async buyQuery(
     requestID: string,
-    query: string,
+    query: Query,
     appAddress: string
   ): Promise<void> {
     if (this.iexec === undefined) {
@@ -293,7 +299,23 @@ await desmoContract.buyQuery(
 
     const resultWorkerPoolOrder: WorkerpoolOrder =
       await this.fetchWorkerPoolOrder();
-
+    /*
+    * APP arguments template
+    * requestID identifier unit datatype [--prefixList abbreviation1:completeURI1 abbreviation2:completeURI2] [--staticFilter staticFilter] [--dynamicFilter dynamicFilter] [--timeFilter until interval aggregation]"+
+        " [(--geoCircle centerLatitude centerLongitude radiusValue radiusUnit ) || (--geoPolygon latitude1 longitude1 latitude2 longitude2)]"+
+        " [--geoAltitude min max unit]
+    */
+    const prefixListOption =
+      query.prefixList.length > 0
+        ? `--prefixList ${query.prefixList
+            .map((prefix) => `${prefix.abbreviation}:${prefix.completeURI}`)
+            .join(' ')}`
+        : '';
+    const staticFilterOption =
+      query.staticFilter !== undefined
+        ? `--staticFilter ${query.staticFilter}`
+        : '';
+    const requestParameters = `${requestID} ${query.property.identifier} ${query.property.unit} ${query.property.datatype} ${prefixListOption} ${staticFilterOption}`;
     // Check if we can use the address from the wallet.
     const userAddress = await this.iexec.wallet.getAddress();
 
@@ -303,7 +325,7 @@ await desmoContract.buyQuery(
       workerpoolmaxprice: resultWorkerPoolOrder.workerpoolprice,
       requester: userAddress,
       volume: 1,
-      params: requestID + ' ' + query,
+      params: requestParameters,
       category: this.category,
       // TODO: understand why the callback is needed and why the typing is wrong
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
