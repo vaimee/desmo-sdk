@@ -1,3 +1,21 @@
+# [1.1.0](https://github.com/vaimee/desmo-sdk/compare/v1.0.0...v1.1.0) (2022-11-03)
+
+
+### Bug Fixes
+
+* **test:** query interface ([f2ab215](https://github.com/vaimee/desmo-sdk/commit/f2ab215ee2af9266608de3e99f717c2d43bce036))
+
+
+### Features
+
+* allign buyQuery with the new DApp ([465edd8](https://github.com/vaimee/desmo-sdk/commit/465edd8bc918565271965d01dd82b23004a2843a))
+
+
+
+# [1.0.0](https://github.com/vaimee/desmo-sdk/compare/v1.0.0-alpha.17...v1.0.0) (2022-10-27)
+
+
+
 # [1.0.0-alpha.17](https://github.com/vaimee/desmo-sdk/compare/v1.0.0-alpha.16...v1.0.0-alpha.17) (2022-09-26)
 
 
