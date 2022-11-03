@@ -20,9 +20,9 @@ import { decodeQueryResult } from './utils/decoder';
 import { Observable, Subject } from 'rxjs';
 
 export type Query = {
-  prefixList: { abbreviation: string; completeURI: string }[];
+  prefixList: { abbreviation: string; completeURI: string }[] | undefined;
   property: { identifier: string; unit: string; datatype: QueryResultTypes };
-  staticFilter: string;
+  staticFilter: string | undefined;
 };
 
 export class Desmo {
@@ -306,7 +306,7 @@ await desmoContract.buyQuery(
         " [--geoAltitude min max unit]
     */
     const prefixListOption =
-      query.prefixList.length > 0
+      query.prefixList && query.prefixList.length > 0
         ? `--prefixList ${query.prefixList
             .map((prefix) => `${prefix.abbreviation}:${prefix.completeURI}`)
             .join(' ')}`
