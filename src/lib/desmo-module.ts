@@ -18,6 +18,7 @@ import { WalletSigner } from './walletSigner/walletSigner-module';
 import { IExec } from 'iexec';
 import { decodeQueryResult } from './utils/decoder';
 import { Observable, Subject } from 'rxjs';
+import axios from 'axios';
 
 export type Query = {
   prefixList: { abbreviation: string; completeURI: string }[] | undefined;
@@ -299,23 +300,20 @@ await desmoContract.buyQuery(
 
     const resultWorkerPoolOrder: WorkerpoolOrder =
       await this.fetchWorkerPoolOrder();
-    /*
-    * APP arguments template
-    * requestID identifier unit datatype [--prefixList abbreviation1:completeURI1 abbreviation2:completeURI2] [--staticFilter staticFilter] [--dynamicFilter dynamicFilter] [--timeFilter until interval aggregation]"+
-        " [(--geoCircle centerLatitude centerLongitude radiusValue radiusUnit ) || (--geoPolygon latitude1 longitude1 latitude2 longitude2)]"+
-        " [--geoAltitude min max unit]
-    */
-    const prefixListOption =
-      query.prefixList && query.prefixList.length > 0
-        ? `--prefixList ${query.prefixList
-            .map((prefix) => `${prefix.abbreviation}:${prefix.completeURI}`)
-            .join(' ')}`
-        : '';
-    const staticFilterOption =
-      query.staticFilter !== undefined
-        ? `--staticFilter ${query.staticFilter}`
-        : '';
-    const requestParameters = `${requestID} ${query.property.identifier} ${query.property.unit} ${query.property.datatype} ${prefixListOption} ${staticFilterOption}`;
+
+    const response = await axios.post('https://api.nft.storage/upload', query, {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization:
+          'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDJDYzcwNzU4NUFjNjIyRkY2M0RFYUY2YUQ3RjU4RjcyQTQ5YzZjMDIiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY2NzQ3MjMxNjM2MiwibmFtZSI6IkRlc21vIn0.-kY14HR9Ge7h77KFbmOpk1u7Xy7dESFxIsxf_YGAvRA',
+      },
+    });
+
+    if (response.status > 299) {
+      throw new Error('Error while uploading the query to NFT storage');
+    }
+
     // Check if we can use the address from the wallet.
     const userAddress = await this.iexec.wallet.getAddress();
 
@@ -325,7 +323,10 @@ await desmoContract.buyQuery(
       workerpoolmaxprice: resultWorkerPoolOrder.workerpoolprice,
       requester: userAddress,
       volume: 1,
-      params: requestParameters,
+      params: {
+        // eslint-disable-next-line camelcase
+        iexec_input_files: [`ipfs://${response.data.value.cid}`],
+      },
       category: this.category,
       // TODO: understand why the callback is needed and why the typing is wrong
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
