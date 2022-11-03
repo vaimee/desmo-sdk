@@ -325,7 +325,9 @@ await desmoContract.buyQuery(
       volume: 1,
       params: {
         // eslint-disable-next-line camelcase
-        iexec_input_files: [`ipfs://${response.data.value.cid}`],
+        iexec_input_files: [
+          `https://${response.data.value.cid}.ipfs.nftstorage.link`,
+        ],
       },
       category: this.category,
       // TODO: understand why the callback is needed and why the typing is wrong
