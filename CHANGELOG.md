@@ -1,3 +1,12 @@
+# [1.2.0](https://github.com/vaimee/desmo-sdk/compare/v1.1.1...v1.2.0) (2022-11-03)
+
+
+### Features
+
+* use nft storage as input ([09b5eef](https://github.com/vaimee/desmo-sdk/commit/09b5eef62ec1c6f4edcf81f53debc7bc774952f1))
+
+
+
 ## [1.1.1](https://github.com/vaimee/desmo-sdk/compare/v1.1.0...v1.1.1) (2022-11-03)
 
 
