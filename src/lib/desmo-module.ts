@@ -300,15 +300,22 @@ await desmoContract.buyQuery(
 
     const resultWorkerPoolOrder: WorkerpoolOrder =
       await this.fetchWorkerPoolOrder();
-
-    const response = await axios.post('https://api.nft.storage/upload', query, {
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        Authorization:
-          'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDJDYzcwNzU4NUFjNjIyRkY2M0RFYUY2YUQ3RjU4RjcyQTQ5YzZjMDIiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY2NzQ3MjMxNjM2MiwibmFtZSI6IkRlc21vIn0.-kY14HR9Ge7h77KFbmOpk1u7Xy7dESFxIsxf_YGAvRA',
-      },
-    });
+    const payload = {
+      query,
+      requestID,
+    };
+    const response = await axios.post(
+      'https://api.nft.storage/upload',
+      payload,
+      {
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          Authorization:
+            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDJDYzcwNzU4NUFjNjIyRkY2M0RFYUY2YUQ3RjU4RjcyQTQ5YzZjMDIiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY2NzQ3MjMxNjM2MiwibmFtZSI6IkRlc21vIn0.-kY14HR9Ge7h77KFbmOpk1u7Xy7dESFxIsxf_YGAvRA',
+        },
+      }
+    );
 
     if (response.status > 299) {
       throw new Error('Error while uploading the query to NFT storage');
