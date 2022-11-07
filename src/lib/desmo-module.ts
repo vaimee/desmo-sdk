@@ -18,7 +18,6 @@ import { WalletSigner } from './walletSigner/walletSigner-module';
 import { IExec } from 'iexec';
 import { decodeQueryResult } from './utils/decoder';
 import { Observable, Subject } from 'rxjs';
-import axios from 'axios';
 
 export type Query = {
   prefixList: { abbreviation: string; completeURI: string }[] | undefined;
@@ -300,6 +299,7 @@ await desmoContract.buyQuery(
 
     const resultWorkerPoolOrder: WorkerpoolOrder =
       await this.fetchWorkerPoolOrder();
+    /*
     const payload = {
       query,
       requestID,
@@ -319,7 +319,7 @@ await desmoContract.buyQuery(
 
     if (response.status > 299) {
       throw new Error('Error while uploading the query to NFT storage');
-    }
+    }*/
 
     // Check if we can use the address from the wallet.
     const userAddress = await this.iexec.wallet.getAddress();
@@ -333,7 +333,7 @@ await desmoContract.buyQuery(
       params: {
         // eslint-disable-next-line camelcase
         iexec_input_files: [
-          `https://${response.data.value.cid}.ipfs.nftstorage.link`,
+          //`https://${response.data.value.cid}.ipfs.nftstorage.link`,
         ],
       },
       category: this.category,
