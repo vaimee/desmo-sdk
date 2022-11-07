@@ -183,7 +183,7 @@ export class Desmo {
         'This method requires the wallet signer to be already signed-in!'
       );
     }
-    const tx = await this.contract.generateNewRequestID();
+    const tx = await this.contract.generateNewRequestID({ gasLimit: 1000000 });
     const receipt = await tx.wait();
 
     if (receipt.blockNumber === undefined) {

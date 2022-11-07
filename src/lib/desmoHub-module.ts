@@ -215,7 +215,7 @@ export class DesmoHub {
       );
     }
 
-    const tx = await this.contract.registerTDD(tddUrl);
+    const tx = await this.contract.registerTDD(tddUrl, { gasLimit: 1000000 });
     this.TRANSACTION_SENT.next({
       invokedOperation: OperationType.registerTDD,
       hash: tx.hash,
@@ -235,7 +235,7 @@ export class DesmoHub {
       );
     }
 
-    const tx = await this.contract.disableTDD();
+    const tx = await this.contract.disableTDD({ gasLimit: 1000000 });
     this.TRANSACTION_SENT.next({
       invokedOperation: OperationType.disableTDD,
       hash: tx.hash,
@@ -255,7 +255,7 @@ export class DesmoHub {
       );
     }
 
-    const tx = await this.contract.enableTDD();
+    const tx = await this.contract.enableTDD({ gasLimit: 1000000 });
     this.TRANSACTION_SENT.next({
       invokedOperation: OperationType.enableTDD,
       hash: tx.hash,
