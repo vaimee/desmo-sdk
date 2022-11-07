@@ -1,3 +1,13 @@
+## [1.2.4](https://github.com/vaimee/desmo-sdk/compare/v1.2.3...v1.2.4) (2022-11-07)
+
+
+### Bug Fixes
+
+* remove nftstorage upload, temporanelly ([bab4c50](https://github.com/vaimee/desmo-sdk/commit/bab4c50bfd5a5d5673a2745fc80adae2d43e7a56))
+* workaround set a forced gaslimit ([9b39b8f](https://github.com/vaimee/desmo-sdk/commit/9b39b8fbad5ee62332d3ed68aacd16bdae76082f))
+
+
+
 ## [1.2.3](https://github.com/vaimee/desmo-sdk/compare/v1.2.2...v1.2.3) (2022-11-07)
 
 
