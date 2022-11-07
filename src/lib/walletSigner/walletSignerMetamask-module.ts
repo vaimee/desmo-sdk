@@ -21,7 +21,7 @@ export class WalletSignerMetamask extends WalletSigner {
      * By specifying the correct chainID (133 for Viviani), the provider will emit an error
      * when trying to interact with a different network:
      */
-    this._provider = new ethers.providers.Web3Provider(_windowEthereum, 133);
+    this._provider = new ethers.providers.Web3Provider(_windowEthereum, 134);
     this._isConnected = this._windowEthereum.selectedAddress !== null;
     if (this.isConnected) {
       this._wallet = this.provider.getSigner();
