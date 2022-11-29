@@ -381,13 +381,16 @@ await desmoContract.buyQuery(
       dealid: this.dealId,
     });
 
-    const taskCompletion: Promise<void> = new Promise((resolve, reject) => {
+    const completedFilter = this.contract.filters.QueryCompleted(taskID);
+    const failedFilter = this.contract.filters.QueryFailed(taskID);
+
+    return new Promise((resolve, reject) => {
       taskObservable.subscribe({
         next: async ({ message }) => {
           this.QUERY_STATE.next({ taskID, state: message });
           switch (message) {
             case TaskStatus.TASK_COMPLETED:
-              resolve();
+              // Task completed everything ok
               break;
             case TaskStatus.TASK_FAILED:
             case TaskStatus.TASK_TIMEDOUT:
@@ -398,16 +401,16 @@ await desmoContract.buyQuery(
         error: (e) => reject(e),
         complete: () => undefined,
       });
+
+      this.contract.on(completedFilter, (requestID, queryResult) => {
+        const { value, type } = decodeQueryResult(queryResult.result);
+        resolve({ requestID, taskID, result: value, type });
+      });
+
+      this.contract.on(failedFilter, () => {
+        reject(new Error('Query execution failed'));
+      });
     });
-
-    await taskCompletion;
-
-    const tx = await this.contract.receiveResult(taskID, '0x00');
-    await tx.wait();
-    const { requestID, result } = await this.contract.getQueryResult(taskID);
-
-    const { value, type } = decodeQueryResult(result);
-    return { requestID, taskID, result: value, type };
   }
 
   // TODO access a different source with the address

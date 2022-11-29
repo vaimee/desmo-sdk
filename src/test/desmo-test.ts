@@ -75,7 +75,8 @@ describe('Desmo Tests', function () {
       desmo['iexec'] = getMockIExecSDK(
         desmo['iexec'],
         account,
-        '0x11391F354CFE180cBc2C92e186e691B63CEB4763'
+        '0x11391F354CFE180cBc2C92e186e691B63CEB4763',
+        desmo['contract']
       );
     }
 

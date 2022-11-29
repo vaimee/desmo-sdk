@@ -22,6 +22,7 @@ import {
   bytecode as DesmoBytecode,
 } from '@vaimee/desmo-contracts/artifacts/contracts/Desmo.sol/Desmo.json';
 import { DesmoHub } from '@vaimee/desmo-contracts/typechain/DesmoHub';
+import { Desmo as DesmoContract } from '@vaimee/desmo-contracts/typechain/Desmo';
 
 async function getMockIExecContract(
   wallet: ethers.Wallet
@@ -116,7 +117,8 @@ export async function setupMockEnvironment(): Promise<{
 export function getMockIExecSDK(
   iExec: IExec,
   wallet: ethers.Wallet,
-  dAppAddress: string
+  dAppAddress: string,
+  desmo: DesmoContract
 ): IExec {
   /**
    * Mock orderbook.fetchAppOrderbook
@@ -302,7 +304,7 @@ export function getMockIExecSDK(
   obsTask.next(TaskStatus.TASK_UPDATED);
   obsTask.next(TaskStatus.TASK_UPDATED);
   obsTask.next(TaskStatus.TASK_COMPLETED);
-
+  obsTask.complete();
   iExec.task.obsTask = async (): Promise<any> => {
     return {
       subscribe: (callbacks: {
@@ -318,7 +320,13 @@ export function getMockIExecSDK(
               callbacks.error(error);
               return of(error);
             }),
-            finalize(() => callbacks.complete())
+            finalize(async () => {
+              callbacks.complete();
+              await desmo.receiveResult(
+                '0xb8d61d10ee474fe0176b3349602144e33cdd661c95c7639d463df4596bac6e0e',
+                '0x00'
+              );
+            })
           )
           .subscribe(),
     };
