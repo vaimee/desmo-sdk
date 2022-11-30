@@ -302,7 +302,20 @@ await desmoContract.buyQuery(
 
     // Check if we can use the address from the wallet.
     const userAddress = await this.iexec.wallet.getAddress();
-
+    const prefixes = query.prefixList
+      ? `${query.prefixList
+          .map(
+            ({ abbreviation, completeURI }) =>
+              `--prefixList ${abbreviation}:${completeURI}`
+          )
+          .join(' ')}`
+      : '';
+    const staticFilter = query.staticFilter
+      ? `--encodedStaticFilter ${Buffer.from(
+          query.staticFilter,
+          'utf-8'
+        ).toString('base64')}`
+      : '';
     const requestOrderToSign = await this.iexec.order.createRequestorder({
       app: appAddress,
       appmaxprice: resultAppOrder.appprice,
@@ -311,7 +324,7 @@ await desmoContract.buyQuery(
       volume: 1,
       params: {
         // eslint-disable-next-line camelcase
-        iexec_args: `${requestID} value qudt:DEG_C 0 --prefixList qudt:https://qudt.org/2.1/schema/qudt --staticFilter '\\$[?@.type==\\"Sensor\\"]'`,
+        iexec_args: `${requestID} ${query.property.identifier} ${query.property.unit} ${query.property.datatype} ${prefixes} ${staticFilter}`,
       },
       category: this.category,
       // TODO: understand why the callback is needed and why the typing is wrong
