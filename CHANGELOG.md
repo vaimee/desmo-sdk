@@ -1,3 +1,12 @@
+## [1.2.8](https://github.com/vaimee/desmo-sdk/compare/v1.2.7...v1.2.8) (2022-11-30)
+
+
+### Features
+
+* encodedStaticFilter ([c9da413](https://github.com/vaimee/desmo-sdk/commit/c9da413337d923ef3d2c716dd91e879d132c9b14))
+
+
+
 ## [1.2.7](https://github.com/vaimee/desmo-sdk/compare/v1.2.6...v1.2.7) (2022-11-30)
 
 
