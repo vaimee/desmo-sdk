@@ -1,3 +1,12 @@
+## [1.2.7](https://github.com/vaimee/desmo-sdk/compare/v1.2.6...v1.2.7) (2022-11-30)
+
+
+### Bug Fixes
+
+* restore buy query ([de1c1a3](https://github.com/vaimee/desmo-sdk/commit/de1c1a31e11ee50e7891415a083ae554a25b3ed6))
+
+
+
 ## [1.2.6](https://github.com/vaimee/desmo-sdk/compare/v1.2.5...v1.2.6) (2022-11-30)
 
 
