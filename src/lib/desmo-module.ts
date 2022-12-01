@@ -145,6 +145,9 @@ export class Desmo {
     const { orders: workerpoolOrders } =
       await this.iexec.orderbook.fetchWorkerpoolOrderbook({
         category: this.category,
+        // https://explorer.iex.ec/bellecour/workerpool/0xeb14dc854a8873e419183c81a657d025ec70276b
+        // production workerpool. Other workerpools cause errors or long waiting times
+        workerpool: '0xeb14dc854a8873e419183c81a657d025ec70276b',
       });
 
     if (workerpoolOrders.length < 1) {
