@@ -1,3 +1,12 @@
+## [1.2.9](https://github.com/vaimee/desmo-sdk/compare/v1.2.8...v1.2.9) (2022-12-01)
+
+
+### Features
+
+* use iexec prod workerpool ([adfc639](https://github.com/vaimee/desmo-sdk/commit/adfc639a85177084c9eab6ae17d194e9d4e19075))
+
+
+
 ## [1.2.8](https://github.com/vaimee/desmo-sdk/compare/v1.2.7...v1.2.8) (2022-11-30)
 
 
