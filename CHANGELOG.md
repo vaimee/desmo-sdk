@@ -1,3 +1,12 @@
+# [1.3.0](https://github.com/vaimee/desmo-sdk/compare/v1.2.11...v1.3.0) (2022-12-02)
+
+
+### Bug Fixes
+
+* test now uses the new result format ([5a092e2](https://github.com/vaimee/desmo-sdk/commit/5a092e2aee8483f9be62b8fbf580133d07dfcb8c))
+
+
+
 ## [1.2.11](https://github.com/vaimee/desmo-sdk/compare/v1.2.10...v1.2.11) (2022-12-02)
 
 
