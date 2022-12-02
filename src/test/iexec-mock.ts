@@ -48,7 +48,7 @@ async function getMockIExecContract(
     results: ethers.constants.HashZero,
     resultsTimestamp: 0,
     resultsCallback:
-      '0x20000000000000000000000000000000000000000000000000000000000000000b0402020202001121445c',
+      '0x000000000000000000000000000000000000000000000000000000000000000b0402020202001121445c',
   };
   await iexecProxy.mock.viewTask.returns(Object.values(task));
 
@@ -324,7 +324,10 @@ export function getMockIExecSDK(
               callbacks.complete();
               await desmo.receiveResult(
                 '0xb8d61d10ee474fe0176b3349602144e33cdd661c95c7639d463df4596bac6e0e',
-                '0x00'
+                '0x00',
+                {
+                  gasLimit: 1000000,
+                }
               );
             })
           )
